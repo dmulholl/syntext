@@ -1,0 +1,5 @@
+:image http://example.com
+    alt text
+
+:img http://example.com
+    alt text

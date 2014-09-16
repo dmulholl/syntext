@@ -1,0 +1,20 @@
+:table
+
+    foo | bar | baz
+    ---------------
+    aaa | bbb | ccc
+    ddd | eee | fff
+
+:++
+
+    foo | bar | baz
+    --- | --- | ---
+    aaa | bbb | ccc
+    ddd | eee | fff
+
+:++
+
+    foo | bar | baz
+    :-- | :-: | --:
+    aaa | bbb | ccc
+    ddd | eee | fff

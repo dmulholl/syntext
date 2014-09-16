@@ -1,0 +1,11 @@
+:blockquote
+    foo
+    bar
+
+    baz
+
+:quote
+    foo
+    
+:>> 
+    foo

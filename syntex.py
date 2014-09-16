@@ -1,0 +1,1433 @@
+#!/usr/bin/env python3
+""" 
+Plain text to HTML convertor.
+
+To use as a script:
+    
+    syntex.py < input.txt > output.html
+
+To use as a library module:
+
+    import syntex
+    html, meta = syntex.render(text)
+
+License: This work has been placed in the public domain.
+
+"""
+
+__version__ = "0.7.0"
+
+
+import sys
+import re
+import collections
+import hashlib
+import unicodedata
+import argparse
+import pprint
+
+
+# Parse document metadata with the yaml module if it's available.
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
+
+# Use the pygments module for syntax highlighting if it's available.
+try:
+    import pygments
+    import pygments.lexers
+    import pygments.formatters
+except ImportError:
+    pygments = None
+
+
+# Placeholders to substitute for escaped characters during preprocessing.
+STX = '\x02'
+ETX = '\x03'
+CHARS = '\\*:`[]#=-!().•\n'
+ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
+ESCNL = 'esc%s%s%s' % (STX, ord('\n'), ETX)
+ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in CHARS}
+
+
+###############################################################################
+# Block Parser 
+###############################################################################
+
+
+class Element:
+
+    """ We parse input text into a tree of Element nodes. """
+
+    def __init__(self, tag, attrs=None, meta=''):
+        self.tag = tag
+        self.attrs = attrs or {}
+        self.children = []
+        self.meta = meta
+        self.text = ''
+
+    def __iter__(self):
+        for child in self.children:
+            yield child
+
+    def __repr__(self):
+        return self.repr()
+
+    def repr(self, depth=0):
+        output = "·  " * depth + self.get_tag()
+        if self.text:
+            text = repr(self.text)
+            if len(text) < 28:
+                output += " " + text
+            else:
+                output += " " + text[:12] + "..." + text[-12:]
+        output += '\n'
+        for child in self.children:
+            output += child.repr(depth + 1)
+        return output
+
+    def get_tag(self, alt='', close=False):
+        tag = alt or self.tag
+        slash = '/' if close else ''
+        attrs = ''.join(
+            ' %s="%s"' % (key, self.attrs[key]) for key in sorted(self.attrs)
+        )
+        return '<%s%s%s>' % (tag, attrs, slash)
+
+    def get_text(self):
+        if self.text:
+            return self.text
+        else:
+            return ''.join(child.get_text() for child in self.children)
+
+    def append(self, element):
+        self.children.append(element)
+        return element
+
+    def add_class(self, newclass):
+        classes = self.attrs.get('class', '').split()
+        if not newclass in classes:
+            classes.append(newclass)
+            self.attrs['class'] = ' '.join(sorted(classes))
+
+
+class Text(Element):
+
+    """ Shortcut subclass for creating tag="text" nodes. """
+
+    def __init__(self, text):
+        Element.__init__(self, 'text')
+        self.text = text
+
+
+class ParagraphProcessor:
+
+    """ A sequence of non-empty lines. """
+
+    regex = re.compile(r"(^[ ]*[^ \n]+.*\n)+", re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        element = Element('p')
+        element.append(Text(strip(match.group(0))))
+        return True, element, match.end(0)
+
+
+class CodeProcessor:
+
+    """ A sequence of indented or empty lines. """
+
+    regex = re.compile(r"""
+        ^[ ]{4}[^ \n]+.*\n
+        ((
+            (^[ ]*\n)
+            |
+            (^[ ]{4}.+\n)
+        )*)
+        """, re.VERBOSE | re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        element = Element('pre')
+        element.append(Text(dedent(strip(match.group(0)))))
+        return True, element, match.end(0)
+
+
+class H1Processor:
+
+    """ H1 heading of the form:
+
+        =======
+        Heading
+        =======
+
+    The first line of '=' is optional.
+
+    """
+
+    regex = re.compile(r"""
+        (?:^===+[ ]*\n)?
+        ^(.+)\n
+        ^===+[ ]*\n
+        """, re.VERBOSE | re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        element = Element('h1')
+        element.append(Text(match.group(1).strip()))
+        return True, element, match.end(0)
+
+
+class H2Processor:
+
+    """ H2 heading of the form:
+
+        -------
+        Heading
+        -------
+
+    The first line of '-' is optional.
+    
+    """
+
+    regex = re.compile(r"""
+        (?:^---+[ ]*\n)?
+        ^(.+)\n
+        ^---+[ ]*\n
+        """, re.VERBOSE | re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        element = Element('h2')
+        element.append(Text(match.group(1).strip()))
+        return True, element, match.end(0)
+
+
+class HeadingProcessor:
+
+    """ Arbitrary level heading of the form:
+
+        === Heading ===
+
+    The number of leading '=' specifies the heading level.
+    Trailing '=' are optional.
+
+    """
+
+    regex = re.compile(r"^([=#]{1,6})(.+?)[=#]*\n", re.MULTILINE)
+
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        tag = 'h' + str(len(match.group(1)))
+        element = Element(tag)
+        element.append(Text(match.group(2).strip()))
+        return True, element, match.end(0)
+
+
+class EmptyLineProcessor:
+
+    """ Skips empty lines. """
+
+    regex = re.compile(r"(^[ ]*\n)+", re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        return True, None, match.end(0)
+
+
+class SkipLineProcessor:
+
+    """ Skips a single line of text. """
+
+    regex = re.compile(r"^.*\n", re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        return True, None, match.end(0)
+
+
+class TextProcessor:
+
+    """ A single line of text. """
+
+    regex = re.compile(r"^[ ]*[^ \n]+.*\n", re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        return True, Text(match.group(0)), match.end(0)
+
+
+class UListProcessor:
+
+    """ An unordered list. The list item marker is '*' or '•'.
+
+    Each list item consists of its opening line plus all subsequent blank
+    or indented lines. List item markers can be indented by up to three spaces.
+
+    """
+
+    item = r"""
+        ^[ ]{0,3}[*•](\n|(?:[ ].*\n))
+        ((
+            (^[ ]*\n)
+            |
+            (^[ ]{4}.+\n)
+        )*)
+    """
+
+    re_item = re.compile(item, re.VERBOSE | re.MULTILINE)
+    re_list = re.compile(r"(%s)+" % item, re.VERBOSE | re.MULTILINE)
+    re_empt = re.compile(r"^[ ]*\n", re.MULTILINE)
+
+    def __call__(self, text, pos):
+        list_match = self.re_list.match(text, pos)
+        if not list_match:
+            return False, None, pos
+        if self.re_empt.search(list_match.group(0).strip()):
+            meta = 'block'
+            processors = ()
+        else:
+            meta = 'sparse'
+            processors = ('empty', 'ul', 'ol', 'text')
+        ul = Element('ul', meta=meta)
+        for item_match in self.re_item.finditer(list_match.group(0)):
+            head = item_match.group(1).lstrip(' ')
+            body = item_match.group(2)
+            content = dedent(head + body)
+            li = ul.append(Element('li', meta=meta))
+            li.children = BlockParser(*processors).parse(content)
+        return True, ul, list_match.end(0)
+
+
+class OListProcessor:
+
+    """ An ordered list. The list item marker is '#.' or '<int>.'.
+
+    Each list item consists of its opening line plus all subsequent blank
+    or indented lines. List item markers can be indented by up to three spaces.
+
+    """
+
+    item = r"""
+        ^[ ]{0,3}(\#|\d+)\.(\n|(?:[ ].*\n))
+        ((
+            (^[ ]*\n)
+            |
+            (^[ ]{4}.+\n)
+        )*)
+    """
+
+    re_item = re.compile(item, re.VERBOSE | re.MULTILINE)
+    re_list = re.compile(r"(%s)+" % item, re.VERBOSE | re.MULTILINE)
+    re_empt = re.compile(r"^[ ]*\n", re.MULTILINE)
+
+    def __call__(self, text, pos):
+        first_item_match = self.re_item.match(text, pos)
+        if not first_item_match:
+            return False, None, pos
+        list_match = self.re_list.match(text, pos)
+        if self.re_empt.search(list_match.group(0).strip()):
+            meta = 'block'
+            processors = ()
+        else:
+            meta = 'sparse'
+            processors = ('empty', 'ul', 'ol', 'text')
+        if first_item_match.group(1) in ('#', '1'):
+            ol = Element('ol', meta=meta)
+        else:
+            ol = Element('ol', {'start': first_item_match.group(1)}, meta=meta)
+        for item_match in self.re_item.finditer(list_match.group(0)):
+            head = item_match.group(2).lstrip(' ')
+            body = item_match.group(3)
+            content = dedent(head + body)
+            li = ol.append(Element('li', meta=meta))
+            li.children = BlockParser(*processors).parse(content)
+        return True, ol, list_match.end(0)
+
+
+class GenericBlockProcessor:
+
+    """ A generic block of the form:
+
+        :tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar"]
+            first line
+            second line
+
+            more lines
+            ...
+
+    The block's content consists of all consecutive blank or indented lines
+    following the block header.
+
+    Processing of block content depends on the tag. By default content is
+    processed recursively and can contain any block level structures.
+
+    """
+
+    block_regex = re.compile(r"""
+        ^:([^ \n]+)([ ]+.+)?[ ]*\n
+        ((
+            (^[ ]*\n)
+            |
+            (^[ ]{4}.+\n)
+        )*)
+        """, re.VERBOSE | re.MULTILINE)
+
+    args_regex = re.compile(r"""
+        (?:([^\s'"=]+)=)?
+        (
+            "((?:[^\\"]|\\.)*)"
+            |
+            '((?:[^\\']|\\.)*)'
+        )
+        |
+        ([^\s'"=]+)=(\S+)
+        |
+        (\S+)
+        """, re.VERBOSE)
+
+    aliases = {
+        'h1': 'h',
+        'h2': 'h',
+        'h3': 'h',
+        'h4': 'h',
+        'h5': 'h',
+        'h6': 'h',
+        '::': 'pre',
+        'code': 'pre',
+        'quote': 'blockquote',
+        '>>': 'blockquote',
+        ESCBS: 'raw',
+        '!!': 'alert',
+        'img': 'image',
+        '++': 'table',
+        '//': 'ignore',
+        '<<': 'null',
+        '||': 'nl2br',
+    }
+
+    def __call__(self, text, pos):
+        match = self.block_regex.match(text, pos)
+        if not match:
+            return False, None, pos
+
+        tag = match.group(1)
+        content = dedent(match.group(3)) if match.group(3) else ''
+        args = match.group(2).strip() if match.group(2) else ''
+        pargs, kwargs = self.parse_args(args)
+
+        if tag in self.aliases:
+            method = getattr(self, 'make_' + self.aliases[tag])
+            element = method(tag, pargs, kwargs, content)
+        elif hasattr(self, 'make_' + tag):
+            method = getattr(self, 'make_' + tag)
+            element = method(tag, pargs, kwargs, content)
+        else:
+            element = None
+
+        return True, element, match.end(0)
+
+    def parse_args(self, argstring):
+        pargs, kwargs = [], {}
+        for match in self.args_regex.finditer(argstring):
+            if match.group(2) or match.group(5):
+                key = match.group(1) or match.group(5)
+                value = match.group(3) or match.group(4) or match.group(6)
+                if match.group(3) or match.group(4):
+                    value = bytes(value, 'utf-8').decode('unicode_escape')
+                if key:
+                    kwargs[key] = value
+                else:
+                    pargs.append(value)
+            else:
+                pargs.append(match.group(7))
+
+        classes = []
+        for arg in pargs[:]:
+            if arg.startswith('.'):
+                classes.append(arg[1:])
+                pargs.remove(arg)
+            if arg.startswith('#'):
+                kwargs['id'] = arg[1:]
+                pargs.remove(arg)
+        if 'class' in kwargs:
+            classes.extend(kwargs['class'].split())
+        if classes:
+            kwargs['class'] = ' '.join(sorted(classes))
+
+        return pargs, kwargs
+
+    def make_div(self, tag, pargs, kwargs, content):
+        element = Element('div', kwargs)
+        element.children = BlockParser().parse(content)
+        return element
+
+    def make_nl2br(self, tag, pargs, kwargs, content):
+        element = Element('nl2br', kwargs)
+        element.children = BlockParser().parse(content)
+        return element
+
+    def make_h(self, tag, pargs, kwargs, content):
+        element = Element(tag, kwargs)
+        element.append(Text(strip(content)))
+        return element
+
+    def make_pre(self, tag, pargs, kwargs, content):
+        element = Element('pre', kwargs)
+        element.append(Text(strip(content)))
+        if pargs:
+            element.meta = pargs[0]
+            element.attrs['data-lang'] = pargs[0]
+            element.add_class('lang-' + slugify(pargs[0]))
+        return element
+
+    def make_blockquote(self, tag, pargs, kwargs, content):
+        element = Element('blockquote', kwargs)
+        element.children = BlockParser().parse(content)
+        return element
+
+    def make_insert(self, tag, pargs, kwargs, content):
+        element = Element('insert', kwargs)
+        element.meta = pargs[0] if pargs else ''
+        return element
+
+    def make_image(self, tag, pargs, kwargs, content):
+        element = Element('image', kwargs)
+        element.append(Text(strip(content)))
+        element.attrs['src'] = pargs[0] if pargs else ''
+        return element
+
+    def make_raw(self, tag, pargs, kwargs, content):
+        element = Element('raw', kwargs)
+        element.append(Text(strip(content)))
+        return element
+
+    def make_alert(self, tag, pargs, kwargs, content):
+        element = Element('div', kwargs)
+        element.add_class('alert')
+        if pargs:
+            element.add_class(pargs[0])
+        element.children = BlockParser().parse(content)
+        return element
+
+    def make_ignore(self, tag, pargs, kwargs, content):
+        return None
+
+    def make_table(self, tag, pargs, kwargs, content):
+        lines = [line.strip(' |') for line in content.splitlines()]
+        lines = [line for line in lines if line]
+        if len(lines) < 3:
+            return None
+
+        head = [cell.strip() for cell in lines.pop(0).split('|')]
+        meta = [cell.strip() for cell in lines.pop(0).split('|')]
+        body = [[cell.strip() for cell in line.split('|')] for line in lines]
+
+        align = [None for cell in head]
+        for i, cell in enumerate(meta):
+            if cell.startswith(':') and cell.endswith(':'):
+                align[i] = 'align-center'
+            elif cell.startswith(':'):
+                align[i] = 'align-left'
+            elif cell.endswith(':'):
+                align[i] = 'align-right'
+
+        def make_row(cells, celltag):
+            tr = Element('tr')
+            for i, cell in enumerate(cells):
+                el = tr.append(Element(celltag))
+                if align[i]:
+                    el.add_class(align[i])
+                el.append(Text(cell))
+            return tr
+
+        table = Element('table', kwargs)
+        thead = table.append(Element('thead'))
+        tbody = table.append(Element('tbody'))
+        thead.append(make_row(head, 'th'))
+        for row in body:
+            tbody.append(make_row(row, 'td'))
+        return table
+
+    def make_null(self, tag, pargs, kwargs, content):
+        element = Element('null')
+        element.children = BlockParser().parse(content)
+        classes = kwargs.get('class', '').split()
+        for child in element:
+            attrs = kwargs.copy()
+            attrs.update(child.attrs)
+            child.attrs = attrs
+            for cssclass in classes:
+                child.add_class(cssclass)
+        return element
+
+    def make_comment(self, tag, pargs, kwargs, content):
+        element = Element('comment')
+        element.append(Text(strip(content)))
+        return element
+
+
+class BlockParser:
+
+    """ Parses a string and returns a list of block elements.
+
+    A BlockParser object can be initialized with a list of block processors
+    to use in parsing the string. The 'skipline' processor will be 
+    automatically appended to the end of the list to skip over lines
+    that cannot be matched by any of the other specified processors.
+
+    Adjacent text elements are automatically merged.
+
+    """
+
+    blockprocessors = collections.OrderedDict()
+    blockprocessors['empty'] = EmptyLineProcessor()
+    blockprocessors['block'] = GenericBlockProcessor()
+    blockprocessors['h1'] = H1Processor()
+    blockprocessors['h2'] = H2Processor()
+    blockprocessors['code'] = CodeProcessor()
+    blockprocessors['ul'] = UListProcessor()
+    blockprocessors['ol'] = OListProcessor()
+    blockprocessors['heading'] = HeadingProcessor()
+    blockprocessors['paragraph'] = ParagraphProcessor()
+    blockprocessors['skipline'] = SkipLineProcessor()
+    blockprocessors['text'] = TextProcessor()
+
+    def __init__(self, *pargs):
+        if pargs:
+            self.processors = [self.blockprocessors[arg] for arg in pargs]
+            self.processors.append(self.blockprocessors['skipline'])
+        else:
+            self.processors = list(self.blockprocessors.values())
+
+    def parse(self, text):
+        pos = 0
+        elements = []
+        if not text.endswith('\n'):
+            text += '\n'
+        while pos < len(text):
+            for processor in self.processors:
+                match, element, pos = processor(text, pos)
+                if match:
+                    if element:
+                        if element.tag == 'text' and elements and \
+                            elements[-1].tag == 'text':
+                            elements[-1].text += element.text
+                        else:
+                            elements.append(element)
+                    break
+        return elements
+
+
+###############################################################################
+# Renderers
+###############################################################################
+
+
+class BaseHtmlRenderer:
+
+    """ Common base class for both the HTML and Markdown renderers.
+
+    The constructor accepts optional dictionaries of link references and
+    insertable elements to use while rendering the element tree.
+
+    """
+
+    # =====================
+    # Inline Markup Regexes
+    # =====================
+
+    # **foo bar**
+    re_strong = re.compile(r"\*{2}(\S.*?\S)\*{2}")
+
+    # *foo bar*
+    re_emphasis = re.compile(r"\*(\S.*?\S)\*")
+
+    # `foo bar`
+    re_backticks = re.compile(r"`(.+?)`")
+
+    # [link text](url "title")
+    re_link = re.compile(r"""\[([^\]]+)\]\((\S+)(?:[ ]+"([^"]*)")?\)""")
+
+    # [link text][ref]
+    re_ref_link = re.compile(r"\[([^\]]+)\]\[([^\]]*)\]")
+
+    # ![alt text](url "title")
+    re_img = re.compile(r"""!\[([^\]]*)\]\((\S+)(?:[ ]+"([^"]*)")?\)""")
+
+    # ![alt text][ref]
+    re_ref_img = re.compile(r"!\[([^\]]*)\]\[([^\]]*)\]")
+
+    # [^ref] or [^]
+    re_footnote = re.compile(r"\[\^([^\]]*)\]")
+
+    # &amp; &#x27;
+    re_entity = re.compile(r"&[#a-zA-Z0-9]+;")
+
+    # <span>, </span>, <!-- comment -->
+    re_html = re.compile(r"<([a-zA-Z/][^>]*?|!--.*?--)>")
+
+    # <http://example.com>
+    re_bracketed_url = re.compile(r"<((?:https?|ftp)://[^>]+)>")
+
+    # http://example.com
+    re_bare_url = re.compile(r"""
+        (^|\s)
+        (https?|ftp)
+        (://[-A-Z0-9+&@#/%?=~_|\[\]\(\)!:,\.;]*[-A-Z0-9+&@#/%=~_|\[\]])
+        ($|\W)
+        """, re.VERBOSE | re.MULTILINE | re.IGNORECASE)
+
+    # Set this flag to true to convert newlines to <br> tags by default.
+    nl2br = False
+
+    def __init__(self, link_refs=None, inserts=None):
+        self.link_refs = link_refs or {}
+        self.inserts = inserts or {}
+        self.hashes = {}
+        self.footnote_index = 1
+        self.context = ['nl2br' if self.nl2br else '']
+
+    def render(self, element):
+        rendered = self._render(element)
+        for key, value in self.hashes.items():
+            rendered = rendered.replace(key, value)
+        for key, value in ESCMAP.items():
+            rendered = rendered.replace(key, value)
+        if self.link_refs:
+            rendered += self._render_link_refs()
+        return strip(rendered)
+
+    def _render(self, element):
+        # Subclasses override this method to handle block-level elements.
+        return ''
+
+    def _hash(self, text):
+        digest = hashlib.sha1(text.encode()).hexdigest()
+        self.hashes[digest] = text
+        return digest
+
+    def _do_inline_html(self, text):
+        return self.re_html.sub(lambda m: self._hash(m.group()), text)
+
+    def _do_inline_entities(self, text):
+        return self.re_entity.sub(lambda m: self._hash(m.group()), text)
+
+    def _do_inline_backticks(self, text):
+        return self.re_backticks.sub(self._backticks_callback, text)
+
+    def _backticks_callback(self, match):
+        return self._hash('<code>%s</code>' % esc(match.group(1), False))
+
+    def _do_inline_strong(self, text):
+        return self.re_strong.sub(r"<strong>\1</strong>", text)
+
+    def _do_inline_emphasis(self, text):
+        return self.re_emphasis.sub(r"<em>\1</em>", text)
+
+    def _do_inline_images(self, text):
+        return self.re_img.sub(self._image_callback, text)
+
+    def _image_callback(self, match):
+        alt = esc(match.group(1))
+        url = match.group(2)
+        title = esc(match.group(3) or '')
+        if title:
+            return r'<img src="%s" alt="%s" title="%s"/>' % (url, alt, title)
+        else:
+            return r'<img src="%s" alt="%s"/>' % (url, alt)
+
+    def _do_inline_links(self, text):
+        return self.re_link.sub(self._link_callback, text)
+
+    def _link_callback(self, match):
+        text = match.group(1)
+        url = match.group(2)
+        title = esc(match.group(3) or '')
+        if title:
+            return r'<a href="%s" title="%s">%s</a>' % (url, title, text)
+        else:
+            return r'<a href="%s">%s</a>' % (url, text)
+
+    def _do_inline_bracketed_urls(self, text):
+        return self.re_bracketed_url.sub(r'<a href="\1">\1</a>', text)
+
+    def _do_inline_bare_urls(self, text):
+        return self.re_bare_url.sub(r'\1<a href="\2\3">\2\3</a>\4', text)
+
+    def _do_inline_ref_links(self, text):
+        return self.re_ref_link.sub(self._ref_link_callback, text)
+
+    def _ref_link_callback(self, match):
+        text = match.group(1)
+        ref = match.group(2).lower() if match.group(2) else text.lower()
+        url, title = self.link_refs.get(ref, ('#', ''))
+        if title:
+            return '<a href="%s" title="%s">%s</a>' % (url, esc(title), text)
+        else:
+            return '<a href="%s">%s</a>' % (url, text)
+
+    def _do_inline_ref_images(self, text):
+        return self.re_ref_img.sub(self._ref_image_callback, text)
+
+    def _ref_image_callback(self, match):
+        alt = match.group(1)
+        ref = match.group(2).lower() if match.group(2) else alt.lower()
+        url, title = self.link_refs.get(ref, ('', ''))
+        if title:
+            return '<img src="%s" alt="%s" title="%s"/>' % (
+                url, esc(alt), esc(title)
+            )
+        else:
+            return '<img src="%s" alt="%s"/>' % (url, esc(alt))
+
+    def _do_inline_footnotes(self, text):
+        return self.re_footnote.sub(self._footnote_callback, text)
+
+    def _footnote_callback(self, match):
+        if match.group(1):
+            ref = match.group(1)
+        else:
+            ref = self.footnote_index
+            self.footnote_index += 1
+        return '<sup class="fn-ref"><a href="#fn-%s">%s</a></sup>' % (ref, ref)
+
+
+class HtmlRenderer(BaseHtmlRenderer):
+
+    """ Renders an Element tree as HTML.
+
+        html = HtmlRenderer(link_refs, inserts).render(element)
+
+    """
+
+    def _render(self, element):
+        method = '_render_%s' % element.tag
+        if hasattr(self, method):
+            return getattr(self, method)(element)
+        else:
+            return self._render_default(element)
+
+    def _render_default(self, element):
+        if element.tag in (
+            'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'th', 'td',
+        ):
+            html = [element.get_tag()]
+        else:
+            html = [element.get_tag(), '\n']
+        for child in element:
+            html.append(self._render(child))
+        html.append('</%s>\n' % element.tag)
+        return ''.join(html)
+
+    def _render_root(self, element):
+        return ''.join(self._render(child) for child in element)
+
+    def _render_null(self, element):
+        return ''.join(self._render(child) for child in element)
+
+    def _render_pre(self, element):
+        text = element.get_text()
+        if pygments and element.meta:
+            try:
+                lexer = pygments.lexers.get_lexer_by_name(element.meta)
+            except pygments.util.ClassNotFound:
+                try:
+                    lexer = pygments.lexers.guess_lexer(text)
+                except pygments.util.ClassNotFound:
+                    lexer = None
+            if lexer:
+                element.add_class('pygments')
+                formatter = pygments.formatters.HtmlFormatter(nowrap=True)
+                text = strip(pygments.highlight(text, lexer, formatter))
+            else:
+                text = esc(text, False)
+        else:
+            text = esc(text, False)
+        return ''.join([element.get_tag(), '\n', text, '\n</pre>\n'])
+
+    def _render_image(self, element):
+        if not 'alt' in element.attrs:
+            element.attrs['alt'] = esc(element.get_text())
+        return element.get_tag('img', close=True) + '\n'
+
+    def _render_insert(self, element):
+        if element.meta in self.inserts:
+            insert = self.inserts[element.meta]
+            insert.attrs.update(element.attrs)
+            return self._render(insert)
+        else:
+            return ''
+
+    def _render_footnotes(self, element):
+        html = [element.get_tag('dl'), '\n']
+        for fnote in element:
+            html.append('<dt id="fn-%s">%s</dt>\n' % (fnote.meta, fnote.meta))
+            html.append('<dd>\n')
+            for child in fnote:
+                html.append(self._render(child))
+            html.append('</dd>\n')
+        html.append('</dl>\n')
+        return ''.join(html)
+
+    def _render_raw(self, element):
+        return element.get_text() + '\n'
+
+    def _render_comment(self, element):
+        html = ['<!--\n']
+        html.append(indent(element.get_text()))
+        html.append('\n-->\n')
+        return ''.join(html)
+
+    def _render_nl2br(self, element):
+        self.context.append('nl2br')
+        html = ''.join(self._render(child) for child in element)
+        self.context.pop()
+        return html
+
+    def _render_text(self, element):
+        text = element.text
+        text = self._do_inline_backticks(text)
+        text = self._do_inline_bracketed_urls(text)
+        text = self._do_inline_html(text)
+        text = self._do_inline_entities(text)
+        text = esc(text, False)
+        text = self._do_inline_strong(text)
+        text = self._do_inline_emphasis(text)
+        text = self._do_inline_images(text)
+        text = self._do_inline_ref_images(text)
+        text = self._do_inline_links(text)
+        text = self._do_inline_ref_links(text)
+        text = self._do_inline_footnotes(text)
+        text = self._do_inline_bare_urls(text)
+        text = text.rstrip('\n')
+        if 'nl2br' in self.context:
+            text = text.replace('\n', '<br>\n')
+        return text
+
+    def _render_link_refs(self):
+        return ''
+
+
+class MarkdownRenderer(BaseHtmlRenderer):
+
+    """ Makes a best-effort attempt at rendering an element tree as Markdown.
+
+        markdown = MarkdownRenderer(link_refs, inserts).render(element)
+
+    Footnotes and footnote references are rendered in HTML.
+
+    The table of contents cannot be rendered as we have no way of setting IDs 
+    on the document's headings.
+
+    Complex block-level markup is rendered in html unless it occurs
+    inside an indented block (i.e. inside a list), as markdown does not
+    support indented block-level html. 
+
+    """
+
+    def _render(self, element, depth=0):
+        method = '_render_%s' % element.tag
+        if hasattr(self, method):
+            return getattr(self, method)(element, depth)
+        elif element.tag in ('h1', 'h2', 'h3', 'h4', 'h5', 'h6'):
+            return self._render_heading(element, depth)
+        else:
+            return self._render_default(element, depth)
+
+    def _render_default(self, element, depth):
+        if depth == 0:
+            return HtmlRenderer().render(element) + '\n\n'
+        else:
+            error("cannot render indented '%s' block in markdown" % element.tag)
+            return ''
+
+    def _render_root(self, element, depth):
+        return ''.join(self._render(child, depth) for child in element)
+
+    def _render_null(self, element, depth):
+        return ''.join(self._render(child, depth) for child in element)
+
+    def _render_nl2br(self, element, depth):
+        self.context.append('nl2br')
+        md = ''.join(self._render(child, depth) for child in element)
+        self.context.pop()
+        return md
+
+    def _render_p(self, element, depth):
+        return ''.join(self._render(child, depth) for child in element) + '\n\n'
+
+    def _render_blockquote(self, element, depth):
+        md = ''.join(self._render(child) for child in element)
+        md = re.sub(r"^", "> ", strip(md), flags=re.MULTILINE)
+        return indent(md, depth * 4) + '\n\n'
+
+    def _render_heading(self, element, depth):
+        text = element.get_text().replace('\n', ' ')
+        text = '#' * int(element.tag[1]) + ' '  + text
+        text = indent(text, depth * 4)
+        return text + '\n\n'
+
+    def _render_pre(self, element, depth):
+        return indent(element.get_text(), (depth + 1) * 4) + '\n\n'
+
+    def _render_image(self, element, depth):
+        if not 'alt' in element.attrs:
+            element.attrs['alt'] = esc(element.get_text()).replace('\n', ' ')
+        md = '![%(alt)s](%(src)s)\n\n' % element.attrs
+        return indent(md, depth * 4)
+
+    def _render_raw(self, element, depth):
+        if depth == 0:
+            return element.get_text() + '\n\n'
+        else:
+            error("cannot render indented 'raw' block in markdown")
+            return ''
+
+    def _render_ul(self, element, depth):
+        md = []
+        for li in element:
+            rendered = self._render(li, 1)
+            rendered = ' *  ' + rendered[4:]
+            rendered = indent(rendered, depth * 4)
+            md.append(rendered)
+        if element.meta == 'sparse':
+            if self.context[-1] != 'sparse':
+                md.append('\n')
+        return ''.join(md)
+
+    def _render_ol(self, element, depth):
+        md = []
+        for i, li in enumerate(element):
+            rendered = self._render(li, 1)
+            rendered = ' %s. ' % (i + 1) + rendered[4:]
+            rendered = indent(rendered, depth * 4)
+            md.append(rendered)
+        if element.meta == 'sparse':
+            if self.context[-1] != 'sparse':
+                md.append('\n')
+        return ''.join(md)
+
+    def _render_li(self, element, depth):
+        if element.meta == 'sparse':
+            self.context.append('sparse')
+        md = []
+        for child in element:
+            item = self._render(child, depth)
+            if not item.endswith('\n'):
+                item += '\n'
+            md.append(item)
+        if element.meta == 'sparse':
+            self.context.pop()
+        return ''.join(md)
+
+    def _render_insert(self, element, depth):
+        if element.meta in ('toc', 'xtoc'):
+            error("cannot render table of contents in markdown")
+            return ''
+        elif element.meta in self.inserts:
+            insert = self.inserts[element.meta]
+            insert.attrs.update(element.attrs)
+            return self._render(insert, depth)
+        else:
+            return ''
+
+    def _render_text(self, element, depth):
+        text = element.text
+        text = self._do_inline_footnotes(text)
+        text = text.rstrip('\n')
+        if 'nl2br' in self.context:
+            text = text.replace('\n', '  \n')
+        return indent(text, depth * 4)
+
+    def _render_link_refs(self):
+        refs = []
+        for ref, data in self.link_refs.items():
+            if data[1]:
+                refs.append('[%s]: %s "%s"' % (ref, data[0], data[1]))
+            else:
+                refs.append('[%s]: %s' % (ref, data[0]))
+        return '\n'.join(refs)
+
+
+###############################################################################
+# Table of Contents Builder
+###############################################################################
+
+
+class TOCBuilder:
+
+    """ Table of Contents Builder
+
+    Processes a tree of block elements to produce a table of contents
+    with links to each heading in the document. Note that this process 
+    modifies the tree in place by adding an automatically generated ID 
+    to any heading element that lacks one.
+
+    The table is returned as an Element tree representing an unordered
+    list with nested sublists.
+
+        toc = TOCBuilder(doctree).toc()
+
+    """
+
+    def __init__(self, tree):
+        self.renderer = HtmlRenderer()
+        self.root = dict(level=0, text='ROOT', id='', subs=[])
+        self.stack = [self.root]
+        self.ids = []
+        self._process_element(tree)
+
+    def _process_element(self, element):
+        if element.tag in ('h1', 'h2', 'h3', 'h4', 'h5', 'h6'):
+            node = self._make_heading_node(element)
+            while node['level'] <= self.stack[-1]['level']:
+                self.stack.pop()
+            self.stack[-1]['subs'].append(node)
+            self.stack.append(node)
+        else:
+            for child in element:
+                self._process_element(child)
+
+    def _make_heading_node(self, element):
+        level = int(element.tag[1])
+        html = self.renderer.render(element)
+        text = strip_tags(html)
+        if 'id' in element.attrs:
+            id = element.attrs['id']
+        else:
+            index = 2
+            slug = slugify(text)
+            id = slug
+            while id in self.ids:
+                id = '%s-%s' % (slug, index)
+                index += 1
+            element.attrs['id'] = id
+        self.ids.append(id)
+        return dict(level=level, text=text, id=id, subs=[])
+
+    def xtoc(self):
+        ul = Element('ul', {'class': 'toc'}, meta='sparse')
+        for node in self.root['subs']:
+            ul.append(self._make_li_element(node))
+        return ul
+
+    def toc(self):
+        ul = Element('ul', {'class': 'toc'}, meta='sparse')
+        for node in self.root['subs']:
+            if node['level'] == 1:
+                for subnode in node['subs']:
+                    ul.append(self._make_li_element(subnode))
+            else:
+                ul.append(self._make_li_element(node))
+        return ul
+
+    def _make_li_element(self, node):
+        li = Element('li', meta='sparse')
+        li.append(Text('[%s](#%s)' % (node['text'], node['id'])))
+        if node['subs']:
+            ul = li.append(Element('ul', meta='sparse'))
+            for child in node['subs']:
+                ul.append(self._make_li_element(child))
+        return li
+
+    def hlist(self):
+        return self.root['subs']
+
+
+###############################################################################
+# Utility Functions 
+###############################################################################
+
+
+html_escapes = {
+    ord('&'): '&amp;',
+    ord('<'): '&lt;', 
+    ord('>'): '&gt;',
+}
+
+attr_escapes = {
+    ord('&'): '&amp;',
+    ord('<'): '&lt;', 
+    ord('>'): '&gt;',
+    ord('"'): '&quot;',
+    ord("'"): '&#39;',
+}
+
+
+def esc(text, quotes=True):
+    """ Convert html syntax characters to character entities. """
+    if quotes:
+        return text.translate(attr_escapes)
+    else:
+        return text.translate(html_escapes)
+
+
+def dedent(text, n=4):
+    """ Dedent every line in `text` by `n` spaces. """
+    regex = r"^[ ]{%s}|(?<=%s)[ ]{%s}" % (n, ESCNL, n)
+    return re.sub(regex, "", text, flags=re.MULTILINE)
+
+
+def indent(text, n=4):
+    """ Indent every non-empty line in `text` by `n` spaces. """
+    regex = r"(^|(?<=%s))(?=\s*\S.*$)" % ESCNL
+    return re.sub(regex, " " * n, text, flags=re.MULTILINE)
+
+
+def strip(text):
+    """ Strip leading blank lines and all trailing whitespace. """
+    text = re.sub(r"^([ ]*\n)*", "", text)
+    return text.rstrip()
+
+
+def strip_tags(text):
+    """ Strip all angle-bracket-enclosed substrings from `text`. """ 
+    return re.sub(r'<[^>]*>', '', text)
+
+
+def slugify(s):
+    """ Return a slugified version of the string `s`. """
+    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore')
+    s = s.decode('ascii')
+    s = s.lower()
+    s = re.sub(r'[^a-z0-9-]+', '-', s)
+    s = re.sub(r'--+', '-', s)
+    return s.strip('-')
+
+
+def error(msg):
+    """ Print an error message to stderr. """
+    sys.stderr.write('error: ' + msg + '\n')
+
+
+###############################################################################
+# Preprocessors 
+###############################################################################
+
+
+def preprocess(text):
+    """ Prepare input text for parsing into an element tree.
+
+    * Convert all line endings to newlines.
+    * Convert all tabs to spaces.
+    * Extract document meta data.
+    * Escape backslashed characters.
+    * Extract footnotes.
+    * Extract link references.
+
+    """
+    text = re.sub(r"\r\n|\r", r"\n", text)
+    text = text.expandtabs(4)
+    text, meta = extract_meta(text)
+    text = escape_backslashes(text)
+    text, footnotes = extract_footnotes(text)
+    text, link_refs = extract_link_references(text)
+    return text, meta, link_refs, footnotes
+
+
+def extract_meta(text):
+    """ Extract document meta and parse it as yaml. """
+    meta = {}
+    match = re.match(r"---\n(.*?\n)(---|...)\n", text, re.DOTALL)
+    if match:
+        text = text[match.end(0):]
+        if yaml:
+            yaml_meta = yaml.load(match.group(1))
+            if isinstance(yaml_meta, dict):
+                meta = yaml_meta
+    return text, meta
+
+
+def escape_backslashes(text):
+    """ Replace backslashed characters with placeholder strings. """
+    
+    def callback(match):
+        char = match.group(1)
+        if char in CHARS:
+            return 'esc%s%s%s' % (STX, ord(char), ETX)
+        else:
+            return match.group(0)
+
+    return re.sub(r"\\(.)", callback, text, flags=re.DOTALL)
+
+
+def extract_footnotes(text):
+    """ Extract footnotes of the form: 
+
+        [^ref]: line 1
+            line 2
+            ...
+
+    The entire footnote block can be indented by any multiple of 4 spaces.
+
+    """
+    footnotes = Element('footnotes', {'class': 'footnotes'})
+    index = 1
+    if not text.endswith('\n'):
+        text += '\n'
+
+    def callback(match):
+        ref = match.group('ref')
+        if not ref:
+            nonlocal index
+            ref = str(index)
+            index += 1
+        note_text = match.group('line1').lstrip(' ')
+        if match.group('body'):
+            indent = len(match.group(1)) + 4
+            note_text += dedent(match.group('body'), indent)
+        footnote = footnotes.append(Element('footnote'))
+        footnote.meta = ref
+        footnote.children = BlockParser().parse(note_text)
+        return ''
+
+    text = re.sub(
+        r"""
+        ^(?P<indent>([ ]{4})*)\[\^(?P<ref>[^\]]*)\][:](?P<line1>[^\n]*\n)
+        (?P<body>(
+            (^(?P=indent)[ ]{4}[ ]*[^ \n]+.*\n)
+            |
+            (^[ ]*\n)
+        )*)
+        """,
+        callback,
+        text,
+        flags = re.MULTILINE | re.VERBOSE
+    )
+
+    return text, footnotes
+
+
+def extract_link_references(text):
+    """ Extract link references of the form:
+
+        [ref]: http://example.com "optional title"
+
+     """
+    refs = {}
+    if not text.endswith('\n'):
+        text += '\n'
+
+    def callback(match):
+        ref = match.group('ref').lower()
+        url = match.group('url')
+        title = match.group('title') or ''
+        refs[ref] = (url, title)
+        return ''
+
+    text = re.sub(
+        r"""
+            ^([ ]{4})*
+                \[(?P<ref>[^\]]+)\][:]
+                    [ ]*(?P<url>\S+)
+                        (?:[ ]+"(?P<title>[^"]*)")?
+                            [ ]*\n
+        """, 
+        callback, 
+        text, 
+        flags = re.MULTILINE | re.VERBOSE
+    )
+    return text, refs
+
+
+###############################################################################
+# Private Interface 
+###############################################################################
+
+
+def parse(text):
+    text, meta, link_refs, footnotes = preprocess(text)
+    root = Element('root')
+    root.children = BlockParser().parse(text)
+    toc = TOCBuilder(root)
+    inserts = {
+        'footnotes': footnotes,
+        'toc': toc.toc(),
+        'xtoc': toc.xtoc(),
+    }
+    meta['__toc__'] = toc.hlist()
+    return root, meta, link_refs, inserts
+
+
+def render_html(text):
+    root, meta, link_refs, inserts = parse(text)
+    rendered = HtmlRenderer(link_refs, inserts).render(root)
+    return rendered, meta
+
+
+def render_markdown(text):
+    root, meta, link_refs, inserts = parse(text)
+    rendered = MarkdownRenderer(link_refs, inserts).render(root)
+    return rendered, meta
+
+
+def render_debug(text):
+
+    def heading(title, w=80):
+        return '=' * w + '\n' + title.center(w, '-') + '\n' +  '=' * w + '\n'
+
+    root, meta, link_refs, inserts = parse(text)
+    output = [heading(' Meta ')]
+    output.append(pprint.pformat(meta))
+    output.append('\n\n' + heading(' Tree '))
+    output.append(str(root))
+    output.append('\n' + heading(' HTML '))
+    output.append(HtmlRenderer(link_refs, inserts).render(root))
+    output.append('\n\n' + heading(' Markdown '))
+    output.append(MarkdownRenderer(link_refs, inserts).render(root))
+    return ''.join(output), meta
+
+
+###############################################################################
+# Public Interface
+###############################################################################
+
+
+def render(text, format='html'):
+    if format in ('markdown', 'm'):
+        rendered, meta = render_markdown(text)
+    elif format in ('debug', 'd'):
+        rendered, meta = render_debug(text)
+    else:
+        rendered, meta = render_html(text)
+    return rendered, meta
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-V', '--version',
+        action="version", 
+        version=__version__,
+    )
+    parser.add_argument('-f',
+        help="output format: html, markdown, debug (default: html)",
+        default='html',
+        dest='format',
+    )
+    args = parser.parse_args()
+    text = sys.stdin.read()
+    rendered, meta = render(text, args.format)
+    sys.stdout.write(rendered + '\n')
+
+if __name__ == '__main__':
+    main()

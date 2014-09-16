@@ -1,0 +1,10 @@
+:null .class1 .class2
+    * foo
+    * bar
+
+:<< .class1 .class2
+    === title ===
+
+:<< .class1
+    :div .class2 #divid
+        lorem ipsum dolor sit amet

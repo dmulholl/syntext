@@ -1,0 +1,11 @@
+:nl2br
+    foo
+    bar
+
+    baz
+
+:||
+    foo
+    bar
+
+    baz
