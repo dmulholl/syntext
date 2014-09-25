@@ -52,3 +52,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Development scratch files
+notes.txt
+sample.txt
