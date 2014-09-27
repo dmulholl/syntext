@@ -15,7 +15,7 @@ License: This work has been placed in the public domain.
 
 """
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 
 import sys
@@ -27,14 +27,14 @@ import argparse
 import pprint
 
 
-# Parse document metadata with the yaml module if it's available.
+# We parse document metadata with the yaml module if it's available.
 try:
     import yaml
 except ImportError:
     yaml = None
 
 
-# Use the pygments module for syntax highlighting if it's available.
+# We use the pygments module for syntax highlighting if it's available.
 try:
     import pygments
     import pygments.lexers
@@ -43,13 +43,16 @@ except ImportError:
     pygments = None
 
 
+# The following characters can be escaped with a backslash.
+ESCCHARS = '\\*:`[]#=-!().•\n'
+
+
 # Placeholders to substitute for escaped characters during preprocessing.
 STX = '\x02'
 ETX = '\x03'
-CHARS = '\\*:`[]#=-!().•\n'
 ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
 ESCNL = 'esc%s%s%s' % (STX, ord('\n'), ETX)
-ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in CHARS}
+ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
 ###############################################################################
@@ -79,10 +82,12 @@ class Element:
         output = "·  " * depth + self.get_tag()
         if self.text:
             text = repr(self.text)
-            if len(text) < 28:
+            if len(text) < 40:
                 output += " " + text
             else:
-                output += " " + text[:12] + "..." + text[-12:]
+                output += " " + text[:18] + "..." + text[-18:]
+        if self.meta:
+            output += " meta=" + repr(self.meta)
         output += '\n'
         for child in self.children:
             output += child.repr(depth + 1)
@@ -172,9 +177,9 @@ class H1Processor:
     """
 
     regex = re.compile(r"""
-        (?:^===+[ ]*\n)?
+        (?:^=+[ ]*\n)?
         ^(.+)\n
-        ^===+[ ]*\n
+        ^=+[ ]*\n
         """, re.VERBOSE | re.MULTILINE)
 
     def __call__(self, text, pos):
@@ -199,9 +204,9 @@ class H2Processor:
     """
 
     regex = re.compile(r"""
-        (?:^---+[ ]*\n)?
+        (?:^-+[ ]*\n)?
         ^(.+)\n
-        ^---+[ ]*\n
+        ^-+[ ]*\n
         """, re.VERBOSE | re.MULTILINE)
 
     def __call__(self, text, pos):
@@ -218,6 +223,8 @@ class HeadingProcessor:
     """ Arbitrary level heading of the form:
 
         === Heading ===
+    or 
+        ### Heading ###
 
     The number of leading '=' specifies the heading level.
     Trailing '=' are optional.
@@ -225,7 +232,6 @@ class HeadingProcessor:
     """
 
     regex = re.compile(r"^([=#]{1,6})(.+?)[=#]*\n", re.MULTILINE)
-
 
     def __call__(self, text, pos):
         match = self.regex.match(text, pos)
@@ -265,7 +271,7 @@ class SkipLineProcessor:
 
 class TextProcessor:
 
-    """ A single line of text. """
+    """ A single non-empty line of text. """
 
     regex = re.compile(r"^[ ]*[^ \n]+.*\n", re.MULTILINE)
 
@@ -306,7 +312,7 @@ class UListProcessor:
             meta = 'block'
             processors = ()
         else:
-            meta = 'sparse'
+            meta = 'simple'
             processors = ('empty', 'ul', 'ol', 'text')
         ul = Element('ul', meta=meta)
         for item_match in self.re_item.finditer(list_match.group(0)):
@@ -349,7 +355,7 @@ class OListProcessor:
             meta = 'block'
             processors = ()
         else:
-            meta = 'sparse'
+            meta = 'simple'
             processors = ('empty', 'ul', 'ol', 'text')
         if first_item_match.group(1) in ('#', '1'):
             ol = Element('ol', meta=meta)
@@ -369,10 +375,10 @@ class GenericBlockProcessor:
     """ A generic block of the form:
 
         :tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar"]
-            first line
-            second line
+            block content
+            block content
 
-            more lines
+            block content
             ...
 
     The block's content consists of all consecutive blank or indented lines
@@ -590,7 +596,7 @@ class BlockParser:
 
     """ Parses a string and returns a list of block elements.
 
-    A BlockParser object can be initialized with a list of block processors
+    A BlockParser object can be initialized with a list of processors
     to use in parsing the string. The 'skipline' processor will be 
     automatically appended to the end of the list to skip over lines
     that cannot be matched by any of the other specified processors.
@@ -599,25 +605,25 @@ class BlockParser:
 
     """
 
-    blockprocessors = collections.OrderedDict()
-    blockprocessors['empty'] = EmptyLineProcessor()
-    blockprocessors['block'] = GenericBlockProcessor()
-    blockprocessors['h1'] = H1Processor()
-    blockprocessors['h2'] = H2Processor()
-    blockprocessors['code'] = CodeProcessor()
-    blockprocessors['ul'] = UListProcessor()
-    blockprocessors['ol'] = OListProcessor()
-    blockprocessors['heading'] = HeadingProcessor()
-    blockprocessors['paragraph'] = ParagraphProcessor()
-    blockprocessors['skipline'] = SkipLineProcessor()
-    blockprocessors['text'] = TextProcessor()
+    processor_map = collections.OrderedDict()
+    processor_map['empty'] = EmptyLineProcessor()
+    processor_map['block'] = GenericBlockProcessor()
+    processor_map['h1'] = H1Processor()
+    processor_map['h2'] = H2Processor()
+    processor_map['code'] = CodeProcessor()
+    processor_map['ul'] = UListProcessor()
+    processor_map['ol'] = OListProcessor()
+    processor_map['heading'] = HeadingProcessor()
+    processor_map['paragraph'] = ParagraphProcessor()
+    processor_map['skipline'] = SkipLineProcessor()
+    processor_map['text'] = TextProcessor()
 
     def __init__(self, *pargs):
         if pargs:
-            self.processors = [self.blockprocessors[arg] for arg in pargs]
-            self.processors.append(self.blockprocessors['skipline'])
+            self.processors = [self.processor_map[arg] for arg in pargs]
+            self.processors.append(self.processor_map['skipline'])
         else:
-            self.processors = list(self.blockprocessors.values())
+            self.processors = list(self.processor_map.values())
 
     def parse(self, text):
         pos = 0
@@ -683,7 +689,7 @@ class BaseHtmlRenderer:
     # &amp; &#x27;
     re_entity = re.compile(r"&[#a-zA-Z0-9]+;")
 
-    # <span>, </span>, <!-- comment -->
+    # html tags: <span>, </span>, <!-- comment -->, etc.
     re_html = re.compile(r"<([a-zA-Z/][^>]*?|!--.*?--)>")
 
     # <http://example.com>
@@ -744,6 +750,12 @@ class BaseHtmlRenderer:
     def _do_inline_emphasis(self, text):
         return self.re_emphasis.sub(r"<em>\1</em>", text)
 
+    def _do_inline_bracketed_urls(self, text):
+        return self.re_bracketed_url.sub(r'<a href="\1">\1</a>', text)
+
+    def _do_inline_bare_urls(self, text):
+        return self.re_bare_url.sub(r'\1<a href="\2\3">\2\3</a>\4', text)
+
     def _do_inline_images(self, text):
         return self.re_img.sub(self._image_callback, text)
 
@@ -755,36 +767,6 @@ class BaseHtmlRenderer:
             return r'<img src="%s" alt="%s" title="%s"/>' % (url, alt, title)
         else:
             return r'<img src="%s" alt="%s"/>' % (url, alt)
-
-    def _do_inline_links(self, text):
-        return self.re_link.sub(self._link_callback, text)
-
-    def _link_callback(self, match):
-        text = match.group(1)
-        url = match.group(2)
-        title = esc(match.group(3) or '')
-        if title:
-            return r'<a href="%s" title="%s">%s</a>' % (url, title, text)
-        else:
-            return r'<a href="%s">%s</a>' % (url, text)
-
-    def _do_inline_bracketed_urls(self, text):
-        return self.re_bracketed_url.sub(r'<a href="\1">\1</a>', text)
-
-    def _do_inline_bare_urls(self, text):
-        return self.re_bare_url.sub(r'\1<a href="\2\3">\2\3</a>\4', text)
-
-    def _do_inline_ref_links(self, text):
-        return self.re_ref_link.sub(self._ref_link_callback, text)
-
-    def _ref_link_callback(self, match):
-        text = match.group(1)
-        ref = match.group(2).lower() if match.group(2) else text.lower()
-        url, title = self.link_refs.get(ref, ('#', ''))
-        if title:
-            return '<a href="%s" title="%s">%s</a>' % (url, esc(title), text)
-        else:
-            return '<a href="%s">%s</a>' % (url, text)
 
     def _do_inline_ref_images(self, text):
         return self.re_ref_img.sub(self._ref_image_callback, text)
@@ -799,6 +781,30 @@ class BaseHtmlRenderer:
             )
         else:
             return '<img src="%s" alt="%s"/>' % (url, esc(alt))
+
+    def _do_inline_links(self, text):
+        return self.re_link.sub(self._link_callback, text)
+
+    def _link_callback(self, match):
+        text = match.group(1)
+        url = match.group(2)
+        title = esc(match.group(3) or '')
+        if title:
+            return r'<a href="%s" title="%s">%s</a>' % (url, title, text)
+        else:
+            return r'<a href="%s">%s</a>' % (url, text)
+
+    def _do_inline_ref_links(self, text):
+        return self.re_ref_link.sub(self._ref_link_callback, text)
+
+    def _ref_link_callback(self, match):
+        text = match.group(1)
+        ref = match.group(2).lower() if match.group(2) else text.lower()
+        url, title = self.link_refs.get(ref, ('#', ''))
+        if title:
+            return '<a href="%s" title="%s">%s</a>' % (url, esc(title), text)
+        else:
+            return '<a href="%s">%s</a>' % (url, text)
 
     def _do_inline_footnotes(self, text):
         return self.re_footnote.sub(self._footnote_callback, text)
@@ -930,7 +936,7 @@ class HtmlRenderer(BaseHtmlRenderer):
 
 class MarkdownRenderer(BaseHtmlRenderer):
 
-    """ Makes a best-effort attempt at rendering an element tree as Markdown.
+    """ Makes a best-effort attempt at rendering an Element tree as Markdown.
 
         markdown = MarkdownRenderer(link_refs, inserts).render(element)
 
@@ -1010,8 +1016,8 @@ class MarkdownRenderer(BaseHtmlRenderer):
             rendered = ' *  ' + rendered[4:]
             rendered = indent(rendered, depth * 4)
             md.append(rendered)
-        if element.meta == 'sparse':
-            if self.context[-1] != 'sparse':
+        if element.meta == 'simple':
+            if self.context[-1] != 'simple':
                 md.append('\n')
         return ''.join(md)
 
@@ -1022,26 +1028,26 @@ class MarkdownRenderer(BaseHtmlRenderer):
             rendered = ' %s. ' % (i + 1) + rendered[4:]
             rendered = indent(rendered, depth * 4)
             md.append(rendered)
-        if element.meta == 'sparse':
-            if self.context[-1] != 'sparse':
+        if element.meta == 'simple':
+            if self.context[-1] != 'simple':
                 md.append('\n')
         return ''.join(md)
 
     def _render_li(self, element, depth):
-        if element.meta == 'sparse':
-            self.context.append('sparse')
+        if element.meta == 'simple':
+            self.context.append('simple')
         md = []
         for child in element:
             item = self._render(child, depth)
             if not item.endswith('\n'):
                 item += '\n'
             md.append(item)
-        if element.meta == 'sparse':
+        if element.meta == 'simple':
             self.context.pop()
         return ''.join(md)
 
     def _render_insert(self, element, depth):
-        if element.meta in ('toc', 'xtoc'):
+        if element.meta in ('toc', 'fulltoc'):
             error("cannot render table of contents in markdown")
             return ''
         elif element.meta in self.inserts:
@@ -1125,14 +1131,9 @@ class TOCBuilder:
         self.ids.append(id)
         return dict(level=level, text=text, id=id, subs=[])
 
-    def xtoc(self):
-        ul = Element('ul', {'class': 'toc'}, meta='sparse')
-        for node in self.root['subs']:
-            ul.append(self._make_li_element(node))
-        return ul
-
     def toc(self):
-        ul = Element('ul', {'class': 'toc'}, meta='sparse')
+        """ Skips over root-level H1 headings. """
+        ul = Element('ul', {'class': 'syntex-toc'}, meta='simple')
         for node in self.root['subs']:
             if node['level'] == 1:
                 for subnode in node['subs']:
@@ -1141,16 +1142,24 @@ class TOCBuilder:
                 ul.append(self._make_li_element(node))
         return ul
 
+    def fulltoc(self):
+        """ Includes root-level H1 headings. """
+        ul = Element('ul', {'class': 'syntex-toc'}, meta='simple')
+        for node in self.root['subs']:
+            ul.append(self._make_li_element(node))
+        return ul
+
     def _make_li_element(self, node):
-        li = Element('li', meta='sparse')
+        li = Element('li', meta='simple')
         li.append(Text('[%s](#%s)' % (node['text'], node['id'])))
         if node['subs']:
-            ul = li.append(Element('ul', meta='sparse'))
+            ul = li.append(Element('ul', meta='simple'))
             for child in node['subs']:
                 ul.append(self._make_li_element(child))
         return li
 
-    def hlist(self):
+    def nodes(self):
+        """ Returns the full list of heading nodes. """
         return self.root['subs']
 
 
@@ -1183,13 +1192,13 @@ def esc(text, quotes=True):
 
 
 def dedent(text, n=4):
-    """ Dedent every line in `text` by `n` spaces. """
+    """ Dedent every line by `n` spaces. """
     regex = r"^[ ]{%s}|(?<=%s)[ ]{%s}" % (n, ESCNL, n)
     return re.sub(regex, "", text, flags=re.MULTILINE)
 
 
 def indent(text, n=4):
-    """ Indent every non-empty line in `text` by `n` spaces. """
+    """ Indent every non-empty line by `n` spaces. """
     regex = r"(^|(?<=%s))(?=\s*\S.*$)" % ESCNL
     return re.sub(regex, " " * n, text, flags=re.MULTILINE)
 
@@ -1201,7 +1210,7 @@ def strip(text):
 
 
 def strip_tags(text):
-    """ Strip all angle-bracket-enclosed substrings from `text`. """ 
+    """ Strip all angle-bracket-enclosed substrings. """ 
     return re.sub(r'<[^>]*>', '', text)
 
 
@@ -1263,7 +1272,7 @@ def escape_backslashes(text):
     
     def callback(match):
         char = match.group(1)
-        if char in CHARS:
+        if char in ESCCHARS:
             return 'esc%s%s%s' % (STX, ord(char), ETX)
         else:
             return match.group(0)
@@ -1363,9 +1372,9 @@ def parse(text):
     inserts = {
         'footnotes': footnotes,
         'toc': toc.toc(),
-        'xtoc': toc.xtoc(),
+        'fulltoc': toc.fulltoc(),
     }
-    meta['__toc__'] = toc.hlist()
+    meta['[toc]'] = toc.nodes()
     return root, meta, link_refs, inserts
 
 
@@ -1420,7 +1429,7 @@ def main():
         version=__version__,
     )
     parser.add_argument('-f',
-        help="output format: html, markdown, debug (default: html)",
+        help="output format: html, markdown, or debug (default: html)",
         default='html',
         dest='format',
     )
@@ -1428,6 +1437,7 @@ def main():
     text = sys.stdin.read()
     rendered, meta = render(text, args.format)
     sys.stdout.write(rendered + '\n')
+
 
 if __name__ == '__main__':
     main()

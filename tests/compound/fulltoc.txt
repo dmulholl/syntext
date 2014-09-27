@@ -1,4 +1,4 @@
-:insert xtoc
+:insert fulltoc
 
 = H1 Header
 
