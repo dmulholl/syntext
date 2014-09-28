@@ -55,6 +55,10 @@ ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
 ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
+# Maps block tags to their associated handler functions.
+tagmap = {}
+
+
 ###############################################################################
 # Block Parser 
 ###############################################################################
@@ -382,10 +386,9 @@ class GenericBlockProcessor:
             ...
 
     The block's content consists of all consecutive blank or indented lines
-    following the block header.
-
-    Processing of block content depends on the tag. By default content is
-    processed recursively and can contain any block level structures.
+    following the block header. How this content is processed depends on
+    the tag; in the general case content is processed recursively and can
+    contain any block-level structures.
 
     """
 
@@ -411,26 +414,6 @@ class GenericBlockProcessor:
         (\S+)
         """, re.VERBOSE)
 
-    aliases = {
-        'h1': 'h',
-        'h2': 'h',
-        'h3': 'h',
-        'h4': 'h',
-        'h5': 'h',
-        'h6': 'h',
-        '::': 'pre',
-        'code': 'pre',
-        'quote': 'blockquote',
-        '>>': 'blockquote',
-        ESCBS: 'raw',
-        '!!': 'alert',
-        'img': 'image',
-        '++': 'table',
-        '//': 'ignore',
-        '<<': 'null',
-        '||': 'nl2br',
-    }
-
     def __call__(self, text, pos):
         match = self.block_regex.match(text, pos)
         if not match:
@@ -441,12 +424,9 @@ class GenericBlockProcessor:
         args = match.group(2).strip() if match.group(2) else ''
         pargs, kwargs = self.parse_args(args)
 
-        if tag in self.aliases:
-            method = getattr(self, 'make_' + self.aliases[tag])
-            element = method(tag, pargs, kwargs, content)
-        elif hasattr(self, 'make_' + tag):
-            method = getattr(self, 'make_' + tag)
-            element = method(tag, pargs, kwargs, content)
+        # We delegate responsibility here to the registered tag handler.
+        if tag in tagmap:
+            element = tagmap[tag](tag, pargs, kwargs, content)
         else:
             element = None
 
@@ -481,115 +461,6 @@ class GenericBlockProcessor:
             kwargs['class'] = ' '.join(sorted(classes))
 
         return pargs, kwargs
-
-    def make_div(self, tag, pargs, kwargs, content):
-        element = Element('div', kwargs)
-        element.children = BlockParser().parse(content)
-        return element
-
-    def make_nl2br(self, tag, pargs, kwargs, content):
-        element = Element('nl2br', kwargs)
-        element.children = BlockParser().parse(content)
-        return element
-
-    def make_h(self, tag, pargs, kwargs, content):
-        element = Element(tag, kwargs)
-        element.append(Text(strip(content)))
-        return element
-
-    def make_pre(self, tag, pargs, kwargs, content):
-        element = Element('pre', kwargs)
-        element.append(Text(strip(content)))
-        if pargs:
-            element.meta = pargs[0]
-            element.attrs['data-lang'] = pargs[0]
-            element.add_class('lang-' + slugify(pargs[0]))
-        return element
-
-    def make_blockquote(self, tag, pargs, kwargs, content):
-        element = Element('blockquote', kwargs)
-        element.children = BlockParser().parse(content)
-        return element
-
-    def make_insert(self, tag, pargs, kwargs, content):
-        element = Element('insert', kwargs)
-        element.meta = pargs[0] if pargs else ''
-        return element
-
-    def make_image(self, tag, pargs, kwargs, content):
-        element = Element('image', kwargs)
-        element.append(Text(strip(content)))
-        element.attrs['src'] = pargs[0] if pargs else ''
-        return element
-
-    def make_raw(self, tag, pargs, kwargs, content):
-        element = Element('raw', kwargs)
-        element.append(Text(strip(content)))
-        return element
-
-    def make_alert(self, tag, pargs, kwargs, content):
-        element = Element('div', kwargs)
-        element.add_class('alert')
-        if pargs:
-            element.add_class(pargs[0])
-        element.children = BlockParser().parse(content)
-        return element
-
-    def make_ignore(self, tag, pargs, kwargs, content):
-        return None
-
-    def make_table(self, tag, pargs, kwargs, content):
-        lines = [line.strip(' |') for line in content.splitlines()]
-        lines = [line for line in lines if line]
-        if len(lines) < 3:
-            return None
-
-        head = [cell.strip() for cell in lines.pop(0).split('|')]
-        meta = [cell.strip() for cell in lines.pop(0).split('|')]
-        body = [[cell.strip() for cell in line.split('|')] for line in lines]
-
-        align = [None for cell in head]
-        for i, cell in enumerate(meta):
-            if cell.startswith(':') and cell.endswith(':'):
-                align[i] = 'align-center'
-            elif cell.startswith(':'):
-                align[i] = 'align-left'
-            elif cell.endswith(':'):
-                align[i] = 'align-right'
-
-        def make_row(cells, celltag):
-            tr = Element('tr')
-            for i, cell in enumerate(cells):
-                el = tr.append(Element(celltag))
-                if align[i]:
-                    el.add_class(align[i])
-                el.append(Text(cell))
-            return tr
-
-        table = Element('table', kwargs)
-        thead = table.append(Element('thead'))
-        tbody = table.append(Element('tbody'))
-        thead.append(make_row(head, 'th'))
-        for row in body:
-            tbody.append(make_row(row, 'td'))
-        return table
-
-    def make_null(self, tag, pargs, kwargs, content):
-        element = Element('null')
-        element.children = BlockParser().parse(content)
-        classes = kwargs.get('class', '').split()
-        for child in element:
-            attrs = kwargs.copy()
-            attrs.update(child.attrs)
-            child.attrs = attrs
-            for cssclass in classes:
-                child.add_class(cssclass)
-        return element
-
-    def make_comment(self, tag, pargs, kwargs, content):
-        element = Element('comment')
-        element.append(Text(strip(content)))
-        return element
 
 
 class BlockParser:
@@ -642,6 +513,162 @@ class BlockParser:
                             elements.append(element)
                     break
         return elements
+
+
+###############################################################################
+# Tag Handlers
+###############################################################################
+
+
+def register(*tags):
+
+    """ Decorator function for registering tag handlers. """
+
+    def register_tag_handler(func):
+        for tag in tags:
+            tagmap[tag] = func
+
+    return register_tag_handler
+
+
+@register('div')
+def div_handler(tag, pargs, kwargs, content):
+    element = Element('div', kwargs)
+    element.children = BlockParser().parse(content)
+    return element
+
+
+@register('h1', 'h2', 'h3', 'h4', 'h5', 'h6')
+def heading_handler(tag, pargs, kwargs, content):
+    element = Element(tag, kwargs)
+    element.append(Text(strip(content)))
+    return element
+
+
+@register('blockquote', 'quote', '>>')
+def blockquote_handler(tag, pargs, kwargs, content):
+    element = Element('blockquote', kwargs)
+    element.children = BlockParser().parse(content)
+    return element
+
+
+@register('code', 'pre', '::')
+def code_handler(tag, pargs, kwargs, content):
+    element = Element('pre', kwargs)
+    element.append(Text(strip(content)))
+    if pargs:
+        element.meta = pargs[0]
+        element.attrs['data-lang'] = pargs[0]
+        element.add_class('lang-' + pargs[0])
+    return element
+
+
+@register('nl2br', '||')
+def nl2lb_handler(tag, pargs, kwargs, content):
+    element = Element('nl2br')
+    element.children = BlockParser().parse(content)
+    return element
+
+
+@register('alert', '!!')
+def alertbox_handler(tag, pargs, kwargs, content):
+    element = Element('div', kwargs)
+    element.add_class('stx-alert')
+    if pargs:
+        for arg in pargs:
+            element.add_class('stx-%s' % arg)
+    element.children = BlockParser().parse(content)
+    return element
+
+
+@register('table', '++')
+def table_handler(tag, pargs, kwargs, content):
+    lines = [line.strip(' |') for line in content.splitlines()]
+    lines = [line for line in lines if line]
+    if len(lines) < 3:
+        return None
+
+    head = [cell.strip() for cell in lines.pop(0).split('|')]
+    meta = [cell.strip() for cell in lines.pop(0).split('|')]
+    body = [[cell.strip() for cell in line.split('|')] for line in lines]
+
+    align = [None for cell in head]
+    for i, cell in enumerate(meta):
+        if cell.startswith(':') and cell.endswith(':'):
+            align[i] = 'stx-align-center'
+        elif cell.startswith(':'):
+            align[i] = 'stx-align-left'
+        elif cell.endswith(':'):
+            align[i] = 'stx-align-right'
+
+    def make_row(cells, celltag):
+        tr = Element('tr')
+        for i, cell in enumerate(cells):
+            el = tr.append(Element(celltag))
+            if align[i]:
+                el.add_class(align[i])
+            el.append(Text(cell))
+        return tr
+
+    table = Element('table', kwargs)
+    thead = table.append(Element('thead'))
+    tbody = table.append(Element('tbody'))
+    thead.append(make_row(head, 'th'))
+    for row in body:
+        tbody.append(make_row(row, 'td'))
+    return table
+
+
+@register('raw', ESCBS)
+def raw_handler(tag, pargs, kwargs, content):
+    element = Element('raw', kwargs)
+    element.append(Text(strip(content)))
+    return element
+
+
+@register('image', 'img')
+def image_handler(tag, pargs, kwargs, content):
+    element = Element('image', kwargs)
+    if not 'src' in kwargs:
+        element.attrs['src'] = pargs[0] if pargs else ''
+    if not 'alt' in kwargs:
+        element.attrs['alt'] = esc(strip(content)).replace('\n', ' ')
+    return element
+
+
+@register('null', '<<')
+def null_handler(tag, pargs, kwargs, content):
+    element = Element('null')
+    element.children = BlockParser().parse(content)
+    classes = kwargs.get('class', '').split()
+    for child in element:
+        attrs = kwargs.copy()
+        attrs.update(child.attrs)
+        child.attrs = attrs
+        for cssclass in classes:
+            child.add_class(cssclass)
+    return element
+
+
+@register('insert')
+def insert_handler(tag, pargs, kwargs, content):
+    element = Element('insert', kwargs)
+    element.meta = pargs[0] if pargs else ''
+    return element
+
+
+# Not documented.
+@register('ignore', '//')
+def ignore_handler(tag, pargs, kwargs, content):
+    return None
+
+
+# Not documented.
+@register('comment')
+def html_comment_handler(tag, pargs, kwargs, content):
+    element = Element('comment')
+    element.append(Text(strip(content)))
+    return element
 
 
 ###############################################################################
@@ -862,7 +889,7 @@ class HtmlRenderer(BaseHtmlRenderer):
                 except pygments.util.ClassNotFound:
                     lexer = None
             if lexer:
-                element.add_class('pygments')
+                element.add_class('stx-pygments')
                 formatter = pygments.formatters.HtmlFormatter(nowrap=True)
                 text = strip(pygments.highlight(text, lexer, formatter))
             else:
@@ -872,8 +899,6 @@ class HtmlRenderer(BaseHtmlRenderer):
         return ''.join([element.get_tag(), '\n', text, '\n</pre>\n'])
 
     def _render_image(self, element):
-        if not 'alt' in element.attrs:
-            element.attrs['alt'] = esc(element.get_text())
         return element.get_tag('img', close=True) + '\n'
 
     def _render_insert(self, element):
@@ -997,8 +1022,6 @@ class MarkdownRenderer(BaseHtmlRenderer):
         return indent(element.get_text(), (depth + 1) * 4) + '\n\n'
 
     def _render_image(self, element, depth):
-        if not 'alt' in element.attrs:
-            element.attrs['alt'] = esc(element.get_text()).replace('\n', ' ')
         md = '![%(alt)s](%(src)s)\n\n' % element.attrs
         return indent(md, depth * 4)
 
@@ -1133,7 +1156,7 @@ class TOCBuilder:
 
     def toc(self):
         """ Skips over root-level H1 headings. """
-        ul = Element('ul', {'class': 'syntex-toc'}, meta='simple')
+        ul = Element('ul', {'class': 'stx-toc'}, meta='simple')
         for node in self.root['subs']:
             if node['level'] == 1:
                 for subnode in node['subs']:
@@ -1144,7 +1167,7 @@ class TOCBuilder:
 
     def fulltoc(self):
         """ Includes root-level H1 headings. """
-        ul = Element('ul', {'class': 'syntex-toc'}, meta='simple')
+        ul = Element('ul', {'class': 'stx-toc'}, meta='simple')
         for node in self.root['subs']:
             ul.append(self._make_li_element(node))
         return ul
