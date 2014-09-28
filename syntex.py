@@ -25,6 +25,7 @@ import hashlib
 import unicodedata
 import argparse
 import pprint
+import textwrap
 
 
 # We parse document metadata with the yaml module if it's available.
@@ -295,7 +296,7 @@ class UListProcessor:
         ((
             (^[ ]*\n)
             |
-            (^[ ]{4}.+\n)
+            (^[ ]+.+\n)
         )*)
     """
 
@@ -317,7 +318,7 @@ class UListProcessor:
         for item_match in self.re_item.finditer(list_match.group(0)):
             head = item_match.group(1).lstrip(' ')
             body = item_match.group(2)
-            content = dedent(head + body)
+            content = head + dedent(body)
             li = ul.append(Element('li', meta=meta))
             li.children = BlockParser(*processors).parse(content)
         return True, ul, list_match.end(0)
@@ -337,7 +338,7 @@ class OListProcessor:
         ((
             (^[ ]*\n)
             |
-            (^[ ]{4}.+\n)
+            (^[ ]+.+\n)
         )*)
     """
 
@@ -363,7 +364,7 @@ class OListProcessor:
         for item_match in self.re_item.finditer(list_match.group(0)):
             head = item_match.group(2).lstrip(' ')
             body = item_match.group(3)
-            content = dedent(head + body)
+            content = head + dedent(body)
             li = ol.append(Element('li', meta=meta))
             li.children = BlockParser(*processors).parse(content)
         return True, ol, list_match.end(0)
@@ -393,7 +394,7 @@ class GenericBlockProcessor:
         ((
             (^[ ]*\n)
             |
-            (^[ ]{4}.+\n)
+            (^[ ]+.+\n)
         )*)
         """, re.VERBOSE | re.MULTILINE)
 
@@ -1190,9 +1191,12 @@ def esc(text, quotes=True):
         return text.translate(html_escapes)
 
 
-def dedent(text, n=4):
-    """ Dedent every line by `n` spaces. """
-    return re.sub(r"^[ ]{%s}" % n, "", text, flags=re.MULTILINE)
+def dedent(text, n=None):
+    """ Dedent each line by `n` spaces or strip any common leading w'space. """
+    if n is None:
+        return textwrap.dedent(text)
+    else:
+        return re.sub(r"^[ ]{%s}" % n, "", text, flags=re.MULTILINE)
 
 
 def indent(text, n=4):
