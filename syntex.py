@@ -44,14 +44,13 @@ except ImportError:
 
 
 # The following characters can be escaped with a backslash.
-ESCCHARS = '\\*:`[]#=-!().•\n'
+ESCCHARS = '\\*:`[]#=-!().•'
 
 
 # Placeholders to substitute for escaped characters during preprocessing.
 STX = '\x02'
 ETX = '\x03'
 ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
-ESCNL = 'esc%s%s%s' % (STX, ord('\n'), ETX)
 ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
@@ -1193,14 +1192,12 @@ def esc(text, quotes=True):
 
 def dedent(text, n=4):
     """ Dedent every line by `n` spaces. """
-    regex = r"^[ ]{%s}|(?<=%s)[ ]{%s}" % (n, ESCNL, n)
-    return re.sub(regex, "", text, flags=re.MULTILINE)
+    return re.sub(r"^[ ]{%s}" % n, "", text, flags=re.MULTILINE)
 
 
 def indent(text, n=4):
     """ Indent every non-empty line by `n` spaces. """
-    regex = r"(^|(?<=%s))(?=\s*\S.*$)" % ESCNL
-    return re.sub(regex, " " * n, text, flags=re.MULTILINE)
+    return re.sub(r"^(?=\s*\S.*$)", " " * n, text, flags=re.MULTILINE)
 
 
 def strip(text):
