@@ -8,7 +8,7 @@ On the command line:
 
     $ syntex < input.txt > output.html
 
-As a python library:
+As a Python library:
 
     import syntex
     html, meta = syntex.render(text)
