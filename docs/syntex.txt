@@ -20,6 +20,7 @@ This implementation also supports cross-compiling Syntex documents into Markdown
 (Not all of Syntex's features can be translated into Markdown, so this capability should be used with care.)
 
 
+
 Block-level Syntax
 ------------------
 
@@ -237,6 +238,7 @@ Indicates that the block contains a simple table in one of the following formats
 The colons in the final table specify the alignment of their columns; cells in the first column receive the class `stx-align-left`, cells in the center column receive the class `stx-align-center`, and cells in the right column receive the class `stx-align-right`.
 
 
+
 Inline Syntax
 -------------
 
@@ -299,6 +301,7 @@ If the reference text is omitted from the image, the alt text will be used in it
 Syntex ignores HTML tags so it's fine to mix and match inline HTML and Syntex markup. Block-level HTML tags like `<div>` and `<p>` should be offset in a `:raw` block or Syntex will try to wrap them in paragraph tags in the output.
 
 The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or a character entity.
+
 
 
 Features
