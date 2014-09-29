@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """ 
-Plain text to HTML convertor.
+Syntex
+======
+
+A lightweight markup language for generating HTML.
 
 To use as a script:
     
@@ -28,14 +31,14 @@ import pprint
 import textwrap
 
 
-# We parse document metadata with the yaml module if it's available.
+# We parse document metadata with the PyYAML module if available.
 try:
     import yaml
 except ImportError:
     yaml = None
 
 
-# We use the pygments module for syntax highlighting if it's available.
+# We use the Pygments module for syntax highlighting if available.
 try:
     import pygments
     import pygments.lexers
@@ -55,7 +58,7 @@ ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
 ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
-# Maps block tags to their associated handler functions.
+# Map block tags to their associated handler functions.
 tagmap = {}
 
 
@@ -1314,7 +1317,7 @@ def extract_footnotes(text):
     The entire footnote block can be indented by any multiple of 4 spaces.
 
     """
-    footnotes = Element('footnotes', {'class': 'footnotes'})
+    footnotes = Element('footnotes', {'class': 'stx-footnotes'})
     index = 1
     if not text.endswith('\n'):
         text += '\n'
