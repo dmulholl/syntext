@@ -30,7 +30,7 @@ Syntex differs from Markdown in using an extensible, indentation-based syntax fo
 
         Block content goes here...
 
-It also includes support for document metadata, tables, tables-of-contents, syntax highlighting, and footnotes out of the box.
+It also includes out of the box support for document metadata, tables, tables-of-contents, syntax highlighting, and footnotes.
 
 
 Installation
@@ -44,7 +44,7 @@ Syntex can be installed directly from the Python Package Index using `pip`:
 Status
 ------
 
-Syntex is a work-in-progress and future releases may contain backwards-compatibility breaking changes.
+Syntex is a pre-1.0 work-in-progress. Future releases may contain backwards-compatibility breaking changes.
 
 
 Requirements
