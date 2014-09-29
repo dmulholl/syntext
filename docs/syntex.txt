@@ -1,0 +1,382 @@
+
+Syntex
+======
+
+Syntex is (yet another) lightweight markup language for generating HTML from plain text. It's implemented in Python 3 and can be used both as a command line script and as a Python library.
+
+When used on the command line Syntex reads from `stdin` and prints to `stdout`:
+
+    $ syntex < input.txt > output.html
+
+To use Syntex as a library module call its `render()` function with a string of text:
+
+    import syntex
+    html, meta = syntex.render(text)
+
+This implementation also supports cross-compiling Syntex documents into Markdown:
+
+    $ syntex -f markdown < input.txt > output.md
+
+(Not all of Syntex's features can be translated into Markdown, so this capability should be used with care.)
+
+
+Block-level Syntax
+------------------
+
+
+=== Paragraphs ===
+
+Paragraphs are separated by one or more blank lines:
+
+    This is a paragraph containing *emphasised* and **strong** text.
+    Adjacent lines of text are concatenated.
+
+    This is a second paragraph containing a `code sample` in backticks.
+
+
+=== H1 & H2 Headings ===
+
+H1 headings can be enclosed in equals signs `=`:
+
+    ==========
+    H1 Heading
+    ==========
+
+H2 headings can be enclosed in dashes `-`:
+
+    ----------
+    H2 Heading
+    ----------
+
+In each case the top line of symbols is optional.
+
+
+=== Arbitrary Level Headings ===
+
+Headings can also be indicated by prefacing their text with an appropriate number of equals signs `=` or hashes `#`:
+
+    === H3 Heading ===
+
+    ### H3 Heading ###
+
+The trailing symbols in the examples above are optional and can be omitted. 
+
+
+=== Simple Lists ===
+
+A simple list contains no blank lines. List items are not wrapped in paragraph tags in the HTML output.
+
+An unordered list uses either the star symbol `*` or the unicode bullet `•` symbol (`\u2022`) as its list item marker:
+
+    * foo          • foo
+    * bar          • bar
+    * baz          • baz
+
+An ordered list uses either integers `<int>.` or the hash symbol `#.` as its list item marker:
+
+    1. foo         #. foo
+    2. bar         #. bar
+    3. baz         #. baz
+
+List item markers can be indented by up to three spaces. A list item consists of its opening line plus all subsequent indented lines. List items can contain nested simple lists.
+
+    * apples
+      pears
+    * oranges
+      1. bananas
+      2. pineapples
+
+
+=== Block-level Lists ===
+
+A list containing one or more blank lines is treated as a block-level list. Each list item is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists. 
+
+    * Item 1. Paragraph 1.
+
+      Item 1. Paragraph 2.
+
+    * Item 2. Paragraph 1.
+
+      Item 2. Paragraph 2.
+
+List item markers can be indented by up to three spaces. A list item consists of its opening line plus all subsequent blank or indented lines.
+
+
+=== Anonymous Code Blocks ===
+
+A block of text indented by four or more spaces is treated as a code sample and wrapped in `<pre>` tags in the HTML output. The code sample can contain blank lines and is ended by the first non-indented line.
+
+
+=== Generic Block Syntax ===
+
+All other block-level elements are handled using an extensible indentation-based syntax:
+
+    :tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar" attr3='baz']
+        block content
+        block content
+
+        block content
+        ...
+
+A block opens with a header line containing a tag and, optionally, a set of attributes. The block's content then consists of all subsequent blank or indented lines following the header. 
+
+The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also stripped from the block's content.
+
+A block's tag indicates its type and determines how its content is processed. A tag can have one or more aliases which are treated identically, e.g. the tags `:blockquote`, `:quote`, and `:>>` all create a `<blockquote>` element in the HTML output.
+
+A block can be tagged with a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied, although whether these are supported depends on the block's type.
+
+Blocks can, in general, be nested to any depth, and can contain other block-level elements like headers and paragraphs, although, again, how a block's content is processed depends on its specific type.
+
+Supported block tags are listed below:
+
+
+#### :alert
+
+    :alert [ info | warning | error ]
+    :!! [ info | warning | error ]
+
+Creates an alert box - a `<div>` element with the class `stx-alert` which can be styled appropriately using CSS. Keywords are added as classes in the form `stx-<keyword>`. Supports nested block-level content.
+
+
+#### :blockquote
+
+    :blockquote
+    :quote
+    :>>
+
+Creates a `<blockquote>` element. Supports nested block-level content.
+
+
+#### :code
+
+    :code <language>
+    :pre <language>
+    ::: <language>
+
+Creates a `<pre>` element. Accepts an optional keyword argument specifying the language of the code sample.
+
+If a language is specified then a `lang-<language>` class and a `data-lang="<language>"` attribute are added to the `<pre>` tag.
+
+If a language is specified and the [Pygments](http://pygments.org) module is available then syntax highlighting is applied to the code sample.
+
+
+#### :div
+
+    :div
+
+Creates a `<div>` element. Supports nested block-level content.
+
+
+#### :h1 ... :h6
+
+    :h1
+    :h2
+    :h3
+    :h4
+    :h5
+    :h6
+
+Creates a heading element of the specified level. Heading elements do not support nested block-level content.
+
+
+#### :image
+
+    :image <src>
+    :img <src>
+
+Block-level alternative to the inline image tag. The block's content is used as the image's `alt` text. This tag does not support nested block-level content.
+
+
+#### :nl2br
+
+    :nl2br
+    :||
+
+Turns on newline-to-linebreak mode. All nested content will have newlines converted to `<br>` tags.
+
+
+#### :null
+
+    :null
+    :<<
+
+A `:null` block has no HTML representation of its own; instead it passes its attributes on to its immediate children. This tag can hence be used to apply attributes to paragraphs, lists, etc. Supports nested block-level content.
+
+
+#### :raw
+
+    :raw
+    :\\\\
+
+Indicates that the block contains content which should not be processed but should be included in the output in its raw state. Block-level HTML markup should be enclosed in a `:raw` block.
+
+
+#### :table
+
+    :table
+    :++
+
+Indicates that the block contains a simple table in one of the following formats:
+
+    foo | bar | baz
+    ---------------
+    aaa | bbb | ccc
+    ddd | eee | fff
+
+    foo | bar | baz
+    --- | --- | ---
+    aaa | bbb | ccc
+    ddd | eee | fff
+
+    foo | bar | baz
+    :-- | :-: | --:
+    aaa | bbb | ccc
+    ddd | eee | fff
+
+The colons in the final table specify the alignment of their columns; cells in the first column receive the class `stx-align-left`, cells in the center column receive the class `stx-align-center`, and cells in the right column receive the class `stx-align-right`.
+
+
+Inline Syntax
+-------------
+
+
+=== Formatting ====
+
+Single asterisks indicate *emphasised* text:
+
+    This text is *emphasised*.
+
+Double asterisks indicate **bold** text:
+
+    This text is **bold**.
+
+Backticks are used to enclose `code samples`:
+
+    This is a `code sample`.
+
+
+=== Links ===
+
+Syntex borrows its link syntax directly from Markdown:
+
+    [link text](http://example.com)
+
+    [link text](http://example.com "optional title")
+
+Syntex also supports Markdown-style link references:
+
+    [link text][reference]
+
+Link references can be specified anywhere in the document. They take the form:
+
+    \[reference]: http://example.com "optional title"
+
+If the reference text is omitted from the link, the link text will be used in its place when looking-up references.
+
+
+=== Images ===
+
+Syntex borrows its syntax for inline images directly from Markdown:
+
+    ![alt text](http://example.com/image.jpg)
+
+    ![alt text](http://example.com/image.jpg "optional title")
+
+Syntex also supports Markdown-style image references:
+
+    ![alt text][reference]
+
+Image references can be specified anywhere in the document. They take the form:
+
+    \[reference]: http://example.com/image.jpg "optional title"
+
+If the reference text is omitted from the image, the alt text will be used in its place when looking-up references.
+
+
+=== Inline HTML ===
+
+Syntex ignores HTML tags so it's fine to mix and match inline HTML and Syntex markup. Block-level HTML tags like `<div>` and `<p>` should be offset in a `:raw` block or Syntex will try to wrap them in paragraph tags in the output.
+
+The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or a character entity.
+
+
+Features
+--------
+
+=== Footnotes ===
+
+Syntex includes built-in support for footnotes:
+
+    This sentence ends with a footnote reference.[^1]
+
+Footnote references can take advantage of automatic numbering:
+
+    This sentence ends with an automatically-numbered reference.[^]
+
+The footnotes themselves can be specified anywhere in the document. They take the form:
+
+    \[^1]: This is a footnote.
+
+Footnotes support block-level structures and inline markup:
+
+    \[^1]: 
+        This footnote contains *multiple paragraphs*.
+
+        It also contains a [link](http://example.com).
+
+Footnotes can also rely on automatic numbering:
+
+    \[^]: This is an automatically-numbered footnote.
+
+You can choose the insertion point for your footnotes using the `:insert` tag:
+
+    :insert footnotes
+
+
+=== Table of Contents ===
+
+Syntex can automatically generate a table of contents for a document:
+
+    :insert toc
+
+The default listing skips level 1 headings to avoid including the document title itself. A full listing of all the document's headings can be inserted using the `fulltoc` keyword:
+
+    :insert fulltoc
+
+
+=== Document Metadata ===
+
+Syntex will use the [PyYAML][] module if available to parse each document for a metadata header in [YAML][] format. The header should be the first item in the document and should be enclosed by a top line of three dashes `---` and a bottom line of three dots `...`:
+
+    ---
+    title: Important Document
+    author: John Doe
+    date: 2014-01-01
+    ...
+
+Parsed metadata is returned as a Python dictionary by the `render()` function:
+
+    import syntex
+    html, meta = syntex.render(text)
+
+This dictionary also includes an automatically-generated tree of the document's headings under the key `[toc]`.
+
+[PyYAML]: http://pyyaml.org
+[YAML]: http://yaml.org
+
+
+Debug Mode
+----------
+
+It can be helpful to run Syntex in debug mode when experimenting with its features:
+
+    $ syntex -f debug < input.txt
+
+This will dump a selection of useful information to the console.
+
+
+License
+-------
+
+This work has been placed in the public domain.

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Syntex</title>
+        <style>article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block}audio,canvas,video{display:inline-block}[hidden]{display:none}html,body{margin:0;padding:0;font-size:100%}p,ul,ol,li,pre,blockquote{margin:0;padding:0}h1,h2,h3,h4,h5,h6{margin:0;padding:0;font-weight:normal}abbr[title]{border-bottom:1px dotted}form,fieldset,legend{margin:0;padding:0}button,input,select,textarea,label{margin:0;padding:0}button,input,select,textarea{font-family:inherit;font-size:inherit}table{border-collapse:collapse;border-spacing:0}img{border:0;max-width:100%}code,pre{font-family:monospace}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}hr{display:block;height:1px;border:0;border-top:1px solid;margin:0;padding:0}</style>
+        <style>body{font-family:"Georgia",serif;font-size:15px;line-height:1.6;color:#333;padding:40px}.wrapper{max-width:660px;margin:0 auto;padding:40px;border:1px solid #ccc;box-shadow:0 0 10px #ddd}h1,h2,h3,h4,h5,h6{line-height:1.25}h1{margin:40px 0 20px;border-bottom:1px solid #ccc;color:black;padding-bottom:5px;font-size:32px}h2{margin:40px 0 20px;border-bottom:1px solid #ccc;color:black;padding-bottom:5px;font-size:24px}h3{margin:35px 0 20px;font-size:17px;font-weight:bold}h4,h5,h6{margin:30px 0 20px;font-size:15px;font-weight:bold}p{margin:15px 0;text-align:justify}blockquote{margin:20px 0;margin-left:10px;padding:0 30px 0 15px;border-left:3px solid #ddd;color:#666;font-style:italic}ul,ol{margin:15px 0;padding-left:20px}ul ul,ol ol,ul ol,ol ul{margin:10px 10px}li{margin:5px 0}a{color:#4183C4;text-decoration:none;border-bottom:1px dotted}a:hover{border-bottom:1px solid}pre,code{font-size:13px;font-family:Consolas,monospace;color:#222}code{margin:0 2px;padding:1px 5px;white-space:nowrap;border:1px solid #e8e8e8;border-radius:3px;background-color:#f8f8f8}pre{margin:20px 0;padding:10px 10px;border:1px solid #ccc;border-radius:3px;background-color:#f8f8f8;line-height:19px;overflow:auto}hr{margin:30px 60px;border-top:1px solid #ddd}.wrapper img{margin:20px auto;display:block}.wrapper>:first-child{margin-top:0}.wrapper>:last-child{margin-bottom:0}table{margin:30px auto;width:80%;font-size:14px}thead{background-color:#eee}tr:nth-child(even){background-color:#f8f8f8}th,td{border:1px solid #ccc;padding:6px 12px;text-align:left}table .align-center{text-align:center}table .align-right{text-align:right}</style>
+        <style>pre .bp{color:#3465a4}pre .c{color:#8f5902;font-style:italic}pre .c1{color:#8f5902;font-style:italic}pre .cm{color:#8f5902;font-style:italic}pre .cp{color:#8f5902}pre .cs{color:#8f5902;font-style:italic}pre .g{color:#222222}pre .gd{color:#a40000}pre .ge{color:#222222;font-style:italic}pre .gr{color:#ef2929}pre .gh{color:#000080;font-weight:bold}pre .gi{color:#00A000}pre .go{color:#222222;font-style:italic}pre .gp{color:#8f5902}pre .gs{color:#222222;font-weight:bold}pre .gu{color:#800080;font-weight:bold}pre .gt{color:#a40000;font-weight:bold}pre .il{color:#000088}pre .k{color:#204a87;font-weight:bold}pre .kc{color:#204a87;font-weight:bold}pre .kd{color:#204a87;font-weight:bold}pre .kn{color:#204a87;font-weight:bold}pre .kp{color:#204a87;font-weight:bold}pre .kr{color:#204a87;font-weight:bold}pre .kt{color:#204a87;font-weight:bold}pre .l{color:#222222}pre .ld{color:#222222}pre .m{color:#000088}pre .mf{color:#000088}pre .mh{color:#000088}pre .mi{color:#000088}pre .mo{color:#000088}pre .n{color:#222222}pre .na{color:#8f5902}pre .nb{color:#204a87}pre .nc{color:#222222}pre .no{color:#222222}pre .nd{color:#000088}pre .ni{color:#ce5c00}pre .ne{color:#cc0000;font-weight:bold}pre .nf{color:#222222}pre .nl{color:#f57900}pre .nn{color:#222222}pre .nt{color:#204a87;font-weight:bold}pre .nv{color:#222222}pre .nx{color:#222222}pre .o{color:#000088}pre .ow{color:#204a87;font-weight:bold}pre .p{color:#222222}pre .py{color:#222222}pre .s{color:#880000}pre .s1{color:#880000}pre .s2{color:#880000}pre .sb{color:#880000}pre .sc{color:#880000}pre .sd{color:#880000;font-style:italic}pre .se{color:#880000}pre .sh{color:#880000}pre .si{color:#880000}pre .sr{color:#880000}pre .ss{color:#880000}pre .sx{color:#880000}pre .vc{color:#222222}pre .vg{color:#222222}pre .vi{color:#222222}pre .w{color:#f8f8f8;text-decoration:underline}pre .x{color:#222222}pre .err{color:#a40000;border:1px solid #ef2929}</style>
+    </head>
+    <body>
+        <div class="wrapper">
+<h1 id="syntex">Syntex</h1>
+<p>Syntex is (yet another) lightweight markup language for generating HTML from plain text. It's implemented in Python 3 and can be used both as a command line script and as a Python library.</p>
+<p>When used on the command line Syntex reads from <code>stdin</code> and prints to <code>stdout</code>:</p>
+<pre>
+$ syntex &lt; input.txt &gt; output.html
+</pre>
+<p>To use Syntex as a library module call its <code>render()</code> function with a string of text:</p>
+<pre>
+import syntex
+html, meta = syntex.render(text)
+</pre>
+<p>This implementation also supports cross-compiling Syntex documents into Markdown:</p>
+<pre>
+$ syntex -f markdown &lt; input.txt &gt; output.md
+</pre>
+<p>(Not all of Syntex's features can be translated into Markdown, so this capability should be used with care.)</p>
+<h2 id="block-level-syntax">Block-level Syntax</h2>
+<h3 id="paragraphs">Paragraphs</h3>
+<p>Paragraphs are separated by one or more blank lines:</p>
+<pre>
+This is a paragraph containing *emphasised* and **strong** text.
+Adjacent lines of text are concatenated.
+
+This is a second paragraph containing a `code sample` in backticks.
+</pre>
+<h3 id="h1-amp-h2-headings">H1 &amp; H2 Headings</h3>
+<p>H1 headings can be enclosed in equals signs <code>=</code>:</p>
+<pre>
+==========
+H1 Heading
+==========
+</pre>
+<p>H2 headings can be enclosed in dashes <code>-</code>:</p>
+<pre>
+----------
+H2 Heading
+----------
+</pre>
+<p>In each case the top line of symbols is optional.</p>
+<h3 id="arbitrary-level-headings">Arbitrary Level Headings</h3>
+<p>Headings can also be indicated by prefacing their text with an appropriate number of equals signs <code>=</code> or hashes <code>#</code>:</p>
+<pre>
+=== H3 Heading ===
+
+### H3 Heading ###
+</pre>
+<p>The trailing symbols in the examples above are optional and can be omitted.</p>
+<h3 id="simple-lists">Simple Lists</h3>
+<p>A simple list contains no blank lines. List items are not wrapped in paragraph tags in the HTML output.</p>
+<p>An unordered list uses either the star symbol <code>*</code> or the unicode bullet <code>•</code> symbol (<code>\u2022</code>) as its list item marker:</p>
+<pre>
+* foo          • foo
+* bar          • bar
+* baz          • baz
+</pre>
+<p>An ordered list uses either integers <code>&lt;int&gt;.</code> or the hash symbol <code>#.</code> as its list item marker:</p>
+<pre>
+1. foo         #. foo
+2. bar         #. bar
+3. baz         #. baz
+</pre>
+<p>List item markers can be indented by up to three spaces. A list item consists of its opening line plus all subsequent indented lines. List items can contain nested simple lists.</p>
+<pre>
+* apples
+  pears
+* oranges
+  1. bananas
+  2. pineapples
+</pre>
+<h3 id="block-level-lists">Block-level Lists</h3>
+<p>A list containing one or more blank lines is treated as a block-level list. Each list item is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.</p>
+<pre>
+* Item 1. Paragraph 1.
+
+  Item 1. Paragraph 2.
+
+* Item 2. Paragraph 1.
+
+  Item 2. Paragraph 2.
+</pre>
+<p>List item markers can be indented by up to three spaces. A list item consists of its opening line plus all subsequent blank or indented lines.</p>
+<h3 id="anonymous-code-blocks">Anonymous Code Blocks</h3>
+<p>A block of text indented by four or more spaces is treated as a code sample and wrapped in <code>&lt;pre&gt;</code> tags in the HTML output. The code sample can contain blank lines and is ended by the first non-indented line.</p>
+<h3 id="generic-block-syntax">Generic Block Syntax</h3>
+<p>All other block-level elements are handled using an extensible indentation-based syntax:</p>
+<pre>
+:tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar" attr3='baz']
+    block content
+    block content
+
+    block content
+    ...
+</pre>
+<p>A block opens with a header line containing a tag and, optionally, a set of attributes. The block's content then consists of all subsequent blank or indented lines following the header.</p>
+<p>The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also stripped from the block's content.</p>
+<p>A block's tag indicates its type and determines how its content is processed. A tag can have one or more aliases which are treated identically, e.g. the tags <code>:blockquote</code>, <code>:quote</code>, and <code>:&gt;&gt;</code> all create a <code>&lt;blockquote&gt;</code> element in the HTML output.</p>
+<p>A block can be tagged with a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied, although whether these are supported depends on the block's type.</p>
+<p>Blocks can, in general, be nested to any depth, and can contain other block-level elements like headers and paragraphs, although, again, how a block's content is processed depends on its specific type.</p>
+<p>Supported block tags are listed below:</p>
+<h4 id="alert">:alert</h4>
+<pre>
+:alert [ info | warning | error ]
+:!! [ info | warning | error ]
+</pre>
+<p>Creates an alert box - a <code>&lt;div&gt;</code> element with the class <code>stx-alert</code> which can be styled appropriately using CSS. Keywords are added as classes in the form <code>stx-&lt;keyword&gt;</code>. Supports nested block-level content.</p>
+<h4 id="blockquote">:blockquote</h4>
+<pre>
+:blockquote
+:quote
+:&gt;&gt;
+</pre>
+<p>Creates a <code>&lt;blockquote&gt;</code> element. Supports nested block-level content.</p>
+<h4 id="code">:code</h4>
+<pre>
+:code &lt;language&gt;
+:pre &lt;language&gt;
+::: &lt;language&gt;
+</pre>
+<p>Creates a <code>&lt;pre&gt;</code> element. Accepts an optional keyword argument specifying the language of the code sample.</p>
+<p>If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang="&lt;language&gt;"</code> attribute are added to the <code>&lt;pre&gt;</code> tag.</p>
+<p>If a language is specified and the <a href="http://pygments.org">Pygments</a> module is available then syntax highlighting is applied to the code sample.</p>
+<h4 id="div">:div</h4>
+<pre>
+:div
+</pre>
+<p>Creates a <code>&lt;div&gt;</code> element. Supports nested block-level content.</p>
+<h4 id="h1-h6">:h1 ... :h6</h4>
+<pre>
+:h1
+:h2
+:h3
+:h4
+:h5
+:h6
+</pre>
+<p>Creates a heading element of the specified level. Heading elements do not support nested block-level content.</p>
+<h4 id="image">:image</h4>
+<pre>
+:image &lt;src&gt;
+:img &lt;src&gt;
+</pre>
+<p>Block-level alternative to the inline image tag. The block's content is used as the image's <code>alt</code> text. This tag does not support nested block-level content.</p>
+<h4 id="nl2br">:nl2br</h4>
+<pre>
+:nl2br
+:||
+</pre>
+<p>Turns on newline-to-linebreak mode. All nested content will have newlines converted to <code>&lt;br&gt;</code> tags.</p>
+<h4 id="null">:null</h4>
+<pre>
+:null
+:&lt;&lt;
+</pre>
+<p>A <code>:null</code> block has no HTML representation of its own; instead it passes its attributes on to its immediate children. This tag can hence be used to apply attributes to paragraphs, lists, etc. Supports nested block-level content.</p>
+<h4 id="raw">:raw</h4>
+<pre>
+:raw
+:\\
+</pre>
+<p>Indicates that the block contains content which should not be processed but should be included in the output in its raw state. Block-level HTML markup should be enclosed in a <code>:raw</code> block.</p>
+<h4 id="table">:table</h4>
+<pre>
+:table
+:++
+</pre>
+<p>Indicates that the block contains a simple table in one of the following formats:</p>
+<pre>
+foo | bar | baz
+---------------
+aaa | bbb | ccc
+ddd | eee | fff
+
+foo | bar | baz
+--- | --- | ---
+aaa | bbb | ccc
+ddd | eee | fff
+
+foo | bar | baz
+:-- | :-: | --:
+aaa | bbb | ccc
+ddd | eee | fff
+</pre>
+<p>The colons in the final table specify the alignment of their columns; cells in the first column receive the class <code>stx-align-left</code>, cells in the center column receive the class <code>stx-align-center</code>, and cells in the right column receive the class <code>stx-align-right</code>.</p>
+<h2 id="inline-syntax">Inline Syntax</h2>
+<h3 id="formatting">Formatting</h3>
+<p>Single asterisks indicate <em>emphasised</em> text:</p>
+<pre>
+This text is *emphasised*.
+</pre>
+<p>Double asterisks indicate <strong>bold</strong> text:</p>
+<pre>
+This text is **bold**.
+</pre>
+<p>Backticks are used to enclose <code>code samples</code>:</p>
+<pre>
+This is a `code sample`.
+</pre>
+<h3 id="links">Links</h3>
+<p>Syntex borrows its link syntax directly from Markdown:</p>
+<pre>
+[link text](http://example.com)
+
+[link text](http://example.com "optional title")
+</pre>
+<p>Syntex also supports Markdown-style link references:</p>
+<pre>
+[link text][reference]
+</pre>
+<p>Link references can be specified anywhere in the document. They take the form:</p>
+<pre>
+[reference]: http://example.com "optional title"
+</pre>
+<p>If the reference text is omitted from the link, the link text will be used in its place when looking-up references.</p>
+<h3 id="images">Images</h3>
+<p>Syntex borrows its syntax for inline images directly from Markdown:</p>
+<pre>
+![alt text](http://example.com/image.jpg)
+
+![alt text](http://example.com/image.jpg "optional title")
+</pre>
+<p>Syntex also supports Markdown-style image references:</p>
+<pre>
+![alt text][reference]
+</pre>
+<p>Image references can be specified anywhere in the document. They take the form:</p>
+<pre>
+[reference]: http://example.com/image.jpg "optional title"
+</pre>
+<p>If the reference text is omitted from the image, the alt text will be used in its place when looking-up references.</p>
+<h3 id="inline-html">Inline HTML</h3>
+<p>Syntex ignores HTML tags so it's fine to mix and match inline HTML and Syntex markup. Block-level HTML tags like <code>&lt;div&gt;</code> and <code>&lt;p&gt;</code> should be offset in a <code>:raw</code> block or Syntex will try to wrap them in paragraph tags in the output.</p>
+<p>The HTML syntax characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code> are automatically escaped unless they form part of a HTML tag or a character entity.</p>
+<h2 id="features">Features</h2>
+<h3 id="footnotes">Footnotes</h3>
+<p>Syntex includes built-in support for footnotes:</p>
+<pre>
+This sentence ends with a footnote reference.[^1]
+</pre>
+<p>Footnote references can take advantage of automatic numbering:</p>
+<pre>
+This sentence ends with an automatically-numbered reference.[^]
+</pre>
+<p>The footnotes themselves can be specified anywhere in the document. They take the form:</p>
+<pre>
+[^1]: This is a footnote.
+</pre>
+<p>Footnotes support block-level structures and inline markup:</p>
+<pre>
+[^1]: 
+    This footnote contains *multiple paragraphs*.
+
+    It also contains a [link](http://example.com).
+</pre>
+<p>Footnotes can also rely on automatic numbering:</p>
+<pre>
+[^]: This is an automatically-numbered footnote.
+</pre>
+<p>You can choose the insertion point for your footnotes using the <code>:insert</code> tag:</p>
+<pre>
+:insert footnotes
+</pre>
+<h3 id="table-of-contents">Table of Contents</h3>
+<p>Syntex can automatically generate a table of contents for a document:</p>
+<pre>
+:insert toc
+</pre>
+<p>The default listing skips level 1 headings to avoid including the document title itself. A full listing of all the document's headings can be inserted using the <code>fulltoc</code> keyword:</p>
+<pre>
+:insert fulltoc
+</pre>
+<h3 id="document-metadata">Document Metadata</h3>
+<p>Syntex will use the <a href="http://pyyaml.org">PyYAML</a> module if available to parse each document for a metadata header in <a href="http://yaml.org">YAML</a> format. The header should be the first item in the document and should be enclosed by a top line of three dashes <code>---</code> and a bottom line of three dots <code>...</code>:</p>
+<pre>
+---
+title: Important Document
+author: John Doe
+date: 2014-01-01
+...
+</pre>
+<p>Parsed metadata is returned as a Python dictionary by the <code>render()</code> function:</p>
+<pre>
+import syntex
+html, meta = syntex.render(text)
+</pre>
+<p>This dictionary also includes an automatically-generated tree of the document's headings under the key <code>[toc]</code>.</p>
+<h2 id="debug-mode">Debug Mode</h2>
+<p>It can be helpful to run Syntex in debug mode when experimenting with its features:</p>
+<pre>
+$ syntex -f debug &lt; input.txt
+</pre>
+<p>This will dump a selection of useful information to the console.</p>
+<h2 id="license">License</h2>
+<p>This work has been placed in the public domain.</p>
+        </div>
+    </body>
+</html>
