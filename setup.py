@@ -43,6 +43,10 @@ setup(
             'syntex = syntex:main',
         ],
     },
+    install_requires = [
+        'Pygments',
+        'PyYAML',
+    ],
     author = 'Darren Mulholland',
     url = 'https://github.com/dmulholland/syntex',
     license = 'Public Domain',
