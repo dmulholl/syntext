@@ -54,5 +54,4 @@ docs/_build/
 target/
 
 # Development scratch files
-notes.txt
-sample.txt
+dev/
