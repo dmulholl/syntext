@@ -41,7 +41,7 @@ See the module's [documentation](http://pythonhosted.org/syntex/) for further de
 Installation
 ------------
 
-Syntex can be installed directly from the Python Package Index using `pip`:
+Install directly from the Python Package Index using `pip`:
 
     $ pip install syntex
 
