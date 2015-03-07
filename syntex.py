@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-""" 
+"""
 Syntex
 ======
 
 A lightweight markup language for generating HTML.
 
 To use as a script:
-    
+
     syntex.py < input.txt > output.html
 
 To use as a library module:
@@ -63,7 +63,7 @@ tagmap = {}
 
 
 ###############################################################################
-# Block Parser 
+# Block Parser
 ###############################################################################
 
 
@@ -207,7 +207,7 @@ class H2Processor:
         -------
 
     The first line of '-' is optional.
-    
+
     """
 
     regex = re.compile(r"""
@@ -230,7 +230,7 @@ class HeadingProcessor:
     """ Arbitrary level heading of the form:
 
         === Heading ===
-    or 
+    or
         ### Heading ###
 
     The number of leading '=' specifies the heading level.
@@ -471,7 +471,7 @@ class BlockParser:
     """ Parses a string and returns a list of block elements.
 
     A BlockParser object can be initialized with a list of processors
-    to use in parsing the string. The 'skipline' processor will be 
+    to use in parsing the string. The 'skipline' processor will be
     automatically appended to the end of the list to skip over lines
     that cannot be matched by any of the other specified processors.
 
@@ -970,12 +970,12 @@ class MarkdownRenderer(BaseHtmlRenderer):
 
     Footnotes and footnote references are rendered in HTML.
 
-    The table of contents cannot be rendered as we have no way of setting IDs 
+    The table of contents cannot be rendered as we have no way of setting IDs
     on the document's headings.
 
     Complex block-level markup is rendered in html unless it occurs
     inside an indented block (i.e. inside a list), as markdown does not
-    support indented block-level html. 
+    support indented block-level html.
 
     """
 
@@ -1111,8 +1111,8 @@ class TOCBuilder:
     """ Table of Contents Builder
 
     Processes a tree of block elements to produce a table of contents
-    with links to each heading in the document. Note that this process 
-    modifies the tree in place by adding an automatically generated ID 
+    with links to each heading in the document. Note that this process
+    modifies the tree in place by adding an automatically generated ID
     to any heading element that lacks one.
 
     The table is returned as an Element tree representing an unordered
@@ -1148,7 +1148,7 @@ class TOCBuilder:
             id = element.attrs['id']
         else:
             index = 2
-            slug = slugify(text)
+            slug = idify(text)
             id = slug
             while id in self.ids:
                 id = '%s-%s' % (slug, index)
@@ -1190,19 +1190,19 @@ class TOCBuilder:
 
 
 ###############################################################################
-# Utility Functions 
+# Utility Functions
 ###############################################################################
 
 
 html_escapes = {
     ord('&'): '&amp;',
-    ord('<'): '&lt;', 
+    ord('<'): '&lt;',
     ord('>'): '&gt;',
 }
 
 attr_escapes = {
     ord('&'): '&amp;',
-    ord('<'): '&lt;', 
+    ord('<'): '&lt;',
     ord('>'): '&gt;',
     ord('"'): '&quot;',
     ord("'"): '&#39;',
@@ -1237,18 +1237,20 @@ def strip(text):
 
 
 def strip_tags(text):
-    """ Strip all angle-bracket-enclosed substrings. """ 
+    """ Strip all angle-bracket-enclosed substrings. """
     return re.sub(r'<[^>]*>', '', text)
 
 
-def slugify(s):
-    """ Return a slugified version of the string `s`. """
-    s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore')
-    s = s.decode('ascii')
+def idify(s):
+    """ Process a string for use as an #ID. """
+    s = unicodedata.normalize('NFKD', s)
+    s = s.encode('ascii', 'ignore').decode('ascii')
     s = s.lower()
+    s = s.replace("'", '')
     s = re.sub(r'[^a-z0-9-]+', '-', s)
     s = re.sub(r'--+', '-', s)
-    return s.strip('-')
+    s = re.sub(r'^\d+', '', s)
+    return s.strip('-') or 'id'
 
 
 def error(msg):
@@ -1257,7 +1259,7 @@ def error(msg):
 
 
 ###############################################################################
-# Preprocessors 
+# Preprocessors
 ###############################################################################
 
 
@@ -1296,7 +1298,7 @@ def extract_meta(text):
 
 def escape_backslashes(text):
     """ Replace backslashed characters with placeholder strings. """
-    
+
     def callback(match):
         char = match.group(1)
         if char in ESCCHARS:
@@ -1308,7 +1310,7 @@ def escape_backslashes(text):
 
 
 def extract_footnotes(text):
-    """ Extract footnotes of the form: 
+    """ Extract footnotes of the form:
 
         [^ref]: line 1
             line 2
@@ -1378,16 +1380,16 @@ def extract_link_references(text):
                     [ ]*(?P<url>\S+)
                         (?:[ ]+"(?P<title>[^"]*)")?
                             [ ]*\n
-        """, 
-        callback, 
-        text, 
+        """,
+        callback,
+        text,
         flags = re.MULTILINE | re.VERBOSE
     )
     return text, refs
 
 
 ###############################################################################
-# Private Interface 
+# Private Interface
 ###############################################################################
 
 
@@ -1452,7 +1454,7 @@ def render(text, format='html'):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-V', '--version',
-        action="version", 
+        action="version",
         version=__version__,
     )
     parser.add_argument('-f',
