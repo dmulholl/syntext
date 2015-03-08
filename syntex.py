@@ -953,7 +953,7 @@ class HtmlRenderer(BaseHtmlRenderer):
         text = self._do_inline_links(text)
         text = self._do_inline_ref_links(text)
         text = self._do_inline_footnotes(text)
-        text = self._do_inline_bare_urls(text)
+        # text = self._do_inline_bare_urls(text)
         text = text.rstrip('\n')
         if 'nl2br' in self.context:
             text = text.replace('\n', '<br>\n')
