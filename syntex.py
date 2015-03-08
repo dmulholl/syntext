@@ -29,6 +29,7 @@ import unicodedata
 import argparse
 import pprint
 import textwrap
+import html
 
 
 # Parse document metadata with the PyYAML module, if available.
@@ -1194,27 +1195,9 @@ class TOCBuilder:
 # ----------------------------------------------------------------------------
 
 
-html_escapes = {
-    ord('&'): '&amp;',
-    ord('<'): '&lt;',
-    ord('>'): '&gt;',
-}
-
-attr_escapes = {
-    ord('&'): '&amp;',
-    ord('<'): '&lt;',
-    ord('>'): '&gt;',
-    ord('"'): '&quot;',
-    ord("'"): '&#39;',
-}
-
-
 def esc(text, quotes=True):
     """ Convert html syntax characters to character entities. """
-    if quotes:
-        return text.translate(attr_escapes)
-    else:
-        return text.translate(html_escapes)
+    return html.escape(text, quotes)
 
 
 def dedent(text, n=None):
