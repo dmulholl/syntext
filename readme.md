@@ -34,7 +34,7 @@ Syntex differs from Markdown in using an extensible, indentation-based syntax fo
         block content
         ...
 
-It also includes out of the box support for document metadata, tables, tables-of-contents, syntax highlighting, and footnotes.
+It also includes out of the box support for document metadata, tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
 
 See the module's [documentation](http://pythonhosted.org/syntex/) for further details.
 
