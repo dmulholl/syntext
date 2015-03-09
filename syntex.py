@@ -290,7 +290,24 @@ class TextProcessor:
         return True, Text(match.group(0)), match.end(0)
 
 
-class UListProcessor:
+class HorizontalRuleProcessor:
+
+    """ A line containing three or more '-' or '*' characters.
+
+    The characters may optionally be separated by spaces.
+
+    """
+
+    regex = re.compile(r"^[ ]*([-*])[ ]*\1[ ]*\1.*\n", re.MULTILINE)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        return True, Element('hr'), match.end(0)
+
+
+class UnorderedListProcessor:
 
     """ An unordered list. The list item marker is '*' or '•'.
 
@@ -332,7 +349,7 @@ class UListProcessor:
         return True, ul, list_match.end(0)
 
 
-class OListProcessor:
+class OrderedListProcessor:
 
     """ An ordered list. The list item marker is '#.' or '<int>.'.
 
@@ -486,8 +503,9 @@ class BlockParser:
     processor_map['h1'] = H1Processor()
     processor_map['h2'] = H2Processor()
     processor_map['code'] = CodeProcessor()
-    processor_map['ul'] = UListProcessor()
-    processor_map['ol'] = OListProcessor()
+    processor_map['hr'] = HorizontalRuleProcessor()
+    processor_map['ul'] = UnorderedListProcessor()
+    processor_map['ol'] = OrderedListProcessor()
     processor_map['heading'] = HeadingProcessor()
     processor_map['paragraph'] = ParagraphProcessor()
     processor_map['skipline'] = SkipLineProcessor()
@@ -866,7 +884,7 @@ class HtmlRenderer(BaseHtmlRenderer):
 
     def _render_default(self, element):
         if element.tag in (
-            'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'th', 'td',
+            'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'th', 'td', 'dt'
         ):
             html = [element.get_tag()]
         else:
@@ -904,6 +922,9 @@ class HtmlRenderer(BaseHtmlRenderer):
 
     def _render_image(self, element):
         return element.get_tag('img', close=True) + '\n'
+
+    def _render_hr(self, element):
+        return element.get_tag() + '\n'
 
     def _render_insert(self, element):
         if element.meta in self.inserts:
@@ -1024,6 +1045,9 @@ class MarkdownRenderer(BaseHtmlRenderer):
 
     def _render_pre(self, element, depth):
         return indent(element.get_text(), (depth + 1) * 4) + '\n\n'
+
+    def _render_hr(self, element, depth):
+        return '* * *\n\n'
 
     def _render_image(self, element, depth):
         md = '![%(alt)s](%(src)s)\n\n' % element.attrs
