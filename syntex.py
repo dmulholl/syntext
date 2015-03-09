@@ -719,13 +719,11 @@ def insert_handler(tag, pargs, kwargs, content):
     return element
 
 
-# Not documented.
 @register('ignore', '//')
 def ignore_handler(tag, pargs, kwargs, content):
     return None
 
 
-# Not documented.
 @register('comment')
 def html_comment_handler(tag, pargs, kwargs, content):
     element = Element('comment')

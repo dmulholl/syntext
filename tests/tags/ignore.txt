@@ -1,0 +1,13 @@
+foo
+
+:ignore
+    foo
+    bar
+
+bar
+
+://
+    foo
+    bar
+
+baz
