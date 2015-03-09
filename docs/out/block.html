@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Block Syntax</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/vanilla.css">
+        <link rel="stylesheet" href="css/pygments.css">
+        <!--[if lt IE 9]>
+            <script src="js/html5shiv.min.js"></script>
+        <![endif]-->
+        <script src="js/jquery-1.11.2.min.js"></script>
+        <script src="js/vanilla.js"></script>
+    </head>
+    <body class="pages single">
+
+        <header id="header" class="header meta">
+            <ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="block.html">Block Syntax</a></li>
+<li><a href="inline.html">Inline Syntax</a></li>
+<li><a href="features.html">Features</a></li>
+</ul>
+        </header>
+
+        <article id="content" class="content">
+            
+
+    
+    
+    <h1 id="block-syntax">Block Syntax</h1>
+<h3 id="paragraphs-amp-headings">Paragraphs &amp; Headings</h3>
+<p>A paragraph is a group of consecutive lines separated by one or more blank lines:</p>
+<pre>
+This is a paragraph containing *emphasised* and **strong** text.
+Adjacent lines of text are concatenated.
+
+This is a second paragraph containing a `code sample` in backticks.
+</pre>
+<p>H1 headings can be enclosed in equals signs <code>=</code>:</p>
+<pre>
+==========
+H1 Heading
+==========
+</pre>
+<p>H2 headings can be enclosed in dashes <code>-</code>:</p>
+<pre>
+----------
+H2 Heading
+----------
+</pre>
+<p>In each case the top line of symbols is optional. Headings can also be indicated by prefacing their text with an appropriate number of equals signs <code>=</code> or hashes <code>#</code>:</p>
+<pre>
+=== H3 Heading ===
+
+### H3 Heading ###
+</pre>
+<p>The trailing symbols in the examples above are optional and can be omitted.</p>
+<h3 id="compact-lists">Compact Lists</h3>
+<p>A 'compact' list is a list containing no blank lines. List items will not be wrapped in paragraph tags in the HTML output.</p>
+<p>An unordered list uses either the star symbol <code>*</code> or the unicode bullet symbol <code>\u2022</code> as its list-item marker:</p>
+<pre>
+* foo          • foo
+* bar          • bar
+* baz          • baz
+</pre>
+<p>An ordered list uses either integer-period <code>&lt;int&gt;.</code> or hash-period <code>#.</code> as its list-item marker:</p>
+<pre>
+1. foo         #. foo
+2. bar         #. bar
+3. baz         #. baz
+</pre>
+<p>Ordered lists are numbered according to their opening integer:</p>
+<pre>
+5. This list starts
+6. With list item 5
+</pre>
+<p>List-item markers can be indented by up to three spaces. A list-item consists of its opening line plus all subsequent indented lines:</p>
+<pre>
+* This list item
+  is split over two lines.
+</pre>
+<p>List items can contain nested compact lists:</p>
+<pre>
+* foo
+  1. bar
+  2. baz
+* bam
+</pre>
+<h3 id="block-lists">Block Lists</h3>
+<p>A 'block' list is a list containing one or more blank lines. Each list-item is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.</p>
+<pre>
+* This list item contains a paragraph and a compact list.
+
+  1. foo
+  2. bar
+
+* This list item contains two paragraphs. This is the first.
+
+  And this is the second.
+</pre>
+<p>List-item markers can be indented by up to three spaces. A list-item consists of its opening line plus all subsequent blank or indented lines.</p>
+<h3 id="definition-lists">Definition Lists</h3>
+<p>Syntex supports definition lists in the following format:</p>
+<pre>
+~ Term 1
+
+    This is the definition of the first term.
+
+~ Term 2
+
+    This is the definition of the second term.
+</pre>
+<p>A <em>term</em> is indicated by an opening tilde <code>~</code>, which may be indented by up to three spaces. The term's <em>definition</em> consists of all subsequent blank or indented lines and can contain any number of block-level elements.</p>
+<h3 id="code-blocks">Code Blocks</h3>
+<p>A block of text indented by four or more spaces is treated as a code block and wrapped in <code>&lt;pre&gt;</code> tags in the HTML output. The code block can contain blank lines and is ended by the first non-indented line.</p>
+<pre>
+This paragraph is followed by a code block.
+
+    &lt;p&gt;Hello world!&lt;/p&gt;
+</pre>
+<p>HTML in code blocks is automatically escaped.</p>
+<h3 id="horizontal-rules">Horizontal Rules</h3>
+<p>A line containing three or more <code>*</code> or <code>-</code> characters (optionally separated by spaces) will produce a horizontal rule:</p>
+<pre>
+* * *
+-----
+</pre>
+<h3 id="generic-block-syntax">Generic Block Syntax</h3>
+<p>All other block-level elements are handled using an extensible indentation-based syntax:</p>
+<pre>
+:tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar" attr3='baz']
+    block content
+    block content
+
+    block content
+    ...
+</pre>
+<p>A block opens with a header line containing a tag and, optionally, a set of attributes. The block's content then consists of all subsequent blank or indented lines following the header.</p>
+<p>The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also stripped from the content.</p>
+<p>A block's tag indicates its type and determines how its content is processed. A tag can have one or more aliases which are treated identically, e.g. the tags <code>:blockquote</code>, <code>:quote</code>, and <code>:&gt;&gt;</code> all create a <code>&lt;blockquote&gt;</code> element in the HTML output.</p>
+<p>A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied, although whether these are used depends on the block's type.</p>
+<p>In general, blocks can be nested to any depth and can contain any block-level content.</p>
+<p>Supported block tags are listed below:</p>
+<h4 id="alert">:alert</h4>
+<pre>
+:alert [ info | warning | error ]
+:!! [ info | warning | error ]
+</pre>
+<p>Creates an alert box - a <code>&lt;div&gt;</code> element with the class <code>stx-alert</code> which can be styled appropriately using CSS. Keywords are added as classes in the form <code>stx-&lt;keyword&gt;</code>. Supports nested block-level content.</p>
+<h4 id="blockquote">:blockquote</h4>
+<pre>
+:blockquote
+:quote
+:&gt;&gt;
+</pre>
+<p>Creates a <code>&lt;blockquote&gt;</code> element. Supports nested block-level content.</p>
+<h4 id="code">:code</h4>
+<pre>
+:code &lt;language&gt;
+:pre &lt;language&gt;
+::: &lt;language&gt;
+</pre>
+<p>Creates a <code>&lt;pre&gt;</code> element. Accepts an optional keyword argument specifying the language of the code sample.</p>
+<p>If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang="&lt;language&gt;"</code> attribute are added to the <code>&lt;pre&gt;</code> tag.</p>
+<p>If a language is specified and the <a href="http://pygments.org">Pygments</a> module is available then syntax highlighting is applied to the code sample.</p>
+<h4 id="div">:div</h4>
+<pre>
+:div
+</pre>
+<p>Creates a <code>&lt;div&gt;</code> element. Supports nested block-level content.</p>
+<h4 id="h1-h6">:h1 ... :h6</h4>
+<pre>
+:h1
+:h2
+:h3
+:h4
+:h5
+:h6
+</pre>
+<p>Creates a heading element of the specified level. Heading elements do not support nested block-level content.</p>
+<h4 id="image">:image</h4>
+<pre>
+:image &lt;src&gt;
+:img &lt;src&gt;
+</pre>
+<p>Block-level alternative to the inline image tag. The block's content is used as the image's <code>alt</code> text. This tag does not support nested block-level content.</p>
+<h4 id="nl2br">:nl2br</h4>
+<pre>
+:nl2br
+:||
+</pre>
+<p>Turns on newline-to-linebreak mode. All nested content will have newlines converted to <code>&lt;br&gt;</code> tags.</p>
+<h4 id="null">:null</h4>
+<pre>
+:null
+:&lt;&lt;
+</pre>
+<p>A <code>:null</code> block has no HTML representation of its own; instead it passes its attributes on to its immediate children. This tag can be used to apply attributes to paragraphs, lists, etc. Supports nested block-level content.</p>
+<h4 id="raw">:raw</h4>
+<pre>
+:raw
+:\\
+</pre>
+<p>Indicates that the block contains content which should not be processed but should be included in the output in its raw state. Block-level HTML markup should be enclosed in a <code>:raw</code> block.</p>
+<h4 id="table">:table</h4>
+<pre>
+:table
+:++
+</pre>
+<p>Indicates that the block contains a simple table in the following format:</p>
+<pre>
+default | left | center | right
+------- | :--- | :----: | ----:
+ aaaaa  |  bb  |  cccc  |  ddd
+ eeeee  |  ff  |  gggg  |  hhh
+</pre>
+<p>The colons specify the alignment of their columns; cells in the left column receive the class <code>stx-align-left</code>, cells in the center column receive the class <code>stx-align-center</code>, and cells in the right column receive the class <code>stx-align-right</code>.</p>
+<p>If you don't need to specify column alignment, you can use the simpler format below:</p>
+<pre>
+foo | bar | baz
+---------------
+aaa | bbb | ccc
+ddd | eee | fff
+</pre>
+
+    
+
+
+        </article>
+
+        <footer id="footer" class="footer meta">
+            <ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="block.html">Block Syntax</a></li>
+<li><a href="inline.html">Inline Syntax</a></li>
+<li><a href="features.html">Features</a></li>
+</ul>
+        </footer>
+
+    </body>
+</html>
+
+
+
+

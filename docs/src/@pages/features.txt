@@ -1,0 +1,69 @@
+
+Features
+========
+
+
+=== Footnotes ===
+
+Syntex includes built-in support for footnotes:
+
+    This sentence ends with a footnote reference.[^1]
+
+Footnote references can take advantage of automatic numbering:
+
+    This sentence ends with an automatically-numbered reference.[^]
+
+The footnotes themselves can be specified anywhere in the document. They take the form:
+
+    \[^1]: This is a footnote.
+
+Footnotes support block-level structures and inline markup:
+
+    \[^1]:
+        This footnote contains multiple paragraphs.
+
+        It also contains a [link](http://example.com).
+
+Footnotes can also rely on automatic numbering:
+
+    \[^]: This is an automatically-numbered footnote.
+
+You can choose the insertion point for your footnotes using the `:insert` tag:
+
+    :insert footnotes
+
+
+
+=== Table of Contents ===
+
+Syntex can automatically generate a table of contents for a document:
+
+    :insert toc
+
+The default listing skips level 1 headings to avoid including the document title itself. A full listing of all the document's headings can be inserted using the `fulltoc` keyword:
+
+    :insert fulltoc
+
+
+
+=== Document Metadata ===
+
+Syntex will use the [PyYAML][] module if available to parse each document for a metadata header in [YAML][] format. The header should be the first item in the document and should be enclosed by a header line of three dashes `---` and a footer line of three dots `...`:
+
+    ---
+    title: Important Document
+    author: John Doe
+    date: 2000-01-01
+    ...
+
+Parsed metadata is returned as a Python dictionary by the `render()` function:
+
+::: python
+
+    import syntex
+    html, meta = syntex.render(text)
+
+This dictionary also includes an automatically-generated tree of the document's headings under the key `[toc]`.
+
+[PyYAML]: http://pyyaml.org
+[YAML]: http://yaml.org

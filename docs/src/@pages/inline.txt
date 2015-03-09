@@ -1,0 +1,68 @@
+
+Inline Syntax
+=============
+
+
+=== Formatting ====
+
+Single asterisks indicate *emphasised* text:
+
+    This text is *emphasised*.
+
+Double asterisks indicate **bold** text:
+
+    This text is **bold**.
+
+Backticks are used to enclose `code samples`:
+
+    This is a `code sample`.
+
+HTML in code samples is automatically escaped.
+
+
+
+=== Links ===
+
+Syntex borrows its link syntax directly from Markdown:
+
+    [link text](http://example.com)
+
+    [link text](http://example.com "optional title")
+
+Syntex also supports Markdown-style link references:
+
+    [link text][reference]
+
+Link references can be specified anywhere in the document. They take the form:
+
+    \[reference]: http://example.com "optional title"
+
+If the reference text is omitted from the link, the link text will be used in its place when looking-up references.
+
+
+
+=== Images ===
+
+Syntex borrows its image syntax directly from Markdown:
+
+    ![alt text](http://example.com/image.jpg)
+
+    ![alt text](http://example.com/image.jpg "optional title")
+
+Syntex also supports Markdown-style image references:
+
+    ![alt text][reference]
+
+Image references can be specified anywhere in the document. They take the form:
+
+    \[reference]: http://example.com/image.jpg "optional title"
+
+If the reference text is omitted from the image, the alt text will be used in its place when looking-up references.
+
+
+
+=== Inline HTML ===
+
+Syntex ignores HTML tags so it's fine to mix and match inline HTML and Syntex markup. Block-level HTML tags like `<div>` and `<p>` should be offset in a `:raw` block or Syntex will try to wrap them in paragraph tags in the output.
+
+The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or a character entity.
