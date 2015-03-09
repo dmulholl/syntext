@@ -118,16 +118,15 @@ p {
 */
 
 blockquote {
-    margin: 2rem 0;
-    margin-left: 1rem;
-    padding: 0 3rem 0 1.5rem;
-    border-left: 3px solid #ddd;
+    margin: 3rem 1rem;
+    padding: 0 2rem;
+    border-left: 3px solid #e8e8e8;
     color: #666;
     font-style: italic;
 }
 
 /*
-    Lists
+    Ordered/Unordered Lists
 */
 
 ul, ol {
@@ -140,6 +139,25 @@ ul ul, ol ol, ul ol, ol ul {
 li {
     margin: 0.5rem 0;
     padding: 0;
+}
+
+/*
+    Definition Lists
+*/
+
+dl {
+    margin: 3rem 0;
+    padding: 0;
+}
+dt {
+    margin: 2rem 0;
+    padding: 0;
+    font-weight: bold;
+}
+dd {
+    margin: 2rem 1rem;
+    padding: 0 2rem;
+    border-left: 3px solid #e8e8e8;
 }
 
 /*
@@ -288,23 +306,23 @@ h1 + ul {
 .stx-alert {
     margin: 3rem;
     border: 1px solid;
-    padding: 1rem 2rem;
+    padding: 0.5rem 2rem;
     border-radius: 3px;
 }
 .stx-info {
-    color: #31708f;
-    border-color: #bce8f1;
-    background-color: #d9edf7;
+    color: #224466;
+    border-color: #bac6d3;
+    background-color: #e2eef9;
 }
 .stx-warning {
-    color: #8a6d3b;
-    border-color: #faebcc;
-    background-color: #fcf8e3;
+    color: #4c4a42;
+    border-color: #dfd8c2;
+    background-color: #fff9ea;
 }
 .stx-error {
-    color: #a94442;
-    border-color: #ebccd1;
-    background-color: #f2dede;
+    color: #991111;
+    border-color: #d2b2b2;
+    background-color: #fcdede;
 }
 
 /*

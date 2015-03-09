@@ -66,4 +66,4 @@ Parsed metadata is returned as a Python dictionary by the `render()` function:
 This dictionary also includes an automatically-generated tree of the document's headings under the key `[toc]`.
 
 [PyYAML]: http://pyyaml.org
-[YAML]: http://yaml.org
+[YAML]: http://en.wikipedia.org/wiki/YAML
