@@ -14,6 +14,7 @@ As a Python library:
     html, meta = syntex.render(text)
 
 
+
 Rationale
 ---------
 
@@ -38,6 +39,7 @@ It also includes out of the box support for document metadata, tables, tables-of
 See the module's [documentation](http://pythonhosted.org/syntex/) for further details.
 
 
+
 Installation
 ------------
 
@@ -48,16 +50,24 @@ Install directly from the Python Package Index using `pip`:
 Syntex requires Python 3.2 or later.
 
 
+
 Dependencies
 ------------
 
-Syntex will use the [PyYAML](http://pyyaml.org) module if available to parse document metadata and the [Pygments](http://pygments.org) module if available to add syntax highlighting to code samples.
+Installing Syntex automatically installs the following dependencies:
+
+* [PyYAML](http://pyyaml.org)
+* [Pygments](http://pygments.org)
+
+Syntex uses the PyYAML module to parse document metadata and the Pygments module to add syntax highlighting to code samples.
+
 
 
 Status
 ------
 
 Syntex is a pre-1.0 work-in-progress. Future releases may contain backwards-compatibility breaking changes.
+
 
 
 License
