@@ -118,6 +118,15 @@ List item markers can be indented by up to three spaces. A list item consists of
 A block of text indented by four or more spaces is treated as a code sample and wrapped in `<pre>` tags in the HTML output. The code sample can contain blank lines and is ended by the first non-indented line.
 
 
+=== Horizontal Rules ===
+
+A line containing three or more `*` or `-` characters (optionally separated by spaces) will produce a horizontal rule:
+
+    * * *
+
+    -----
+
+
 === Generic Block Syntax ===
 
 All other block-level elements are handled using an extensible indentation-based syntax:
