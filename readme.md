@@ -63,13 +63,6 @@ Syntex uses the PyYAML module to parse document metadata and the Pygments module
 
 
 
-Status
-------
-
-Syntex is a pre-1.0 work-in-progress. Future releases may contain backwards-compatibility breaking changes.
-
-
-
 License
 -------
 
