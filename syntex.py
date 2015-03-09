@@ -7,7 +7,7 @@ A lightweight markup language for generating HTML.
 
 To use as a script:
 
-    syntex.py < input.txt > output.html
+    $ syntex.py < input.txt > output.html
 
 To use as a library module:
 
@@ -59,7 +59,7 @@ ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
 ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
-# Maps generic-block tags to their associated handler functions.
+# Maps block :tagnames to their associated handler functions.
 tagmap = {}
 
 
@@ -70,7 +70,7 @@ tagmap = {}
 
 class Element:
 
-    """ We parse input text into a tree of Element nodes. """
+    """ Input text is parsed into a tree of Element nodes. """
 
     def __init__(self, tag, attrs=None, meta=''):
         self.tag = tag
@@ -298,7 +298,7 @@ class HorizontalRuleProcessor:
 
     """
 
-    regex = re.compile(r"^[ ]*([-*])[ ]*\1[ ]*\1.*\n", re.MULTILINE)
+    regex = re.compile(r"^[ ]{0,3}([-*])[ ]*\1[ ]*\1.*\n", re.MULTILINE)
 
     def __call__(self, text, pos):
         match = self.regex.match(text, pos)
@@ -393,6 +393,45 @@ class OrderedListProcessor:
             li = ol.append(Element('li', meta=meta))
             li.children = BlockParser(*processors).parse(content)
         return True, ol, list_match.end(0)
+
+
+class DefinitionListProcessor:
+
+    """ A definition list of the form:
+
+        ~ Term 1
+
+            This is the definition of the term.
+
+        ~ Term 2
+
+            This is the definition of the term.
+
+    """
+
+    item = r"""
+        ^[ ]{0,3}[~][ ]*([^\n]+)\n
+        ((
+            (^[ ]*\n)
+            |
+            (^[ ]+.+\n)
+        )*)
+    """
+
+    re_item = re.compile(item, re.VERBOSE | re.MULTILINE)
+    re_list = re.compile(r"(%s)+" % item, re.VERBOSE | re.MULTILINE)
+
+    def __call__(self, text, pos):
+        list_match = self.re_list.match(text, pos)
+        if not list_match:
+            return False, None, pos
+        dl = Element('dl')
+        for item_match in self.re_item.finditer(list_match.group(0)):
+            dt = dl.append(Element('dt'))
+            dt.append(Text(item_match.group(1).strip()))
+            dd = dl.append(Element('dd'))
+            dd.children = BlockParser().parse(dedent(item_match.group(2)))
+        return True, dl, list_match.end(0)
 
 
 class GenericBlockProcessor:
@@ -506,6 +545,7 @@ class BlockParser:
     processor_map['hr'] = HorizontalRuleProcessor()
     processor_map['ul'] = UnorderedListProcessor()
     processor_map['ol'] = OrderedListProcessor()
+    processor_map['dl'] = DefinitionListProcessor()
     processor_map['heading'] = HeadingProcessor()
     processor_map['paragraph'] = ParagraphProcessor()
     processor_map['skipline'] = SkipLineProcessor()
@@ -1249,15 +1289,15 @@ def strip_tags(text):
 
 
 def idify(s):
-    """ Process a string for use as an #ID. """
+    """ Process a string for use as an #id. """
     s = unicodedata.normalize('NFKD', s)
     s = s.encode('ascii', 'ignore').decode('ascii')
     s = s.lower()
     s = s.replace("'", '')
     s = re.sub(r'[^a-z0-9-]+', '-', s)
-    s = re.sub(r'--+', '-', s)
+    s = re.sub(r'--+', '-', s).strip('-')
     s = re.sub(r'^\d+', '', s)
-    return s.strip('-') or 'id'
+    return s or 'id'
 
 
 def error(msg):
