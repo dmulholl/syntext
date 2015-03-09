@@ -18,7 +18,7 @@ License: This work has been placed in the public domain.
 
 """
 
-__version__ = "0.8.2"
+__version__ = "0.9.0"
 
 
 import sys
@@ -337,7 +337,7 @@ class UnorderedListProcessor:
             meta = 'block'
             processors = ()
         else:
-            meta = 'simple'
+            meta = 'compact'
             processors = ('empty', 'ul', 'ol', 'text')
         ul = Element('ul', meta=meta)
         for item_match in self.re_item.finditer(list_match.group(0)):
@@ -380,7 +380,7 @@ class OrderedListProcessor:
             meta = 'block'
             processors = ()
         else:
-            meta = 'simple'
+            meta = 'compact'
             processors = ('empty', 'ul', 'ol', 'text')
         if first_item_match.group(1) in ('#', '1'):
             ol = Element('ol', meta=meta)
@@ -1107,8 +1107,8 @@ class MarkdownRenderer(BaseHtmlRenderer):
             rendered = ' *  ' + rendered[4:]
             rendered = indent(rendered, depth * 4)
             md.append(rendered)
-        if element.meta == 'simple':
-            if self.context[-1] != 'simple':
+        if element.meta == 'compact':
+            if self.context[-1] != 'compact':
                 md.append('\n')
         return ''.join(md)
 
@@ -1119,21 +1119,21 @@ class MarkdownRenderer(BaseHtmlRenderer):
             rendered = ' %s. ' % (i + 1) + rendered[4:]
             rendered = indent(rendered, depth * 4)
             md.append(rendered)
-        if element.meta == 'simple':
-            if self.context[-1] != 'simple':
+        if element.meta == 'compact':
+            if self.context[-1] != 'compact':
                 md.append('\n')
         return ''.join(md)
 
     def _render_li(self, element, depth):
-        if element.meta == 'simple':
-            self.context.append('simple')
+        if element.meta == 'compact':
+            self.context.append('compact')
         md = []
         for child in element:
             item = self._render(child, depth)
             if not item.endswith('\n'):
                 item += '\n'
             md.append(item)
-        if element.meta == 'simple':
+        if element.meta == 'compact':
             self.context.pop()
         return ''.join(md)
 
@@ -1224,7 +1224,7 @@ class TOCBuilder:
 
     def toc(self):
         """ Skips over root-level H1 headings. """
-        ul = Element('ul', {'class': 'stx-toc'}, meta='simple')
+        ul = Element('ul', {'class': 'stx-toc'}, meta='compact')
         for node in self.root['subs']:
             if node['level'] == 1:
                 for subnode in node['subs']:
@@ -1235,16 +1235,16 @@ class TOCBuilder:
 
     def fulltoc(self):
         """ Includes root-level H1 headings. """
-        ul = Element('ul', {'class': 'stx-toc'}, meta='simple')
+        ul = Element('ul', {'class': 'stx-toc'}, meta='compact')
         for node in self.root['subs']:
             ul.append(self._make_li_element(node))
         return ul
 
     def _make_li_element(self, node):
-        li = Element('li', meta='simple')
+        li = Element('li', meta='compact')
         li.append(Text('[%s](#%s)' % (node['text'], node['id'])))
         if node['subs']:
-            ul = li.append(Element('ul', meta='simple'))
+            ul = li.append(Element('ul', meta='compact'))
             for child in node['subs']:
                 ul.append(self._make_li_element(child))
         return li
