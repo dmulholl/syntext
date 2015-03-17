@@ -1331,13 +1331,12 @@ def preprocess(text):
 def extract_meta(text):
     """ Extract document meta and parse it as yaml. """
     meta = {}
-    match = re.match(r"---\n(.*?\n)(---|...)\n", text, re.DOTALL)
+    match = re.match(r"^---\n(.*?\n)[-.]{3}\n", text, re.DOTALL)
     if match:
         text = text[match.end(0):]
         if yaml:
-            yaml_meta = yaml.load(match.group(1))
-            if isinstance(yaml_meta, dict):
-                meta = yaml_meta
+            meta = yaml.load(match.group(1))
+            meta = meta if isinstance(meta, dict) else {}
     return text, meta
 
 
