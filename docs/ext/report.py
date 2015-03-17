@@ -10,8 +10,9 @@ from ark import hooks, site
 
 @hooks.register('exit')
 def print_status_report():
-    pcount = site.page_count()
-    btime = site.build_time()
-    average = btime / (pcount or 1)
-    status = "%s pages rendered in %.2f seconds. %.4f seconds per page."
-    print(status % (pcount, btime, average))
+    rendered, written = site.page_count()
+    time = site.build_time()
+    average = time / (rendered or 1)
+    status = "%s pages rendered, %s pages written in %.2f seconds. "
+    status += "%.4f seconds per page."
+    print(status % (rendered, written, time, average))
