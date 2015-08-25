@@ -15,9 +15,6 @@ Syntex differs from Markdown in using an extensible, indentation-based syntax fo
 
     :tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar"]
         block content
-        block content
-
-        block content
         ...
 
 Syntex also includes out of the box support for document metadata, tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
