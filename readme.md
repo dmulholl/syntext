@@ -7,7 +7,7 @@ Syntex is a lightweight, markdownish markup language for generating HTML from pl
 Syntex borrows most of its basic syntax from Markdown:
 
     This is a paragraph containing *emphasised* and **strong** text.
-    It also contains a `code sample` in backticks.
+    It also contains some `code` in backticks.
 
     This is a second paragraph containing a [link](http://example.com).
 
