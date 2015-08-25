@@ -4,7 +4,7 @@ Syntex
 ======
 
 Syntex is a lightweight, markdownish markup language for generating HTML from
-plain text. It's implemented in Python 3 and can be used as both a command line
+plain text. It's implemented in Python 3 and can be used both as a command line
 script and a Python library.
 
 On the command line::
