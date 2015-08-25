@@ -29,7 +29,7 @@
     
 
     <h1 id="block-syntax">Block Syntax</h1>
-<h3 id="paragraphs-amp-headings">Paragraphs &amp; Headings</h3>
+<h3 id="paragraphs">Paragraphs</h3>
 <p>A paragraph is a group of consecutive lines separated by one or more blank lines:</p>
 <pre>
 This is a paragraph. Note that it includes
@@ -37,6 +37,7 @@ all adjacent lines of text.
 
 This is a second paragraph.
 </pre>
+<h3 id="headings">Headings</h3>
 <p>H1 headings can be enclosed in equals signs <code>=</code>:</p>
 <pre>
 ==========
@@ -49,15 +50,13 @@ H1 Heading
 H2 Heading
 ----------
 </pre>
-<p>In each case the top line of symbols is optional. Headings can also be indicated by prefacing their text with an appropriate number of equals signs <code>=</code> or hashes <code>#</code>:</p>
+<p>In each case the top line of symbols is optional. Headings can also be indicated by prefacing their text with an appropriate number of hashes <code>#</code>:</p>
 <pre>
-=== H3 Heading ===
-
 ### H3 Heading ###
 </pre>
-<p>The trailing symbols in the examples above are optional and can be omitted.</p>
+<p>The trailing symbols in the example above are optional and can be omitted.</p>
 <h3 id="compact-lists">Compact Lists</h3>
-<p>A 'compact' list is a list containing no blank lines. List items will not be wrapped in paragraph tags in the HTML output.</p>
+<p>A <em>compact list</em> is a list containing no blank lines. List items will not be wrapped in paragraph tags in the HTML output.</p>
 <p>An unordered list uses either the star symbol <code>*</code> or the unicode bullet symbol <code>\u2022</code> as its list-item marker:</p>
 <pre>
 * foo          • foo
@@ -88,7 +87,7 @@ H2 Heading
 * bam
 </pre>
 <h3 id="block-lists">Block Lists</h3>
-<p>A 'block' list is a list containing one or more blank lines. Each list-item is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.</p>
+<p>A <em>block list</em> is a list containing one or more blank lines. Each list-item is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.</p>
 <pre>
 * This list item contains a paragraph and a compact list.
 
@@ -139,23 +138,29 @@ This is a paragraph followed by a code block.
 <p>A block opens with a header line containing a tag and, optionally, a set of attributes. The block's content then consists of all subsequent blank or indented lines following the header.</p>
 <p>The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also stripped from the content.</p>
 <p>A block's tag indicates its type and determines how its content is processed. A tag can have one or more aliases which are treated identically, e.g. the tags <code>:blockquote</code>, <code>:quote</code>, and <code>:&gt;&gt;</code> all create a <code>&lt;blockquote&gt;</code> element in the HTML output.</p>
-<p>A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied, although whether these are used depends on the block's type.</p>
+<p>A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied; whether these are used depends on the block's type.</p>
 <p>In general, blocks can be nested to any depth and can contain any block-level content.</p>
-<p>Supported block tags are listed below:</p>
-<h4 id="alert">:alert</h4>
+<p>Supported block tags and their aliases are listed below:</p>
+<dl>
+<dt><code>:alert</code></dt>
+<dd>
 <pre>
 :alert [ info | warning | error ]
 :!! [ info | warning | error ]
 </pre>
 <p>Creates an alert box - a <code>&lt;div&gt;</code> element with the class <code>stx-alert</code> which can be styled appropriately using CSS. Keywords are added as classes in the form <code>stx-&lt;keyword&gt;</code>. Supports nested block-level content.</p>
-<h4 id="blockquote">:blockquote</h4>
+</dd>
+<dt><code>:blockquote</code></dt>
+<dd>
 <pre>
 :blockquote
 :quote
 :&gt;&gt;
 </pre>
 <p>Creates a <code>&lt;blockquote&gt;</code> element. Supports nested block-level content.</p>
-<h4 id="code">:code</h4>
+</dd>
+<dt><code>:code</code></dt>
+<dd>
 <pre>
 :code &lt;language&gt;
 :pre &lt;language&gt;
@@ -164,17 +169,24 @@ This is a paragraph followed by a code block.
 <p>Creates a <code>&lt;pre&gt;</code> element. Accepts an optional keyword argument specifying the language of the code sample.</p>
 <p>If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang="&lt;language&gt;"</code> attribute are added to the <code>&lt;pre&gt;</code> tag.</p>
 <p>If a language is specified and the <a href="http://pygments.org">Pygments</a> module is available then syntax highlighting is applied to the code sample.</p>
-<h4 id="comment">:comment</h4>
+</dd>
+<dt><code>:comment</code></dt>
+<dd>
 <pre>
 :comment
+:##
 </pre>
-<p>Creates an HTML comment. Does not support nested block-level content.</p>
-<h4 id="div">:div</h4>
+<p>Creates a HTML comment. Does not support nested block-level content.</p>
+</dd>
+<dt><code>:div</code></dt>
+<dd>
 <pre>
 :div
 </pre>
 <p>Creates a <code>&lt;div&gt;</code> element. Supports nested block-level content.</p>
-<h4 id="h1-h6">:h1 ... :h6</h4>
+</dd>
+<dt><code>:h1 ... :h6</code></dt>
+<dd>
 <pre>
 :h1
 :h2
@@ -184,37 +196,49 @@ This is a paragraph followed by a code block.
 :h6
 </pre>
 <p>Creates a heading element of the specified level. Heading elements do not support nested block-level content.</p>
-<h4 id="ignore">:ignore</h4>
+</dd>
+<dt><code>:ignore</code></dt>
+<dd>
 <pre>
 :ignore
 ://
 </pre>
-<p>Instructs Syntex to ignore the block's content. Can be used to add comments to a document.</p>
-<h4 id="image">:image</h4>
+<p>Instructs Syntex to ignore the block's content. Can be used to add comments to a document that will not appear in the rendered output.</p>
+</dd>
+<dt><code>:image</code></dt>
+<dd>
 <pre>
 :image &lt;src&gt;
 :img &lt;src&gt;
 </pre>
 <p>Block-level alternative to the inline image tag. The block's content is used as the image's <code>alt</code> text. This tag does not support nested block-level content.</p>
-<h4 id="nl2br">:nl2br</h4>
+</dd>
+<dt><code>:nl2br</code></dt>
+<dd>
 <pre>
 :nl2br
 :||
 </pre>
 <p>Turns on newline-to-linebreak mode. All nested content will have newlines converted to <code>&lt;br&gt;</code> tags.</p>
-<h4 id="null">:null</h4>
+</dd>
+<dt><code>:null</code></dt>
+<dd>
 <pre>
 :null
 :&lt;&lt;
 </pre>
 <p>A <code>:null</code> block has no HTML representation of its own; instead it passes its attributes on to its immediate children. This tag can be used to apply attributes to paragraphs, lists, etc. Supports nested block-level content.</p>
-<h4 id="raw">:raw</h4>
+</dd>
+<dt><code>:raw</code></dt>
+<dd>
 <pre>
 :raw
 :\\
 </pre>
 <p>Indicates that the block contains content which should not be processed but should be included in the output in its raw state. Block-level HTML markup should be enclosed in a <code>:raw</code> block.</p>
-<h4 id="table">:table</h4>
+</dd>
+<dt><code>:table</code></dt>
+<dd>
 <pre>
 :table
 :++
@@ -226,7 +250,7 @@ default | left | center | right
  aaaaa  |  bb  |  cccc  |  ddd
  eeeee  |  ff  |  gggg  |  hhh
 </pre>
-<p>The colons specify the alignment of their columns; cells in the left column receive the class <code>stx-align-left</code>, cells in the center column receive the class <code>stx-align-center</code>, and cells in the right column receive the class <code>stx-align-right</code>.</p>
+<p>The colons specify the alignment of their columns; cells in the left column receive the class <code>stx-left</code>, cells in the center column receive the class <code>stx-center</code>, and cells in the right column receive the class <code>stx-right</code>.</p>
 <p>If you don't need to specify column alignment, you can use the simpler format below:</p>
 <pre>
 foo | bar | baz
@@ -234,6 +258,8 @@ foo | bar | baz
 aaa | bbb | ccc
 ddd | eee | fff
 </pre>
+</dd>
+</dl>
 
     
 

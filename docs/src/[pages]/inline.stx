@@ -3,7 +3,7 @@ Inline Syntax
 =============
 
 
-=== Formatting ====
+### Text Formatting
 
 Single asterisks indicate *emphasised* text:
 
@@ -13,7 +13,7 @@ Double asterisks indicate **bold** text:
 
     This text is **bold**.
 
-Backticks are used to enclose `code samples`:
+Backticks are used to enclose `code`:
 
     This is a `code sample`.
 
@@ -21,7 +21,7 @@ HTML in code samples is automatically escaped.
 
 
 
-=== Links ===
+### Links
 
 Syntex borrows its link syntax directly from Markdown:
 
@@ -41,7 +41,7 @@ If the reference text is omitted from the link, the link text will be used in it
 
 
 
-=== Images ===
+### Images
 
 Syntex borrows its image syntax directly from Markdown:
 
@@ -61,8 +61,8 @@ If the reference text is omitted from the image, the alt text will be used in it
 
 
 
-=== Inline HTML ===
+### Inline HTML
 
-Syntex ignores HTML tags so it's fine to mix and match inline HTML and Syntex markup. Block-level HTML tags like `<div>` and `<p>` should be offset in a `:raw` block or Syntex will try to wrap them in paragraph tags in the output.
+Syntex ignores html tags so it's fine to mix and match inline html and Syntex markup. Block-level html tags like `<div>` and `<p>` should be offset in a `:raw` block or Syntex will try to wrap them in paragraph tags in the output.
 
-The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or a character entity.
+The html syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a html tag or character entity.

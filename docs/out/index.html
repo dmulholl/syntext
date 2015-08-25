@@ -29,7 +29,7 @@
     
 
     <h1 id="syntex">Syntex</h1>
-<p>Syntex is a lightweight markup language for generating HTML from plain text. It's implemented in Python 3 and can be used both as a command line script and as a Python library.</p>
+<p>Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python 3 and can be used both as a command line script and as a Python library.</p>
 <p>When used on the command line Syntex reads from <code>stdin</code> and prints to <code>stdout</code>:</p>
 <pre>
 $ syntex &lt; input.txt &gt; output.html
@@ -44,6 +44,24 @@ $ syntex &lt; input.txt &gt; output.html
 $ syntex -f markdown &lt; input.txt &gt; output.md
 </pre>
 <p>(Not all of Syntex's features can be translated into Markdown, so this capability should be used with care.)</p>
+<h2 id="overview">Overview</h2>
+<p>Syntex borrows most of its basic syntax from Markdown:</p>
+<pre>
+This is a paragraph containing *emphasised* and **strong** text.
+It also contains a `code sample` in backticks.
+
+This is a second paragraph containing a [link](http://example.com).
+</pre>
+<p>Syntex differs from Markdown in using an extensible, indentation-based syntax for block-level elements:</p>
+<pre>
+:tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar"]
+    block content
+    block content
+
+    block content
+    ...
+</pre>
+<p>Syntex also includes out of the box support for document metadata, tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.</p>
 <h2 id="installation">Installation</h2>
 <p>Install directly from the Python Package Index using <code>pip</code>:</p>
 <pre>

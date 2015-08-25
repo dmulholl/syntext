@@ -67,13 +67,13 @@ This sentence ends with an automatically-numbered reference.[^]
 :insert fulltoc
 </pre>
 <h3 id="document-metadata">Document Metadata</h3>
-<p>Syntex will use the <a href="http://pyyaml.org">PyYAML</a> module if available to parse each document for a metadata header in <a href="http://en.wikipedia.org/wiki/YAML">YAML</a> format. The header should be the first item in the document and should be enclosed by a header line of three dashes <code>---</code> and a footer line of three dots <code>...</code>:</p>
+<p>Syntex will use the <a href="http://pyyaml.org">PyYAML</a> module if available to parse each document for a metadata header in <a href="http://en.wikipedia.org/wiki/YAML">YAML</a> format. The header should be the first item in the document and should be enclosed by header and footer lines of three dashes <code>---</code>:</p>
 <pre>
 ---
 title: Important Document
 author: John Doe
 date: 2000-01-01
-...
+---
 </pre>
 <p>Parsed metadata is returned as a Python dictionary by the <code>render()</code> function:</p>
 <pre class="lang-python stx-pygments" data-lang="python">

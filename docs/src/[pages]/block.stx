@@ -1,0 +1,268 @@
+
+Block Syntax
+============
+
+
+### Paragraphs
+
+A paragraph is a group of consecutive lines separated by one or more blank lines:
+
+    This is a paragraph. Note that it includes
+    all adjacent lines of text.
+
+    This is a second paragraph.
+
+
+
+### Headings
+
+H1 headings can be enclosed in equals signs `=`:
+
+    ==========
+    H1 Heading
+    ==========
+
+H2 headings can be enclosed in dashes `-`:
+
+    ----------
+    H2 Heading
+    ----------
+
+In each case the top line of symbols is optional. Headings can also be indicated by prefacing their text with an appropriate number of hashes `#`:
+
+    ### H3 Heading ###
+
+The trailing symbols in the example above are optional and can be omitted.
+
+
+
+### Compact Lists
+
+A *compact list* is a list containing no blank lines. List items will not be wrapped in paragraph tags in the HTML output.
+
+An unordered list uses either the star symbol `*` or the unicode bullet symbol `\u2022` as its list-item marker:
+
+    * foo          • foo
+    * bar          • bar
+    * baz          • baz
+
+An ordered list uses either integer-period `<int>.` or hash-period `#.` as its list-item marker:
+
+    1. foo         #. foo
+    2. bar         #. bar
+    3. baz         #. baz
+
+Ordered lists are numbered according to their opening integer:
+
+    5. This list starts
+    6. With list item 5
+
+List-item markers can be indented by up to three spaces. A list-item consists of its opening line plus all subsequent indented lines:
+
+    * This list item
+      is split over two lines.
+
+List items can contain nested compact lists:
+
+    * foo
+      1. bar
+      2. baz
+    * bam
+
+
+
+### Block Lists
+
+A *block list* is a list containing one or more blank lines. Each list-item is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.
+
+    * This list item contains a paragraph and a compact list.
+
+      1. foo
+      2. bar
+
+    * This list item contains two paragraphs. This is the first.
+
+      And this is the second.
+
+List-item markers can be indented by up to three spaces. A list-item consists of its opening line plus all subsequent blank or indented lines.
+
+
+
+### Definition Lists
+
+Syntex supports definition lists in the following format:
+
+    ~ Term 1
+
+        This is the definition of the first term.
+
+    ~ Term 2
+
+        This is the definition of the second term.
+
+A *term* is indicated by an opening tilde `~`, which may be indented by up to three spaces. The term's *definition* consists of all subsequent blank or indented lines and can contain any number of block-level elements.
+
+
+
+### Code Blocks
+
+A block of text indented by four or more spaces is treated as a code block and wrapped in `<pre>` tags in the HTML output. The code block can contain blank lines and is ended by the first non-indented line.
+
+    This is a paragraph followed by a code block.
+
+        <p>Hello world!</p>
+
+HTML in code blocks is automatically escaped.
+
+
+
+### Horizontal Rules
+
+A line containing three or more `*` or `-` characters (optionally separated by spaces) will produce a horizontal rule:
+
+    * * *
+    -----
+
+
+
+### Generic Blocks
+
+All other block-level elements are handled using an extensible indentation-based syntax:
+
+    :tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar" attr3='baz']
+        block content
+        block content
+
+        block content
+        ...
+
+A block opens with a header line containing a tag and, optionally, a set of attributes. The block's content then consists of all subsequent blank or indented lines following the header.
+
+The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also stripped from the content.
+
+A block's tag indicates its type and determines how its content is processed. A tag can have one or more aliases which are treated identically, e.g. the tags `:blockquote`, `:quote`, and `:>>` all create a `<blockquote>` element in the HTML output.
+
+A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied; whether these are used depends on the block's type.
+
+In general, blocks can be nested to any depth and can contain any block-level content.
+
+Supported block tags and their aliases are listed below:
+
+
+~ `:alert`
+
+        :alert [ info | warning | error ]
+        :!! [ info | warning | error ]
+
+    Creates an alert box - a `<div>` element with the class `stx-alert` which can be styled appropriately using CSS. Keywords are added as classes in the form `stx-<keyword>`. Supports nested block-level content.
+
+
+~ `:blockquote`
+
+        :blockquote
+        :quote
+        :>>
+
+    Creates a `<blockquote>` element. Supports nested block-level content.
+
+
+~ `:code`
+
+        :code <language>
+        :pre <language>
+        ::: <language>
+
+    Creates a `<pre>` element. Accepts an optional keyword argument specifying the language of the code sample.
+
+    If a language is specified then a `lang-<language>` class and a `data-lang="<language>"` attribute are added to the `<pre>` tag.
+
+    If a language is specified and the [Pygments](http://pygments.org) module is available then syntax highlighting is applied to the code sample.
+
+
+~ `:comment`
+
+        :comment
+        :##
+
+    Creates a HTML comment. Does not support nested block-level content.
+
+
+~ `:div`
+
+        :div
+
+    Creates a `<div>` element. Supports nested block-level content.
+
+
+~ `:h1 ... :h6`
+
+        :h1
+        :h2
+        :h3
+        :h4
+        :h5
+        :h6
+
+    Creates a heading element of the specified level. Heading elements do not support nested block-level content.
+
+
+~ `:ignore`
+
+        :ignore
+        ://
+
+    Instructs Syntex to ignore the block's content. Can be used to add comments to a document that will not appear in the rendered output.
+
+
+~ `:image`
+
+        :image <src>
+        :img <src>
+
+    Block-level alternative to the inline image tag. The block's content is used as the image's `alt` text. This tag does not support nested block-level content.
+
+
+~ `:nl2br`
+
+        :nl2br
+        :||
+
+    Turns on newline-to-linebreak mode. All nested content will have newlines converted to `<br>` tags.
+
+
+~ `:null`
+
+        :null
+        :<<
+
+    A `:null` block has no HTML representation of its own; instead it passes its attributes on to its immediate children. This tag can be used to apply attributes to paragraphs, lists, etc. Supports nested block-level content.
+
+
+~ `:raw`
+
+        :raw
+        :\\\\
+
+    Indicates that the block contains content which should not be processed but should be included in the output in its raw state. Block-level HTML markup should be enclosed in a `:raw` block.
+
+
+~ `:table`
+
+        :table
+        :++
+
+    Indicates that the block contains a simple table in the following format:
+
+        default | left | center | right
+        ------- | :--- | :----: | ----:
+         aaaaa  |  bb  |  cccc  |  ddd
+         eeeee  |  ff  |  gggg  |  hhh
+
+    The colons specify the alignment of their columns; cells in the left column receive the class `stx-left`, cells in the center column receive the class `stx-center`, and cells in the right column receive the class `stx-right`.
+
+    If you don't need to specify column alignment, you can use the simpler format below:
+
+        foo | bar | baz
+        ---------------
+        aaa | bbb | ccc
+        ddd | eee | fff

@@ -3,7 +3,7 @@ Features
 ========
 
 
-=== Footnotes ===
+### Footnotes
 
 Syntex includes built-in support for footnotes:
 
@@ -34,7 +34,7 @@ You can choose the insertion point for your footnotes using the `:insert` tag:
 
 
 
-=== Table of Contents ===
+### Table of Contents
 
 Syntex can automatically generate a table of contents for a document:
 
@@ -46,15 +46,15 @@ The default listing skips level 1 headings to avoid including the document title
 
 
 
-=== Document Metadata ===
+### Document Metadata
 
-Syntex will use the [PyYAML][] module if available to parse each document for a metadata header in [YAML][] format. The header should be the first item in the document and should be enclosed by a header line of three dashes `---` and a footer line of three dots `...`:
+Syntex will use the [PyYAML][] module if available to parse each document for a metadata header in [YAML][] format. The header should be the first item in the document and should be enclosed by header and footer lines of three dashes `---`:
 
     ---
     title: Important Document
     author: John Doe
     date: 2000-01-01
-    ...
+    ---
 
 Parsed metadata is returned as a Python dictionary by the `render()` function:
 

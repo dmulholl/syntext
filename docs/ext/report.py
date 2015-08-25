@@ -1,13 +1,15 @@
 """
-This sample plugin prints a simple status report at the end of each build.
+This sample extension prints a simple status report at the end of each build.
 
-License: Public Domain.
+Author: Darren Mulholland <dmulholland@outlook.ie>
+License: Public Domain
 
 """
 
 from ark import hooks, site
 
 
+# Register a callback on the 'exit' event hook to print our status report.
 @hooks.register('exit')
 def print_status_report():
     rendered, written = site.page_count()
