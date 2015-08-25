@@ -3,7 +3,7 @@
 Syntex
 ======
 
-A lightweight markup language for generating HTML.
+A lightweight, markdownish markup language for generating HTML.
 
 To use as a script:
 
@@ -14,12 +14,10 @@ To use as a library module:
     import syntex
     html, meta = syntex.render(text)
 
-License: This work has been placed in the public domain.
+Author: Darren Mulholland <dmulholland@outlook.ie>
+License: Public Domain
 
 """
-
-__version__ = "0.9.1"
-
 
 import sys
 import re
@@ -30,6 +28,10 @@ import argparse
 import pprint
 import textwrap
 import html
+
+
+# Library version number.
+__version__ = "10.0.0"
 
 
 # Parse document metadata with the PyYAML module, if available.
@@ -63,9 +65,9 @@ ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 tagmap = {}
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Block Parser
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 class Element:
@@ -230,16 +232,14 @@ class HeadingProcessor:
 
     """ Arbitrary level heading of the form:
 
-        === Heading ===
-    or
         ### Heading ###
 
-    The number of leading '=' specifies the heading level.
-    Trailing '=' are optional.
+    The number of leading '#' specifies the heading level.
+    Trailing '#' are optional.
 
     """
 
-    regex = re.compile(r"^([=#]{1,6})(.+?)[=#]*\n", re.MULTILINE)
+    regex = re.compile(r"^([#]{1,6})(.+?)[#]*\n", re.MULTILINE)
 
     def __call__(self, text, pos):
         match = self.regex.match(text, pos)
@@ -577,9 +577,9 @@ class BlockParser:
         return elements
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Tag Handlers
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 def register(*tags):
@@ -657,11 +657,11 @@ def table_handler(tag, pargs, kwargs, content):
     align = [None for cell in head]
     for i, cell in enumerate(meta):
         if cell.startswith(':') and cell.endswith(':'):
-            align[i] = 'stx-align-center'
+            align[i] = 'stx-center'
         elif cell.startswith(':'):
-            align[i] = 'stx-align-left'
+            align[i] = 'stx-left'
         elif cell.endswith(':'):
-            align[i] = 'stx-align-right'
+            align[i] = 'stx-right'
 
     def make_row(cells, celltag):
         tr = Element('tr')
@@ -724,16 +724,16 @@ def ignore_handler(tag, pargs, kwargs, content):
     return None
 
 
-@register('comment')
+@register('comment', '##')
 def html_comment_handler(tag, pargs, kwargs, content):
     element = Element('comment')
     element.append(Text(strip(content)))
     return element
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Renderers
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 class BaseHtmlRenderer:
@@ -1164,9 +1164,9 @@ class MarkdownRenderer(BaseHtmlRenderer):
         return '\n'.join(refs)
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Table of Contents Builder
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 class TOCBuilder:
@@ -1252,9 +1252,9 @@ class TOCBuilder:
         return self.root['subs']
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Utility Functions
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 def esc(text, quotes=True):
@@ -1303,9 +1303,9 @@ def error(msg):
     sys.stderr.write('error: ' + msg + '\n')
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Preprocessors
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 def preprocess(text):
@@ -1432,9 +1432,9 @@ def extract_link_references(text):
     return text, refs
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Private Interface
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 def parse(text):
@@ -1480,9 +1480,9 @@ def render_debug(text):
     return ''.join(output), meta
 
 
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 # Public Interface
-# ----------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 
 
 def render(text, format='html'):
