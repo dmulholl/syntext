@@ -2,7 +2,7 @@
 Syntex
 ======
 
-Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python 3 and can be used both as a command line script and a Python library.
+Syntex is a lightweight, markdownish markup language for generating HTML. It's implemented in Python 3 and can be used both as a command line script and a Python library.
 
 Syntex borrows most of its basic syntax from Markdown:
 
