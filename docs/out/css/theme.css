@@ -72,6 +72,9 @@ body {
     color: #4183C4;
     transition: color 0.3s;
 }
+.hamburger {
+    display: none;
+}
 
 /*
     Headings
@@ -268,10 +271,10 @@ th, td {
     padding: 0.6rem 1.2rem;
     text-align: left;
 }
-table .align-center {
+table .stx-center {
     text-align: center;
 }
-table .align-right {
+table .stx-right {
     text-align: right;
 }
 
@@ -326,12 +329,24 @@ h1 + ul {
 }
 
 /*
+    Utility Styles
+*/
+
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/*
     Small Screen (Tablet/Landscape Phone)
 */
 
 @media (max-width: 800px) {
     html {
         font-size: 58.333333%;
+        -webkit-text-size-adjust: 100%;
     }
     body {
         padding: 0;
@@ -356,32 +371,42 @@ h1 + ul {
 @media (max-width: 420px) {
     html {
         font-size: 54.166667%;
+        -webkit-text-size-adjust: 100%;
     }
     .content {
         padding: 0 20px 30px;
     }
     .header {
-        text-align: left;
-        font-size: 1.5rem;
-        padding: 15px 20px;
+        text-align: center;
+        font-size: 1.6rem;
+        padding: 20px 0;
         color: #333;
     }
+    .hamburger {
+        display: block;
+        margin: 0 auto;
+        width: 10rem;
+        text-align: center;
+        font-size: 4rem;
+        color: #888;
+        cursor: pointer;
+    }
     .header ul {
-        border-top:    1px dotted #ccc;
-        margin: 15px 40px;
+        border-top: 1px dotted #ccc;
+        margin: 15px 80px;
+        display: none;
     }
     .header li {
         margin: 0;
-        padding-left: 10px;
         display: list-item;
         border-bottom: 1px dotted #ccc;
     }
     .header li:before, .header li:first-child:before {
-        content: "§";
+        content: none;
     }
     .header a {
         display: inline-block;
-        padding: 5px 10px;
+        padding: 8px 10px;
         color: #4183C4;
         text-decoration: none;
     }

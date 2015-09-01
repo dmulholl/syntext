@@ -15,3 +15,10 @@ $(function() {
     $(window).resize(resizeContent);
     resizeContent();
 });
+
+// Hamburger dropdown menu for phones in portrait mode.
+$(function() {
+    $(".hamburger").click(function(){
+        $(".header ul").slideToggle();
+    });
+});
