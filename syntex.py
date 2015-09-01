@@ -31,7 +31,7 @@ import html
 
 
 # Library version number.
-__version__ = "0.10.0"
+__version__ = "0.10.1"
 
 
 # Parse document metadata with the PyYAML module, if available.
