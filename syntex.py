@@ -31,7 +31,7 @@ import html
 
 
 # Library version number.
-__version__ = "0.10.1"
+__version__ = "0.10.2"
 
 
 # Parse document metadata with the PyYAML module, if available.
@@ -949,7 +949,7 @@ class HtmlRenderer(BaseHtmlRenderer):
                 except pygments.util.ClassNotFound:
                     lexer = None
             if lexer:
-                element.add_class('stx-pygments')
+                element.add_class('pygments')
                 formatter = pygments.formatters.HtmlFormatter(nowrap=True)
                 text = strip(pygments.highlight(text, lexer, formatter))
             else:
