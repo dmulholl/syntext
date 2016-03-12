@@ -18,12 +18,6 @@ import sys
 testdir = os.path.join(os.path.dirname(__file__), 'tests')
 
 
-# Render the input as html and discard the meta object.
-def render(text):
-    html, meta = syntex.render(text)
-    return html
-
-
 # Load a file and return its content.
 def load(filepath):
     with open(filepath, encoding='utf-8') as file:
@@ -33,13 +27,13 @@ def load(filepath):
 class TestBasicInput(unittest.TestCase):
 
     def test_empty_input(self):
-        self.assertEqual(render(''), '')
+        self.assertEqual(syntex.render(''), '')
 
     def test_whitespace_input(self):
-        self.assertEqual(render(' '), '')
+        self.assertEqual(syntex.render(' '), '')
 
     def test_simple_string_input(self):
-        self.assertEqual(render('foo'), '<p>foo</p>')
+        self.assertEqual(syntex.render('foo'), '<p>foo</p>')
 
 
 class TestFiles(unittest.TestCase):
@@ -53,7 +47,7 @@ class TestFiles(unittest.TestCase):
                     text = load(os.path.join(testdir, dirname, base + '.txt'))
                     html = load(os.path.join(testdir, dirname, base + '.html'))
                     with self.subTest(dir=dirname, test=base):
-                        self.assertEqual(render(text), html.strip())
+                        self.assertEqual(syntex.render(text), html.strip())
 
 
 if __name__ == '__main__':

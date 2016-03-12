@@ -12,7 +12,7 @@ To use as a script:
 To use as a library module:
 
     import syntex
-    html, meta = syntex.render(text)
+    html = syntex.render(text)
 
 Author: Darren Mulholland <darren@mulholland.xyz>
 License: Public Domain
@@ -32,13 +32,6 @@ import html
 
 # Library version number.
 __version__ = "0.11.0.dev"
-
-
-# Parse document metadata with the PyYAML module, if available.
-try:
-    import yaml
-except ImportError:
-    yaml = None
 
 
 # Use the Pygments module for syntax highlighting, if available.
@@ -789,9 +782,11 @@ def html_comment_handler(tag, pargs, kwargs, content):
 # -------------------------------------------------------------------------
 
 
-class BaseHtmlRenderer:
+class HtmlRenderer:
 
-    """ Common base class for both the HTML and Markdown renderers.
+    """ Renders an Element tree as HTML.
+
+        html = HtmlRenderer(link_refs, inserts).render(element)
 
     The constructor accepts optional dictionaries of link references and
     insertable elements to use while rendering the element tree.
@@ -859,13 +854,7 @@ class BaseHtmlRenderer:
             rendered = rendered.replace(key, value)
         for key, value in ESCMAP.items():
             rendered = rendered.replace(key, value)
-        if self.link_refs:
-            rendered += self._render_link_refs()
         return strip(rendered)
-
-    def _render(self, element):
-        # Subclasses override this method to handle block-level elements.
-        return ''
 
     def _hash(self, text):
         digest = hashlib.sha1(text.encode()).hexdigest()
@@ -956,15 +945,6 @@ class BaseHtmlRenderer:
             ref = self.footnote_index
             self.footnote_index += 1
         return '<sup class="fn-ref"><a href="#fn-%s">%s</a></sup>' % (ref, ref)
-
-
-class HtmlRenderer(BaseHtmlRenderer):
-
-    """ Renders an Element tree as HTML.
-
-        html = HtmlRenderer(link_refs, inserts).render(element)
-
-    """
 
     def _render(self, element):
         method = '_render_%s' % element.tag
@@ -1070,151 +1050,6 @@ class HtmlRenderer(BaseHtmlRenderer):
         if 'nl2br' in self.context:
             text = text.replace('\n', '<br>\n')
         return text
-
-    def _render_link_refs(self):
-        return ''
-
-
-class MarkdownRenderer(BaseHtmlRenderer):
-
-    """ Makes a best-effort attempt at rendering an Element tree as Markdown.
-
-        markdown = MarkdownRenderer(link_refs, inserts).render(element)
-
-    Footnotes and footnote references are rendered in HTML.
-
-    The table of contents cannot be rendered as we have no way of setting IDs
-    on the document's headings.
-
-    Complex block-level markup is rendered in html unless it occurs
-    inside an indented block (i.e. inside a list), as markdown does not
-    support indented block-level html.
-
-    """
-
-    def _render(self, element, depth=0):
-        method = '_render_%s' % element.tag
-        if hasattr(self, method):
-            return getattr(self, method)(element, depth)
-        elif element.tag in ('h1', 'h2', 'h3', 'h4', 'h5', 'h6'):
-            return self._render_heading(element, depth)
-        else:
-            return self._render_default(element, depth)
-
-    def _render_default(self, element, depth):
-        if depth == 0:
-            return HtmlRenderer().render(element) + '\n\n'
-        else:
-            error("cannot render indented '%s' block in markdown" % element.tag)
-            return ''
-
-    def _render_root(self, element, depth):
-        return ''.join(self._render(child, depth) for child in element)
-
-    def _render_null(self, element, depth):
-        return ''.join(self._render(child, depth) for child in element)
-
-    def _render_nl2br(self, element, depth):
-        self.context.append('nl2br')
-        md = ''.join(self._render(child, depth) for child in element)
-        self.context.pop()
-        return md
-
-    def _render_p(self, element, depth):
-        return ''.join(self._render(child, depth) for child in element) + '\n\n'
-
-    def _render_blockquote(self, element, depth):
-        md = ''.join(self._render(child) for child in element)
-        md = re.sub(r"^", "> ", strip(md), flags=re.MULTILINE)
-        return indent(md, depth * 4) + '\n\n'
-
-    def _render_heading(self, element, depth):
-        text = element.get_text().replace('\n', ' ')
-        text = '#' * int(element.tag[1]) + ' '  + text
-        text = indent(text, depth * 4)
-        return text + '\n\n'
-
-    def _render_pre(self, element, depth):
-        return indent(element.get_text(), (depth + 1) * 4) + '\n\n'
-
-    def _render_hr(self, element, depth):
-        return '* * *\n\n'
-
-    def _render_image(self, element, depth):
-        md = '![%(alt)s](%(src)s)\n\n' % element.attrs
-        return indent(md, depth * 4)
-
-    def _render_raw(self, element, depth):
-        if depth == 0:
-            return element.get_text() + '\n\n'
-        else:
-            error("cannot render indented 'raw' block in markdown")
-            return ''
-
-    def _render_ul(self, element, depth):
-        md = []
-        for li in element:
-            rendered = self._render(li, 1)
-            rendered = ' *  ' + rendered[4:]
-            rendered = indent(rendered, depth * 4)
-            md.append(rendered)
-        if element.meta == 'compact':
-            if self.context[-1] != 'compact':
-                md.append('\n')
-        return ''.join(md)
-
-    def _render_ol(self, element, depth):
-        md = []
-        for i, li in enumerate(element):
-            rendered = self._render(li, 1)
-            rendered = ' %s. ' % (i + 1) + rendered[4:]
-            rendered = indent(rendered, depth * 4)
-            md.append(rendered)
-        if element.meta == 'compact':
-            if self.context[-1] != 'compact':
-                md.append('\n')
-        return ''.join(md)
-
-    def _render_li(self, element, depth):
-        if element.meta == 'compact':
-            self.context.append('compact')
-        md = []
-        for child in element:
-            item = self._render(child, depth)
-            if not item.endswith('\n'):
-                item += '\n'
-            md.append(item)
-        if element.meta == 'compact':
-            self.context.pop()
-        return ''.join(md)
-
-    def _render_insert(self, element, depth):
-        if element.meta in ('toc', 'fulltoc'):
-            error("cannot render table of contents in markdown")
-            return ''
-        elif element.meta in self.inserts:
-            insert = self.inserts[element.meta]
-            insert.attrs.update(element.attrs)
-            return self._render(insert, depth)
-        else:
-            return ''
-
-    def _render_text(self, element, depth):
-        text = element.text
-        text = self._do_inline_footnotes(text)
-        text = text.rstrip('\n')
-        if 'nl2br' in self.context:
-            text = text.replace('\n', '  \n')
-        return indent(text, depth * 4)
-
-    def _render_link_refs(self):
-        refs = []
-        for ref, data in self.link_refs.items():
-            if data[1]:
-                refs.append('[%s]: %s "%s"' % (ref, data[0], data[1]))
-            else:
-                refs.append('[%s]: %s' % (ref, data[0]))
-        return '\n'.join(refs)
 
 
 # -------------------------------------------------------------------------
@@ -1356,6 +1191,11 @@ def error(msg):
     sys.stderr.write('error: ' + msg + '\n')
 
 
+def title(text, w=80):
+    """ Format title text for output on the command line. """
+    return '=' * w + '\n' + text.center(w, '-') + '\n' +  '=' * w + '\n'
+
+
 # -------------------------------------------------------------------------
 # Preprocessors
 # -------------------------------------------------------------------------
@@ -1366,7 +1206,6 @@ def preprocess(text):
 
     * Convert all line endings to newlines.
     * Convert all tabs to spaces.
-    * Extract document meta data.
     * Escape backslashed characters.
     * Extract footnotes.
     * Extract link references.
@@ -1374,23 +1213,10 @@ def preprocess(text):
     """
     text = re.sub(r"\r\n|\r", r"\n", text)
     text = text.expandtabs(4)
-    text, meta = extract_meta(text)
     text = escape_backslashes(text)
     text, footnotes = extract_footnotes(text)
     text, link_refs = extract_link_references(text)
-    return text, meta, link_refs, footnotes
-
-
-def extract_meta(text):
-    """ Extract document meta and parse it as yaml. """
-    meta = {}
-    match = re.match(r"^---\n(.*?\n)[-.]{3}\n", text, re.DOTALL)
-    if match:
-        text = text[match.end(0):]
-        if yaml:
-            meta = yaml.load(match.group(1))
-            meta = meta if isinstance(meta, dict) else {}
-    return text, meta
+    return text, link_refs, footnotes
 
 
 def escape_backslashes(text):
@@ -1486,12 +1312,12 @@ def extract_link_references(text):
 
 
 # -------------------------------------------------------------------------
-# Private Interface
+# Internal Interface
 # -------------------------------------------------------------------------
 
 
 def parse(text):
-    text, meta, link_refs, footnotes = preprocess(text)
+    text, link_refs, footnotes = preprocess(text)
     root = Element('root')
     root.children = BlockParser().parse(text)
     toc = TOCBuilder(root)
@@ -1500,37 +1326,24 @@ def parse(text):
         'toc': toc.toc(),
         'fulltoc': toc.fulltoc(),
     }
-    meta['[toc]'] = toc.nodes()
-    return root, meta, link_refs, inserts
+    return root, toc.nodes(), link_refs, inserts
 
 
 def render_html(text):
-    root, meta, link_refs, inserts = parse(text)
+    root, toc, link_refs, inserts = parse(text)
     rendered = HtmlRenderer(link_refs, inserts).render(root)
-    return rendered, meta
-
-
-def render_markdown(text):
-    root, meta, link_refs, inserts = parse(text)
-    rendered = MarkdownRenderer(link_refs, inserts).render(root)
-    return rendered, meta
+    return rendered, toc
 
 
 def render_debug(text):
-
-    def heading(title, w=80):
-        return '=' * w + '\n' + title.center(w, '-') + '\n' +  '=' * w + '\n'
-
-    root, meta, link_refs, inserts = parse(text)
-    output = [heading(' Meta ')]
-    output.append(pprint.pformat(meta))
-    output.append('\n\n' + heading(' Tree '))
+    root, toc, link_refs, inserts = parse(text)
+    output = [title(' TOC ')]
+    output.append(pprint.pformat(toc))
+    output.append('\n\n' + title(' AST '))
     output.append(str(root))
-    output.append('\n' + heading(' HTML '))
+    output.append('\n' + title(' HTML '))
     output.append(HtmlRenderer(link_refs, inserts).render(root))
-    output.append('\n\n' + heading(' Markdown '))
-    output.append(MarkdownRenderer(link_refs, inserts).render(root))
-    return ''.join(output), meta
+    return ''.join(output), toc
 
 
 # -------------------------------------------------------------------------
@@ -1538,30 +1351,27 @@ def render_debug(text):
 # -------------------------------------------------------------------------
 
 
-def render(text, format='html'):
-    if format in ('markdown', 'm'):
-        rendered, meta = render_markdown(text)
-    elif format in ('debug', 'd'):
-        rendered, meta = render_debug(text)
+def render(text, debug=False):
+    if debug:
+        rendered, _ = render_debug(text)
     else:
-        rendered, meta = render_html(text)
-    return rendered, meta
+        rendered, _ = render_html(text)
+    return rendered
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-V', '--version',
+    parser.add_argument('-v', '--version',
         action="version",
         version=__version__,
     )
-    parser.add_argument('-f',
-        help="output format: html, markdown, or debug (default: html)",
-        default='html',
-        dest='format',
+    parser.add_argument('-d', '--debug',
+        action="store_true",
+        help="run in debug mode",
     )
     args = parser.parse_args()
     text = sys.stdin.read()
-    rendered, meta = render(text, args.format)
+    rendered = render(text, args.debug)
     sys.stdout.write(rendered + '\n')
 
 
