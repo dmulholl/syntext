@@ -15,7 +15,7 @@ import sys
 
 
 # Path to the tests directory.
-testdir = os.path.join(os.path.dirname(__file__), 'tests')
+testdir = os.path.join(os.path.dirname(__file__), 'unittests')
 
 
 # Load a file and return its content.
