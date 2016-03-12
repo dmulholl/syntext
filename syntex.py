@@ -66,7 +66,7 @@ tagmap = {}
 
 
 # -------------------------------------------------------------------------
-# Block Parser
+# AST Nodes
 # -------------------------------------------------------------------------
 
 
@@ -135,6 +135,11 @@ class Text(Element):
     def __init__(self, text):
         Element.__init__(self, 'text')
         self.text = text
+
+
+# -------------------------------------------------------------------------
+# Text Processors
+# -------------------------------------------------------------------------
 
 
 class ParagraphProcessor:
@@ -565,6 +570,11 @@ class GenericBlockProcessor:
         return pargs, kwargs
 
 
+# -------------------------------------------------------------------------
+# Block Parser
+# -------------------------------------------------------------------------
+
+
 class BlockParser:
 
     """ Parses a string and returns a list of block elements.
@@ -631,6 +641,7 @@ def register(*tags):
     def register_tag_handler(func):
         for tag in tags:
             tagmap[tag] = func
+        return func
 
     return register_tag_handler
 
