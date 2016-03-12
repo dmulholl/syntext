@@ -14,7 +14,7 @@ To use as a library module:
     import syntex
     html, meta = syntex.render(text)
 
-Author: Darren Mulholland <dmulholland@outlook.ie>
+Author: Darren Mulholland <darren@mulholland.xyz>
 License: Public Domain
 
 """
