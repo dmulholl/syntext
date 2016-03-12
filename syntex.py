@@ -31,7 +31,7 @@ import html
 
 
 # Library version number.
-__version__ = "0.10.2"
+__version__ = "0.11.0.dev"
 
 
 # Parse document metadata with the PyYAML module, if available.
@@ -61,7 +61,7 @@ ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
 ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
-# Maps block :tagnames to their associated handler functions.
+# Maps :tags to their registered handler functions.
 tagmap = {}
 
 
