@@ -2,7 +2,7 @@
 """
 Unit tests for the syntex module.
 
-Note that this test script requires Python >= 3.4 as it relies on the 
+Note that this test script requires Python >= 3.4 as it relies on the
 TestCase.subTest() functionality introduced to the unittest module in
 that version.
 
