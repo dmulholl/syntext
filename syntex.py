@@ -374,12 +374,21 @@ class OrderedListProcessor:
     """ An ordered list. The list item marker is '#.' or '<int>.'.
 
     Each list item consists of its opening line plus all subsequent blank
-    or indented lines. List item markers can be indented by up to three spaces.
+    or indented lines. List item markers can be indented by up to three
+    spaces.
+
+    Example:
+
+        1. foo
+        2. bar
+        3. baz
+
+    Changing to a different list item marker starts a new list.
 
     """
 
     item = r"""
-        ^[ ]{0,3}(\#|\d+)\.(\n|(?:[ ].*\n))
+        ^[ ]{0,3}(%s)(\n|(?:[ ].*\n))
         ((
             (^[ ]*\n)
             |
@@ -387,32 +396,45 @@ class OrderedListProcessor:
         )*)
     """
 
-    re_item = re.compile(item, re.VERBOSE | re.MULTILINE)
-    re_list = re.compile(r"(%s)+" % item, re.VERBOSE | re.MULTILINE)
-    re_empt = re.compile(r"^[ ]*\n", re.MULTILINE)
+    regexes = []
+    re_blankline = re.compile(r"^[ ]*\n", re.MULTILINE)
+
+    def __init__(self):
+        for marker in (r'\#\.', r'\d+\.'):
+            item = self.item % marker
+            re_item = re.compile(item, re.VERBOSE | re.MULTILINE)
+            re_list = re.compile('(%s)+' % item, re.VERBOSE | re.MULTILINE)
+            self.regexes.append((re_item, re_list))
 
     def __call__(self, text, pos):
-        first_item_match = self.re_item.match(text, pos)
-        if not first_item_match:
-            return False, None, pos
-        list_match = self.re_list.match(text, pos)
-        if self.re_empt.search(list_match.group(0).strip()):
-            meta = 'block'
-            processors = ()
-        else:
-            meta = 'compact'
-            processors = ('empty', 'ul', 'ol', 'text')
-        if first_item_match.group(1) in ('#', '1'):
-            ol = Element('ol', meta=meta)
-        else:
-            ol = Element('ol', {'start': first_item_match.group(1)}, meta=meta)
-        for item_match in self.re_item.finditer(list_match.group(0)):
-            head = item_match.group(2).lstrip(' ')
-            body = item_match.group(3)
-            content = head + dedent(body)
-            li = ol.append(Element('li', meta=meta))
-            li.children = BlockParser(*processors).parse(content)
-        return True, ol, list_match.end(0)
+        for re_item, re_list in self.regexes:
+            first_item_match = re_item.match(text, pos)
+            if not first_item_match:
+                continue
+
+            list_match = re_list.match(text, pos)
+            if self.re_blankline.search(list_match.group(0).strip()):
+                meta = 'block'
+                processors = ()
+            else:
+                meta = 'compact'
+                processors = ('empty', 'ul', 'ol', 'text')
+
+            start = first_item_match.group(1).rstrip('.')
+            if start in ('#', '1'):
+                ol = Element('ol', meta=meta)
+            else:
+                ol = Element('ol', {'start': start}, meta=meta)
+
+            for item_match in re_item.finditer(list_match.group(0)):
+                head = item_match.group(2).lstrip(' ')
+                body = item_match.group(3)
+                content = head + dedent(body)
+                li = ol.append(Element('li', meta=meta))
+                li.children = BlockParser(*processors).parse(content)
+            return True, ol, list_match.end(0)
+
+        return False, None, pos
 
 
 class DefinitionListProcessor:
