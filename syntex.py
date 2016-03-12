@@ -54,7 +54,7 @@ ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
 ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
-# Maps :tags to their registered handler functions.
+# Maps tag names to registered handler functions.
 tagmap = {}
 
 
@@ -137,7 +137,7 @@ class Text(Element):
 
 class ParagraphProcessor:
 
-    """ A sequence of non-empty lines. """
+    """ Consumes a sequence of consecutive non-empty lines. """
 
     regex = re.compile(r"(^[ ]*[^ \n]+.*\n)+", re.MULTILINE)
 
@@ -152,7 +152,7 @@ class ParagraphProcessor:
 
 class CodeProcessor:
 
-    """ A sequence of indented or empty lines. """
+    """ Consumes a sequence of consecutive indented or empty lines. """
 
     regex = re.compile(r"""
         ^[ ]{4}[^ \n]+.*\n
@@ -174,7 +174,7 @@ class CodeProcessor:
 
 class H1Processor:
 
-    """ H1 heading of the form:
+    """ Consumes a H1 heading of the form:
 
         =======
         Heading
@@ -201,7 +201,7 @@ class H1Processor:
 
 class H2Processor:
 
-    """ H2 heading of the form:
+    """ Consumes a H2 heading of the form:
 
         -------
         Heading
@@ -228,7 +228,7 @@ class H2Processor:
 
 class HeadingProcessor:
 
-    """ Arbitrary level heading of the form:
+    """ Consumes an arbitrary level heading of the form:
 
         ### Heading ###
 
@@ -251,7 +251,7 @@ class HeadingProcessor:
 
 class EmptyLineProcessor:
 
-    """ Skips empty lines. """
+    """ Skips over blank lines. """
 
     regex = re.compile(r"(^[ ]*\n)+", re.MULTILINE)
 
@@ -264,7 +264,7 @@ class EmptyLineProcessor:
 
 class SkipLineProcessor:
 
-    """ Skips a single line of text. """
+    """ Skips over a single line. """
 
     regex = re.compile(r"^.*\n", re.MULTILINE)
 
@@ -277,7 +277,7 @@ class SkipLineProcessor:
 
 class TextProcessor:
 
-    """ A single non-empty line of text. """
+    """ Consumes a single non-empty line of text. """
 
     regex = re.compile(r"^[ ]*[^ \n]+.*\n", re.MULTILINE)
 
@@ -290,7 +290,7 @@ class TextProcessor:
 
 class HorizontalRuleProcessor:
 
-    """ A line containing three or more '-' or '*' characters.
+    """ Consumes a line containing three or more '-' or '*' characters.
 
     The characters may optionally be separated by spaces.
 
@@ -307,7 +307,7 @@ class HorizontalRuleProcessor:
 
 class UnorderedListProcessor:
 
-    """ An unordered list. The list item marker is '*', '•', or '-'.
+    """ Consumes an unordered list. The list item marker is '*', '•', or '-'.
 
     Each list item consists of its opening line plus all subsequent blank
     or indented lines. List item markers can be indented by up to three
@@ -319,7 +319,7 @@ class UnorderedListProcessor:
         * bar
         * baz
 
-    Changing to a different list item marker starts a new list.
+    Switching to a different list item marker starts a new list.
 
     """
 
@@ -369,7 +369,7 @@ class UnorderedListProcessor:
 
 class OrderedListProcessor:
 
-    """ An ordered list. The list item marker is '#.' or '<int>.'.
+    """ Consumes an ordered list. The list item marker is '#.' or '<int>.'.
 
     Each list item consists of its opening line plus all subsequent blank
     or indented lines. List item markers can be indented by up to three
@@ -437,7 +437,7 @@ class OrderedListProcessor:
 
 class DefinitionListProcessor:
 
-    """ A definition list of the form:
+    """ Consumes a definition list of the form:
 
         ~ Term 1
 
@@ -476,7 +476,7 @@ class DefinitionListProcessor:
 
 class GenericBlockProcessor:
 
-    """ A generic block of the form:
+    """ Consumes a generic block of the form:
 
         :tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar"]
             block content
@@ -488,7 +488,7 @@ class GenericBlockProcessor:
     The block's content consists of all consecutive blank or indented lines
     following the block header. How this content is processed depends on
     the tag; in the general case content is processed recursively and can
-    contain any block-level structures.
+    contain nested block-level structures.
 
     """
 
@@ -849,6 +849,7 @@ class HtmlRenderer:
         self.context = ['nl2br' if self.nl2br else '']
 
     def render(self, element):
+        """ Renders an Element object, returning a string of HTML. """
         rendered = self._render(element)
         for key, value in self.hashes.items():
             rendered = rendered.replace(key, value)
@@ -861,117 +862,32 @@ class HtmlRenderer:
         self.hashes[digest] = text
         return digest
 
-    def _do_inline_html(self, text):
-        return self.re_html.sub(lambda m: self._hash(m.group()), text)
-
-    def _do_inline_entities(self, text):
-        return self.re_entity.sub(lambda m: self._hash(m.group()), text)
-
-    def _do_inline_backticks(self, text):
-        return self.re_backticks.sub(self._backticks_callback, text)
-
-    def _backticks_callback(self, match):
-        return self._hash('<code>%s</code>' % esc(match.group(1), False))
-
-    def _do_inline_strong(self, text):
-        return self.re_strong.sub(r"<strong>\1</strong>", text)
-
-    def _do_inline_emphasis(self, text):
-        return self.re_emphasis.sub(r"<em>\1</em>", text)
-
-    def _do_inline_bracketed_urls(self, text):
-        return self.re_bracketed_url.sub(r'<a href="\1">\1</a>', text)
-
-    def _do_inline_bare_urls(self, text):
-        return self.re_bare_url.sub(r'\1<a href="\2\3">\2\3</a>\4', text)
-
-    def _do_inline_images(self, text):
-        return self.re_img.sub(self._image_callback, text)
-
-    def _image_callback(self, match):
-        alt = esc(match.group(1))
-        url = match.group(2)
-        title = esc(match.group(3) or '')
-        if title:
-            return r'<img src="%s" alt="%s" title="%s"/>' % (url, alt, title)
-        else:
-            return r'<img src="%s" alt="%s"/>' % (url, alt)
-
-    def _do_inline_ref_images(self, text):
-        return self.re_ref_img.sub(self._ref_image_callback, text)
-
-    def _ref_image_callback(self, match):
-        alt = match.group(1)
-        ref = match.group(2).lower() if match.group(2) else alt.lower()
-        url, title = self.link_refs.get(ref, ('', ''))
-        if title:
-            return '<img src="%s" alt="%s" title="%s"/>' % (
-                url, esc(alt), esc(title)
-            )
-        else:
-            return '<img src="%s" alt="%s"/>' % (url, esc(alt))
-
-    def _do_inline_links(self, text):
-        return self.re_link.sub(self._link_callback, text)
-
-    def _link_callback(self, match):
-        text = match.group(1)
-        url = match.group(2)
-        title = esc(match.group(3) or '')
-        if title:
-            return r'<a href="%s" title="%s">%s</a>' % (url, title, text)
-        else:
-            return r'<a href="%s">%s</a>' % (url, text)
-
-    def _do_inline_ref_links(self, text):
-        return self.re_ref_link.sub(self._ref_link_callback, text)
-
-    def _ref_link_callback(self, match):
-        text = match.group(1)
-        ref = match.group(2).lower() if match.group(2) else text.lower()
-        url, title = self.link_refs.get(ref, ('#', ''))
-        if title:
-            return '<a href="%s" title="%s">%s</a>' % (url, esc(title), text)
-        else:
-            return '<a href="%s">%s</a>' % (url, text)
-
-    def _do_inline_footnotes(self, text):
-        return self.re_footnote.sub(self._footnote_callback, text)
-
-    def _footnote_callback(self, match):
-        if match.group(1):
-            ref = match.group(1)
-        else:
-            ref = self.footnote_index
-            self.footnote_index += 1
-        return '<sup class="fn-ref"><a href="#fn-%s">%s</a></sup>' % (ref, ref)
-
     def _render(self, element):
-        method = '_render_%s' % element.tag
+        method = '_render_element_%s' % element.tag
         if hasattr(self, method):
             return getattr(self, method)(element)
         else:
-            return self._render_default(element)
+            return self._render_element_default(element)
 
-    def _render_default(self, element):
-        if element.tag in (
+    def _render_element_default(self, element):
+        textblocks = (
             'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'th', 'td', 'dt'
-        ):
-            html = [element.get_tag()]
-        else:
-            html = [element.get_tag(), '\n']
+        )
+        html = [element.get_tag()]
+        if element.tag not in textblocks:
+            html.append('\n')
         for child in element:
             html.append(self._render(child))
         html.append('</%s>\n' % element.tag)
         return ''.join(html)
 
-    def _render_root(self, element):
+    def _render_element_root(self, element):
         return ''.join(self._render(child) for child in element)
 
-    def _render_null(self, element):
+    def _render_element_null(self, element):
         return ''.join(self._render(child) for child in element)
 
-    def _render_pre(self, element):
+    def _render_element_pre(self, element):
         text = element.get_text()
         if pygments and element.meta:
             try:
@@ -991,13 +907,13 @@ class HtmlRenderer:
             text = esc(text, False)
         return ''.join([element.get_tag(), '\n', text, '\n</pre>\n'])
 
-    def _render_image(self, element):
+    def _render_element_image(self, element):
         return element.get_tag('img', close=True) + '\n'
 
-    def _render_hr(self, element):
+    def _render_element_hr(self, element):
         return element.get_tag() + '\n'
 
-    def _render_insert(self, element):
+    def _render_element_insert(self, element):
         if element.meta in self.inserts:
             insert = self.inserts[element.meta]
             insert.attrs.update(element.attrs)
@@ -1005,7 +921,7 @@ class HtmlRenderer:
         else:
             return ''
 
-    def _render_footnotes(self, element):
+    def _render_element_footnotes(self, element):
         html = [element.get_tag('dl'), '\n']
         for fnote in element:
             html.append('<dt id="fn-%s">%s</dt>\n' % (fnote.meta, fnote.meta))
@@ -1016,40 +932,119 @@ class HtmlRenderer:
         html.append('</dl>\n')
         return ''.join(html)
 
-    def _render_raw(self, element):
+    def _render_element_raw(self, element):
         return element.get_text() + '\n'
 
-    def _render_comment(self, element):
+    def _render_element_comment(self, element):
         html = ['<!--\n']
         html.append(indent(element.get_text()))
         html.append('\n-->\n')
         return ''.join(html)
 
-    def _render_nl2br(self, element):
+    def _render_element_nl2br(self, element):
         self.context.append('nl2br')
         html = ''.join(self._render(child) for child in element)
         self.context.pop()
         return html
 
-    def _render_text(self, element):
+    def _render_element_text(self, element):
         text = element.text
-        text = self._do_inline_backticks(text)
-        text = self._do_inline_bracketed_urls(text)
-        text = self._do_inline_html(text)
-        text = self._do_inline_entities(text)
+        text = self._render_inline_backticks(text)
+        text = self._render_inline_bracketed_urls(text)
+        text = self._render_inline_html(text)
+        text = self._render_inline_entities(text)
         text = esc(text, False)
-        text = self._do_inline_strong(text)
-        text = self._do_inline_emphasis(text)
-        text = self._do_inline_images(text)
-        text = self._do_inline_ref_images(text)
-        text = self._do_inline_links(text)
-        text = self._do_inline_ref_links(text)
-        text = self._do_inline_footnotes(text)
+        text = self._render_inline_strong(text)
+        text = self._render_inline_emphasis(text)
+        text = self._render_inline_images(text)
+        text = self._render_inline_ref_images(text)
+        text = self._render_inline_links(text)
+        text = self._render_inline_ref_links(text)
+        text = self._render_inline_footnotes(text)
         # text = self._do_inline_bare_urls(text)
         text = text.rstrip('\n')
         if 'nl2br' in self.context:
             text = text.replace('\n', '<br>\n')
         return text
+
+    def _render_inline_html(self, text):
+        return self.re_html.sub(lambda m: self._hash(m.group()), text)
+
+    def _render_inline_entities(self, text):
+        return self.re_entity.sub(lambda m: self._hash(m.group()), text)
+
+    def _render_inline_strong(self, text):
+        return self.re_strong.sub(r"<strong>\1</strong>", text)
+
+    def _render_inline_emphasis(self, text):
+        return self.re_emphasis.sub(r"<em>\1</em>", text)
+
+    def _render_inline_bracketed_urls(self, text):
+        return self.re_bracketed_url.sub(r'<a href="\1">\1</a>', text)
+
+    def _render_inline_bare_urls(self, text):
+        return self.re_bare_url.sub(r'\1<a href="\2\3">\2\3</a>\4', text)
+
+    def _render_inline_backticks(self, text):
+        def callback(match):
+            return self._hash('<code>%s</code>' % esc(match.group(1), False))
+        return self.re_backticks.sub(callback, text)
+
+    def _render_inline_images(self, text):
+        def callback(match):
+            alt = esc(match.group(1))
+            url = match.group(2)
+            title = esc(match.group(3) or '')
+            if title:
+                return '<img src="%s" alt="%s" title="%s"/>' % (url, alt, title)
+            else:
+                return '<img src="%s" alt="%s"/>' % (url, alt)
+        return self.re_img.sub(callback, text)
+
+    def _render_inline_ref_images(self, text):
+        def callback(match):
+            alt = match.group(1)
+            ref = match.group(2).lower() if match.group(2) else alt.lower()
+            url, title = self.link_refs.get(ref, ('', ''))
+            if title:
+                return '<img src="%s" alt="%s" title="%s"/>' % (
+                    url, esc(alt), esc(title)
+                )
+            else:
+                return '<img src="%s" alt="%s"/>' % (url, esc(alt))
+        return self.re_ref_img.sub(callback, text)
+
+    def _render_inline_links(self, text):
+        def callback(match):
+            text = match.group(1)
+            url = match.group(2)
+            title = esc(match.group(3) or '')
+            if title:
+                return r'<a href="%s" title="%s">%s</a>' % (url, title, text)
+            else:
+                return r'<a href="%s">%s</a>' % (url, text)
+        return self.re_link.sub(callback, text)
+
+    def _render_inline_ref_links(self, text):
+        def callback(match):
+            text = match.group(1)
+            ref = match.group(2).lower() if match.group(2) else text.lower()
+            url, title = self.link_refs.get(ref, ('#', ''))
+            if title:
+                return '<a href="%s" title="%s">%s</a>' % (url, esc(title), text)
+            else:
+                return '<a href="%s">%s</a>' % (url, text)
+        return self.re_ref_link.sub(callback, text)
+
+    def _render_inline_footnotes(self, text):
+        def callback(match):
+            if match.group(1):
+                ref = match.group(1)
+            else:
+                ref = self.footnote_index
+                self.footnote_index += 1
+            return '<sup class="fn-ref"><a href="#fn-%s">%s</a></sup>' % (ref, ref)
+        return self.re_footnote.sub(callback, text)
 
 
 # -------------------------------------------------------------------------
@@ -1298,11 +1293,11 @@ def extract_link_references(text):
 
     text = re.sub(
         r"""
-            ^([ ]{4})*
-                \[(?P<ref>[^\]]+)\][:]
-                    [ ]*(?P<url>\S+)
-                        (?:[ ]+"(?P<title>[^"]*)")?
-                            [ ]*\n
+        ^([ ]{4})*
+            \[(?P<ref>[^\]]+)\][:]
+                [ ]*(?P<url>\S+)
+                    (?:[ ]+"(?P<title>[^"]*)")?
+                        [ ]*\n
         """,
         callback,
         text,
@@ -1332,7 +1327,7 @@ def parse(text):
 def render_html(text):
     root, toc, link_refs, inserts = parse(text)
     rendered = HtmlRenderer(link_refs, inserts).render(root)
-    return rendered, toc
+    return rendered
 
 
 def render_debug(text):
@@ -1343,7 +1338,7 @@ def render_debug(text):
     output.append(str(root))
     output.append('\n' + title(' HTML '))
     output.append(HtmlRenderer(link_refs, inserts).render(root))
-    return ''.join(output), toc
+    return ''.join(output)
 
 
 # -------------------------------------------------------------------------
@@ -1353,10 +1348,9 @@ def render_debug(text):
 
 def render(text, debug=False):
     if debug:
-        rendered, _ = render_debug(text)
+        return render_debug(text)
     else:
-        rendered, _ = render_html(text)
-    return rendered
+        return render_html(text)
 
 
 def main():
