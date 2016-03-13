@@ -59,7 +59,7 @@ ESCBS = 'esc%s%s%s' % (STX, ord('\\'), ETX)
 ESCMAP = {'esc%s%s%s' % (STX, ord(c), ETX): c for c in ESCCHARS}
 
 
-# Maps tag names to registered handler functions.
+# Stores registered tag handler functions indexed by tag name.
 tagmap = {}
 
 
@@ -161,11 +161,11 @@ class CodeProcessor:
 
     regex = re.compile(r"""
         ^[ ]{4}[^ \n]+.*\n
-        ((
+        (
             (^[ ]*\n)
             |
             (^[ ]{4}.+\n)
-        )*)
+        )*
     """, re.VERBOSE | re.MULTILINE)
 
     def __call__(self, text, pos):
