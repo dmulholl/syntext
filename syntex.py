@@ -528,7 +528,7 @@ class GenericBlockProcessor:
         if tag in tagmap:
             node = tagmap[tag](tag, pargs, kwargs, content)
         else:
-            node = None
+            node = default_block_handler(tag, pargs, kwargs, content)
 
         return True, node, match.end(0)
 
@@ -639,28 +639,31 @@ def register(*tags):
     return register_tag_handler
 
 
-@register('div')
-def div_handler(tag, pargs, kwargs, content):
-    node = Node('div', kwargs)
+# Default handler for block-level elements that allow nested blocks.
+def default_block_handler(tag, pargs, kwargs, content):
+    node = Node(tag, kwargs)
     node.children = BlockParser().parse(content)
     return node
 
 
-@register('h1', 'h2', 'h3', 'h4', 'h5', 'h6')
-def heading_handler(tag, pargs, kwargs, content):
+# Default handler for block-level elements that do not allow nested blocks.
+@register('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6')
+def terminal_block_handler(tag, pargs, kwargs, content):
     node = Node(tag, kwargs)
     node.append(Text(strip(content)))
     return node
 
 
-@register('blockquote', 'quote', '>>')
+# Register the ':>>' sigil for blockquotes.
+@register('blockquote', '>>')
 def blockquote_handler(tag, pargs, kwargs, content):
     node = Node('blockquote', kwargs)
     node.children = BlockParser().parse(content)
     return node
 
 
-@register('code', 'pre', '::')
+# Register the ':::' sigil for code blocks.
+@register('pre', '::')
 def code_handler(tag, pargs, kwargs, content):
     node = Node('pre', kwargs)
     node.append(Text(strip(content)))
@@ -671,6 +674,7 @@ def code_handler(tag, pargs, kwargs, content):
     return node
 
 
+# This block turns on newline-to-linebreak mode for nested content.
 @register('nl2br', '||')
 def nl2lb_handler(tag, pargs, kwargs, content):
     node = Node('nl2br')
@@ -678,6 +682,7 @@ def nl2lb_handler(tag, pargs, kwargs, content):
     return node
 
 
+# Alert boxes.
 @register('alert', '!!')
 def alertbox_handler(tag, pargs, kwargs, content):
     node = Node('div', kwargs)
@@ -689,7 +694,66 @@ def alertbox_handler(tag, pargs, kwargs, content):
     return node
 
 
-@register('table', '++')
+# The content of a 'raw' (':\\') block is completely unprocessed.
+@register('raw', ESCBS)
+def raw_handler(tag, pargs, kwargs, content):
+    node = Node('raw', kwargs)
+    node.append(Text(strip(content)))
+    return node
+
+
+# Block level image tag. Content is used as the alt text.
+@register('image')
+def image_handler(tag, pargs, kwargs, content):
+    node = Node('image', kwargs)
+    if not 'src' in kwargs:
+        node.attrs['src'] = pargs[0] if pargs else ''
+    if not 'alt' in kwargs:
+        node.attrs['alt'] = esc(strip(content)).replace('\n', ' ')
+    return node
+
+
+# A 'null' block passes its attributes on to each of its top-level children.
+@register('null', '<<')
+def null_handler(tag, pargs, kwargs, content):
+    node = Node('null')
+    node.children = BlockParser().parse(content)
+    classes = kwargs.get('class', '').split()
+    for child in node:
+        attrs = kwargs.copy()
+        attrs.update(child.attrs)
+        child.attrs = attrs
+        for cssclass in classes:
+            child.add_class(cssclass)
+    return node
+
+
+# The 'insert' tag is used to insert automatically-generated elements into
+# a page, e.g. a table of contents.
+@register('insert')
+def insert_handler(tag, pargs, kwargs, content):
+    node = Node('insert', kwargs)
+    node.meta = pargs[0] if pargs else ''
+    return node
+
+
+# The 'ignore' tag provides a commenting mechanism. Nested content will be
+# excluded from the output.
+@register('ignore', '//')
+def ignore_handler(tag, pargs, kwargs, content):
+    return None
+
+
+# The 'comment' tag inserts a HTML comment into the output.
+@register('comment', '##')
+def html_comment_handler(tag, pargs, kwargs, content):
+    node = Node('comment')
+    node.append(Text(strip(content)))
+    return node
+
+
+# Register the ':++' sigil for tables.
+@register('++')
 def table_handler(tag, pargs, kwargs, content):
     lines = [line.strip(' |') for line in content.splitlines()]
     lines = [line for line in lines if line]
@@ -725,56 +789,6 @@ def table_handler(tag, pargs, kwargs, content):
     for row in body:
         tbody.append(make_row(row, 'td'))
     return table
-
-
-@register('raw', ESCBS)
-def raw_handler(tag, pargs, kwargs, content):
-    node = Node('raw', kwargs)
-    node.append(Text(strip(content)))
-    return node
-
-
-@register('image', 'img')
-def image_handler(tag, pargs, kwargs, content):
-    node = Node('image', kwargs)
-    if not 'src' in kwargs:
-        node.attrs['src'] = pargs[0] if pargs else ''
-    if not 'alt' in kwargs:
-        node.attrs['alt'] = esc(strip(content)).replace('\n', ' ')
-    return node
-
-
-@register('null', '<<')
-def null_handler(tag, pargs, kwargs, content):
-    node = Node('null')
-    node.children = BlockParser().parse(content)
-    classes = kwargs.get('class', '').split()
-    for child in node:
-        attrs = kwargs.copy()
-        attrs.update(child.attrs)
-        child.attrs = attrs
-        for cssclass in classes:
-            child.add_class(cssclass)
-    return node
-
-
-@register('insert')
-def insert_handler(tag, pargs, kwargs, content):
-    node = Node('insert', kwargs)
-    node.meta = pargs[0] if pargs else ''
-    return node
-
-
-@register('ignore', '//')
-def ignore_handler(tag, pargs, kwargs, content):
-    return None
-
-
-@register('comment', '##')
-def html_comment_handler(tag, pargs, kwargs, content):
-    node = Node('comment')
-    node.append(Text(strip(content)))
-    return node
 
 
 # -------------------------------------------------------------------------
@@ -1327,8 +1341,7 @@ def render_html(text):
 
 def render_debug(text):
     root, link_refs, inserts = parse(text)
-    output = [title(' TOC ')]
-    output.append(pprint.pformat(toc))
+    output = []
     output.append('\n\n' + title(' AST '))
     output.append(str(root))
     output.append('\n' + title(' HTML '))
