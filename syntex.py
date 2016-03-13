@@ -63,9 +63,9 @@ tagmap = {}
 # -------------------------------------------------------------------------
 
 
-class Element:
+class Node:
 
-    """ Input text is parsed into a tree of Element nodes. """
+    """ Input text is parsed into a Node tree. """
 
     def __init__(self, tag, attrs=None, meta=''):
         self.tag = tag
@@ -110,9 +110,9 @@ class Element:
         else:
             return ''.join(child.get_text() for child in self.children)
 
-    def append(self, element):
-        self.children.append(element)
-        return element
+    def append(self, node):
+        self.children.append(node)
+        return node
 
     def add_class(self, newclass):
         classes = self.attrs.get('class', '').split()
@@ -121,12 +121,12 @@ class Element:
             self.attrs['class'] = ' '.join(sorted(classes))
 
 
-class Text(Element):
+class Text(Node):
 
-    """ Shortcut subclass for creating tag="text" nodes. """
+    """ A Text node contains only text content and has no child nodes. """
 
     def __init__(self, text):
-        Element.__init__(self, 'text')
+        Node.__init__(self, 'text')
         self.text = text
 
 
@@ -145,9 +145,9 @@ class ParagraphProcessor:
         match = self.regex.match(text, pos)
         if not match:
             return False, None, pos
-        element = Element('p')
-        element.append(Text(strip(match.group(0))))
-        return True, element, match.end(0)
+        node = Node('p')
+        node.append(Text(strip(match.group(0))))
+        return True, node, match.end(0)
 
 
 class CodeProcessor:
@@ -167,9 +167,9 @@ class CodeProcessor:
         match = self.regex.match(text, pos)
         if not match:
             return False, None, pos
-        element = Element('pre')
-        element.append(Text(dedent(strip(match.group(0)))))
-        return True, element, match.end(0)
+        node = Node('pre')
+        node.append(Text(dedent(strip(match.group(0)))))
+        return True, node, match.end(0)
 
 
 class H1Processor:
@@ -194,9 +194,9 @@ class H1Processor:
         match = self.regex.match(text, pos)
         if not match:
             return False, None, pos
-        element = Element('h1')
-        element.append(Text(match.group(1).strip()))
-        return True, element, match.end(0)
+        node = Node('h1')
+        node.append(Text(match.group(1).strip()))
+        return True, node, match.end(0)
 
 
 class H2Processor:
@@ -221,9 +221,9 @@ class H2Processor:
         match = self.regex.match(text, pos)
         if not match:
             return False, None, pos
-        element = Element('h2')
-        element.append(Text(match.group(1).strip()))
-        return True, element, match.end(0)
+        node = Node('h2')
+        node.append(Text(match.group(1).strip()))
+        return True, node, match.end(0)
 
 
 class HeadingProcessor:
@@ -244,9 +244,9 @@ class HeadingProcessor:
         if not match:
             return False, None, pos
         tag = 'h' + str(len(match.group(1)))
-        element = Element(tag)
-        element.append(Text(match.group(2).strip()))
-        return True, element, match.end(0)
+        node = Node(tag)
+        node.append(Text(match.group(2).strip()))
+        return True, node, match.end(0)
 
 
 class EmptyLineProcessor:
@@ -302,7 +302,7 @@ class HorizontalRuleProcessor:
         match = self.regex.match(text, pos)
         if not match:
             return False, None, pos
-        return True, Element('hr'), match.end(0)
+        return True, Node('hr'), match.end(0)
 
 
 class UnorderedListProcessor:
@@ -355,12 +355,12 @@ class UnorderedListProcessor:
                 meta = 'compact'
                 processors = ('empty', 'ul', 'ol', 'text')
 
-            ul = Element('ul', meta=meta)
+            ul = Node('ul', meta=meta)
             for item_match in re_item.finditer(list_match.group(0)):
                 head = item_match.group(1).lstrip(' ')
                 body = item_match.group(2)
                 content = head + dedent(body)
-                li = ul.append(Element('li', meta=meta))
+                li = ul.append(Node('li', meta=meta))
                 li.children = BlockParser(*processors).parse(content)
             return True, ul, list_match.end(0)
 
@@ -420,15 +420,15 @@ class OrderedListProcessor:
 
             start = first_item_match.group(1).rstrip('.')
             if start in ('#', '1'):
-                ol = Element('ol', meta=meta)
+                ol = Node('ol', meta=meta)
             else:
-                ol = Element('ol', {'start': start}, meta=meta)
+                ol = Node('ol', {'start': start}, meta=meta)
 
             for item_match in re_item.finditer(list_match.group(0)):
                 head = item_match.group(2).lstrip(' ')
                 body = item_match.group(3)
                 content = head + dedent(body)
-                li = ol.append(Element('li', meta=meta))
+                li = ol.append(Node('li', meta=meta))
                 li.children = BlockParser(*processors).parse(content)
             return True, ol, list_match.end(0)
 
@@ -465,11 +465,11 @@ class DefinitionListProcessor:
         list_match = self.re_list.match(text, pos)
         if not list_match:
             return False, None, pos
-        dl = Element('dl')
+        dl = Node('dl')
         for item_match in self.re_item.finditer(list_match.group(0)):
-            dt = dl.append(Element('dt'))
+            dt = dl.append(Node('dt'))
             dt.append(Text(item_match.group(1).strip()))
-            dd = dl.append(Element('dd'))
+            dd = dl.append(Node('dd'))
             dd.children = BlockParser().parse(dedent(item_match.group(2)))
         return True, dl, list_match.end(0)
 
@@ -526,11 +526,11 @@ class GenericBlockProcessor:
 
         # We delegate responsibility here to the registered tag handler.
         if tag in tagmap:
-            element = tagmap[tag](tag, pargs, kwargs, content)
+            node = tagmap[tag](tag, pargs, kwargs, content)
         else:
-            element = None
+            node = None
 
-        return True, element, match.end(0)
+        return True, node, match.end(0)
 
     def parse_args(self, argstring):
         pargs, kwargs = [], {}
@@ -610,14 +610,14 @@ class BlockParser:
             text += '\n'
         while pos < len(text):
             for processor in self.processors:
-                match, element, pos = processor(text, pos)
+                match, node, pos = processor(text, pos)
                 if match:
-                    if element:
-                        if element.tag == 'text' and elements and \
+                    if node:
+                        if node.tag == 'text' and elements and \
                             elements[-1].tag == 'text':
-                            elements[-1].text += element.text
+                            elements[-1].text += node.text
                         else:
-                            elements.append(element)
+                            elements.append(node)
                     break
         return elements
 
@@ -641,52 +641,52 @@ def register(*tags):
 
 @register('div')
 def div_handler(tag, pargs, kwargs, content):
-    element = Element('div', kwargs)
-    element.children = BlockParser().parse(content)
-    return element
+    node = Node('div', kwargs)
+    node.children = BlockParser().parse(content)
+    return node
 
 
 @register('h1', 'h2', 'h3', 'h4', 'h5', 'h6')
 def heading_handler(tag, pargs, kwargs, content):
-    element = Element(tag, kwargs)
-    element.append(Text(strip(content)))
-    return element
+    node = Node(tag, kwargs)
+    node.append(Text(strip(content)))
+    return node
 
 
 @register('blockquote', 'quote', '>>')
 def blockquote_handler(tag, pargs, kwargs, content):
-    element = Element('blockquote', kwargs)
-    element.children = BlockParser().parse(content)
-    return element
+    node = Node('blockquote', kwargs)
+    node.children = BlockParser().parse(content)
+    return node
 
 
 @register('code', 'pre', '::')
 def code_handler(tag, pargs, kwargs, content):
-    element = Element('pre', kwargs)
-    element.append(Text(strip(content)))
+    node = Node('pre', kwargs)
+    node.append(Text(strip(content)))
     if pargs:
-        element.meta = pargs[0]
-        element.attrs['data-lang'] = pargs[0]
-        element.add_class('lang-' + pargs[0])
-    return element
+        node.meta = pargs[0]
+        node.attrs['data-lang'] = pargs[0]
+        node.add_class('lang-' + pargs[0])
+    return node
 
 
 @register('nl2br', '||')
 def nl2lb_handler(tag, pargs, kwargs, content):
-    element = Element('nl2br')
-    element.children = BlockParser().parse(content)
-    return element
+    node = Node('nl2br')
+    node.children = BlockParser().parse(content)
+    return node
 
 
 @register('alert', '!!')
 def alertbox_handler(tag, pargs, kwargs, content):
-    element = Element('div', kwargs)
-    element.add_class('stx-alert')
+    node = Node('div', kwargs)
+    node.add_class('stx-alert')
     if pargs:
         for arg in pargs:
-            element.add_class('stx-%s' % arg)
-    element.children = BlockParser().parse(content)
-    return element
+            node.add_class('stx-%s' % arg)
+    node.children = BlockParser().parse(content)
+    return node
 
 
 @register('table', '++')
@@ -710,17 +710,17 @@ def table_handler(tag, pargs, kwargs, content):
             align[i] = 'stx-right'
 
     def make_row(cells, celltag):
-        tr = Element('tr')
+        tr = Node('tr')
         for i, cell in enumerate(cells):
-            el = tr.append(Element(celltag))
+            el = tr.append(Node(celltag))
             if align[i]:
                 el.add_class(align[i])
             el.append(Text(cell))
         return tr
 
-    table = Element('table', kwargs)
-    thead = table.append(Element('thead'))
-    tbody = table.append(Element('tbody'))
+    table = Node('table', kwargs)
+    thead = table.append(Node('thead'))
+    tbody = table.append(Node('tbody'))
     thead.append(make_row(head, 'th'))
     for row in body:
         tbody.append(make_row(row, 'td'))
@@ -729,40 +729,40 @@ def table_handler(tag, pargs, kwargs, content):
 
 @register('raw', ESCBS)
 def raw_handler(tag, pargs, kwargs, content):
-    element = Element('raw', kwargs)
-    element.append(Text(strip(content)))
-    return element
+    node = Node('raw', kwargs)
+    node.append(Text(strip(content)))
+    return node
 
 
 @register('image', 'img')
 def image_handler(tag, pargs, kwargs, content):
-    element = Element('image', kwargs)
+    node = Node('image', kwargs)
     if not 'src' in kwargs:
-        element.attrs['src'] = pargs[0] if pargs else ''
+        node.attrs['src'] = pargs[0] if pargs else ''
     if not 'alt' in kwargs:
-        element.attrs['alt'] = esc(strip(content)).replace('\n', ' ')
-    return element
+        node.attrs['alt'] = esc(strip(content)).replace('\n', ' ')
+    return node
 
 
 @register('null', '<<')
 def null_handler(tag, pargs, kwargs, content):
-    element = Element('null')
-    element.children = BlockParser().parse(content)
+    node = Node('null')
+    node.children = BlockParser().parse(content)
     classes = kwargs.get('class', '').split()
-    for child in element:
+    for child in node:
         attrs = kwargs.copy()
         attrs.update(child.attrs)
         child.attrs = attrs
         for cssclass in classes:
             child.add_class(cssclass)
-    return element
+    return node
 
 
 @register('insert')
 def insert_handler(tag, pargs, kwargs, content):
-    element = Element('insert', kwargs)
-    element.meta = pargs[0] if pargs else ''
-    return element
+    node = Node('insert', kwargs)
+    node.meta = pargs[0] if pargs else ''
+    return node
 
 
 @register('ignore', '//')
@@ -772,9 +772,9 @@ def ignore_handler(tag, pargs, kwargs, content):
 
 @register('comment', '##')
 def html_comment_handler(tag, pargs, kwargs, content):
-    element = Element('comment')
-    element.append(Text(strip(content)))
-    return element
+    node = Node('comment')
+    node.append(Text(strip(content)))
+    return node
 
 
 # -------------------------------------------------------------------------
@@ -784,12 +784,12 @@ def html_comment_handler(tag, pargs, kwargs, content):
 
 class HtmlRenderer:
 
-    """ Renders an Element tree as HTML.
+    """ Renders a Node tree as HTML.
 
-        html = HtmlRenderer(link_refs, inserts).render(element)
+        html = HtmlRenderer(link_refs, inserts).render(node)
 
     The constructor accepts optional dictionaries of link references and
-    insertable elements to use while rendering the element tree.
+    insertable elements to use while rendering the node tree.
 
     """
 
@@ -848,9 +848,9 @@ class HtmlRenderer:
         self.footnote_index = 1
         self.context = ['nl2br' if self.nl2br else '']
 
-    def render(self, element):
-        """ Renders an Element object, returning a string of HTML. """
-        rendered = self._render(element)
+    def render(self, node):
+        """ Renders a node, returning a string of HTML. """
+        rendered = self._render(node)
         for key, value in self.hashes.items():
             rendered = rendered.replace(key, value)
         for key, value in ESCMAP.items():
@@ -862,69 +862,64 @@ class HtmlRenderer:
         self.hashes[digest] = text
         return digest
 
-    def _render(self, element):
-        method = '_render_element_%s' % element.tag
+    def _render(self, node):
+        method = '_render_element_%s' % node.tag
         if hasattr(self, method):
-            return getattr(self, method)(element)
+            return getattr(self, method)(node)
         else:
-            return self._render_element_default(element)
+            return self._render_element_default(node)
 
-    def _render_element_default(self, element):
-        textblocks = (
-            'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'th', 'td', 'dt'
-        )
-        html = [element.get_tag()]
-        if element.tag not in textblocks:
-            html.append('\n')
-        for child in element:
+    def _render_element_default(self, node):
+        html = [node.get_tag(), '\n']
+        for child in node:
             html.append(self._render(child))
-        html.append('</%s>\n' % element.tag)
+        html.append('</%s>\n' % node.tag)
         return ''.join(html)
 
-    def _render_element_root(self, element):
-        return ''.join(self._render(child) for child in element)
+    def _render_element_root(self, node):
+        return ''.join(self._render(child) for child in node)
 
-    def _render_element_null(self, element):
-        return ''.join(self._render(child) for child in element)
+    def _render_element_null(self, node):
+        return ''.join(self._render(child) for child in node)
 
-    def _render_element_pre(self, element):
-        text = element.get_text()
-        if pygments and element.meta:
+    def _render_element_pre(self, node):
+        text = strip(node.get_text())
+        if pygments and node.meta:
             try:
-                lexer = pygments.lexers.get_lexer_by_name(element.meta)
+                lexer = pygments.lexers.get_lexer_by_name(node.meta)
             except pygments.util.ClassNotFound:
                 try:
                     lexer = pygments.lexers.guess_lexer(text)
                 except pygments.util.ClassNotFound:
                     lexer = None
             if lexer:
-                element.add_class('pygments')
+                node.add_class('pygments')
                 formatter = pygments.formatters.HtmlFormatter(nowrap=True)
                 text = strip(pygments.highlight(text, lexer, formatter))
             else:
                 text = esc(text, False)
         else:
             text = esc(text, False)
-        return ''.join([element.get_tag(), '\n', text, '\n</pre>\n'])
+        return ''.join([node.get_tag(), '\n', text, '\n</pre>\n'])
 
-    def _render_element_image(self, element):
-        return element.get_tag('img', close=True) + '\n'
+    def _render_element_image(self, node):
+        return node.get_tag('img', close=True) + '\n'
 
-    def _render_element_hr(self, element):
-        return element.get_tag() + '\n'
+    def _render_element_hr(self, node):
+        return node.get_tag() + '\n'
 
-    def _render_element_insert(self, element):
-        if element.meta in self.inserts:
-            insert = self.inserts[element.meta]
-            insert.attrs.update(element.attrs)
+    def _render_element_insert(self, node):
+        if node.meta in self.inserts:
+            insert = self.inserts[node.meta]
+            insert.attrs.update(node.attrs)
             return self._render(insert)
         else:
             return ''
 
-    def _render_element_footnotes(self, element):
-        html = [element.get_tag('dl'), '\n']
-        for fnote in element:
-            html.append('<dt id="fn-%s">%s</dt>\n' % (fnote.meta, fnote.meta))
+    def _render_element_footnotes(self, node):
+        html = [node.get_tag('dl'), '\n']
+        for fnote in node:
+            html.append('<dt id="fn-%s">\n%s\n</dt>\n' % (fnote.meta, fnote.meta))
             html.append('<dd>\n')
             for child in fnote:
                 html.append(self._render(child))
@@ -932,23 +927,23 @@ class HtmlRenderer:
         html.append('</dl>\n')
         return ''.join(html)
 
-    def _render_element_raw(self, element):
-        return element.get_text() + '\n'
+    def _render_element_raw(self, node):
+        return strip(node.get_text()) + '\n'
 
-    def _render_element_comment(self, element):
+    def _render_element_comment(self, node):
         html = ['<!--\n']
-        html.append(indent(element.get_text()))
+        html.append(indent(node.get_text()))
         html.append('\n-->\n')
         return ''.join(html)
 
-    def _render_element_nl2br(self, element):
+    def _render_element_nl2br(self, node):
         self.context.append('nl2br')
-        html = ''.join(self._render(child) for child in element)
+        html = ''.join(self._render(child) for child in node)
         self.context.pop()
         return html
 
-    def _render_element_text(self, element):
-        text = element.text
+    def _render_element_text(self, node):
+        text = node.text
         text = self._render_inline_backticks(text)
         text = self._render_inline_bracketed_urls(text)
         text = self._render_inline_html(text)
@@ -965,7 +960,7 @@ class HtmlRenderer:
         text = text.rstrip('\n')
         if 'nl2br' in self.context:
             text = text.replace('\n', '<br>\n')
-        return text
+        return text + '\n'
 
     def _render_inline_html(self, text):
         return self.re_html.sub(lambda m: self._hash(m.group()), text)
@@ -1020,9 +1015,9 @@ class HtmlRenderer:
             url = match.group(2)
             title = esc(match.group(3) or '')
             if title:
-                return r'<a href="%s" title="%s">%s</a>' % (url, title, text)
+                return '<a href="%s" title="%s">%s</a>' % (url, title, text)
             else:
-                return r'<a href="%s">%s</a>' % (url, text)
+                return '<a href="%s">%s</a>' % (url, text)
         return self.re_link.sub(callback, text)
 
     def _render_inline_ref_links(self, text):
@@ -1061,7 +1056,7 @@ class TOCBuilder:
     modifies the tree in place by adding an automatically generated ID
     to any heading element that lacks one.
 
-    The table is returned as an Element tree representing an unordered
+    The table is returned as a Node tree representing an unordered
     list with nested sublists.
 
         toc = TOCBuilder(doctree).toc()
@@ -1075,23 +1070,23 @@ class TOCBuilder:
         self.ids = []
         self._process_element(tree)
 
-    def _process_element(self, element):
-        if element.tag in ('h1', 'h2', 'h3', 'h4', 'h5', 'h6'):
-            node = self._make_heading_node(element)
-            while node['level'] <= self.stack[-1]['level']:
+    def _process_element(self, node):
+        if node.tag in ('h1', 'h2', 'h3', 'h4', 'h5', 'h6'):
+            heading = self._make_heading_node(node)
+            while heading['level'] <= self.stack[-1]['level']:
                 self.stack.pop()
-            self.stack[-1]['subs'].append(node)
-            self.stack.append(node)
+            self.stack[-1]['subs'].append(heading)
+            self.stack.append(heading)
         else:
-            for child in element:
+            for child in node:
                 self._process_element(child)
 
-    def _make_heading_node(self, element):
-        level = int(element.tag[1])
-        html = self.renderer.render(element)
-        text = strip_tags(html)
-        if 'id' in element.attrs:
-            id = element.attrs['id']
+    def _make_heading_node(self, node):
+        level = int(node.tag[1])
+        html = self.renderer.render(node)
+        text = strip_tags(html).strip()
+        if 'id' in node.attrs:
+            id = node.attrs['id']
         else:
             index = 2
             slug = idify(text)
@@ -1099,13 +1094,13 @@ class TOCBuilder:
             while id in self.ids:
                 id = '%s-%s' % (slug, index)
                 index += 1
-            element.attrs['id'] = id
+            node.attrs['id'] = id
         self.ids.append(id)
         return dict(level=level, text=text, id=id, subs=[])
 
     def toc(self):
         """ Skips over root-level H1 headings. """
-        ul = Element('ul', {'class': 'stx-toc'}, meta='compact')
+        ul = Node('ul', {'class': 'stx-toc'}, meta='compact')
         for node in self.root['subs']:
             if node['level'] == 1:
                 for subnode in node['subs']:
@@ -1116,16 +1111,16 @@ class TOCBuilder:
 
     def fulltoc(self):
         """ Includes root-level H1 headings. """
-        ul = Element('ul', {'class': 'stx-toc'}, meta='compact')
+        ul = Node('ul', {'class': 'stx-toc'}, meta='compact')
         for node in self.root['subs']:
             ul.append(self._make_li_element(node))
         return ul
 
     def _make_li_element(self, node):
-        li = Element('li', meta='compact')
+        li = Node('li', meta='compact')
         li.append(Text('[%s](#%s)' % (node['text'], node['id'])))
         if node['subs']:
-            ul = li.append(Element('ul', meta='compact'))
+            ul = li.append(Node('ul', meta='compact'))
             for child in node['subs']:
                 ul.append(self._make_li_element(child))
         return li
@@ -1197,7 +1192,7 @@ def title(text, w=80):
 
 
 def preprocess(text):
-    """ Prepare input text for parsing into an element tree.
+    """ Prepare input text for parsing into a node tree.
 
     * Convert all line endings to newlines.
     * Convert all tabs to spaces.
@@ -1237,7 +1232,7 @@ def extract_footnotes(text):
     The entire footnote block can be indented by any multiple of 4 spaces.
 
     """
-    footnotes = Element('footnotes', {'class': 'stx-footnotes'})
+    footnotes = Node('footnotes', {'class': 'stx-footnotes'})
     index = 1
     if not text.endswith('\n'):
         text += '\n'
@@ -1252,7 +1247,7 @@ def extract_footnotes(text):
         if match.group('body'):
             indent = len(match.group(1)) + 4
             note_text += dedent(match.group('body'), indent)
-        footnote = footnotes.append(Element('footnote'))
+        footnote = footnotes.append(Node('footnote'))
         footnote.meta = ref
         footnote.children = BlockParser().parse(note_text)
         return ''
@@ -1313,7 +1308,7 @@ def extract_link_references(text):
 
 def parse(text):
     text, link_refs, footnotes = preprocess(text)
-    root = Element('root')
+    root = Node('root')
     root.children = BlockParser().parse(text)
     toc = TOCBuilder(root)
     inserts = {
@@ -1321,17 +1316,17 @@ def parse(text):
         'toc': toc.toc(),
         'fulltoc': toc.fulltoc(),
     }
-    return root, toc.nodes(), link_refs, inserts
+    return root, link_refs, inserts
 
 
 def render_html(text):
-    root, toc, link_refs, inserts = parse(text)
+    root, link_refs, inserts = parse(text)
     rendered = HtmlRenderer(link_refs, inserts).render(root)
     return rendered
 
 
 def render_debug(text):
-    root, toc, link_refs, inserts = parse(text)
+    root, link_refs, inserts = parse(text)
     output = [title(' TOC ')]
     output.append(pprint.pformat(toc))
     output.append('\n\n' + title(' AST '))

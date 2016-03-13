@@ -33,7 +33,7 @@ class TestBasicInput(unittest.TestCase):
         self.assertEqual(syntex.render(' '), '')
 
     def test_simple_string_input(self):
-        self.assertEqual(syntex.render('foo'), '<p>foo</p>')
+        self.assertEqual(syntex.render('foo'), '<p>\nfoo\n</p>')
 
 
 class TestFiles(unittest.TestCase):
