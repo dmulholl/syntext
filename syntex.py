@@ -166,13 +166,13 @@ class CodeProcessor:
             |
             (^[ ]{4}.+\n)
         )*)
-        """, re.VERBOSE | re.MULTILINE)
+    """, re.VERBOSE | re.MULTILINE)
 
     def __call__(self, text, pos):
         match = self.regex.match(text, pos)
         if not match:
             return False, None, pos
-        node = Node('pre')
+        node = Node('pre', meta='rawtext')
         text = esc(match.group(0), False)
         node.append(Text(dedent(strip(text))))
         return True, node, match.end(0)
@@ -194,7 +194,7 @@ class H1Processor:
         (?:^=+[ ]*\n)?
         ^(.+)\n
         ^=+[ ]*\n
-        """, re.VERBOSE | re.MULTILINE)
+    """, re.VERBOSE | re.MULTILINE)
 
     def __call__(self, text, pos):
         match = self.regex.match(text, pos)
@@ -221,7 +221,7 @@ class H2Processor:
         (?:^-+[ ]*\n)?
         ^(.+)\n
         ^-+[ ]*\n
-        """, re.VERBOSE | re.MULTILINE)
+    """, re.VERBOSE | re.MULTILINE)
 
     def __call__(self, text, pos):
         match = self.regex.match(text, pos)
@@ -480,6 +480,25 @@ class DefinitionListProcessor:
         return True, dl, list_match.end(0)
 
 
+class HtmlProcessor:
+
+    """ Consumes a block of raw HTML. """
+
+    regex = re.compile(r"""
+        ^<(\w+)[^>]*>
+        .*?
+        ^</\1>[ ]*\n
+    """, re.VERBOSE | re.MULTILINE | re.DOTALL)
+
+    def __call__(self, text, pos):
+        match = self.regex.match(text, pos)
+        if not match:
+            return False, None, pos
+        node = Node('raw', kwargs)
+        node.append(Text(match.group(0).strip()))
+        return True, node, match.end(0)
+
+
 class GenericBlockProcessor:
 
     """ Consumes a generic block of the form:
@@ -505,7 +524,7 @@ class GenericBlockProcessor:
             |
             (^[ ]+.+\n)
         )*)
-        """, re.VERBOSE | re.MULTILINE)
+    """, re.VERBOSE | re.MULTILINE)
 
     args_regex = re.compile(r"""
         (?:([^\s'"=]+)=)?
@@ -518,7 +537,7 @@ class GenericBlockProcessor:
         ([^\s'"=]+)=(\S+)
         |
         (\S+)
-        """, re.VERBOSE)
+    """, re.VERBOSE)
 
     def __call__(self, text, pos):
         match = self.block_regex.match(text, pos)
@@ -590,6 +609,7 @@ class BlockParser:
     processor_map = collections.OrderedDict()
     processor_map['empty'] = EmptyLineProcessor()
     processor_map['block'] = GenericBlockProcessor()
+    processor_map['html'] = HtmlProcessor()
     processor_map['h1'] = H1Processor()
     processor_map['h2'] = H2Processor()
     processor_map['code'] = CodeProcessor()
@@ -645,14 +665,14 @@ def register(*tags):
     return register_tag_handler
 
 
-# Default handler for block-level elements that allow nested blocks.
+# Handler for block-level elements that allow nested blocks.
 def default_block_handler(tag, pargs, kwargs, content):
     node = Node(tag, kwargs)
     node.children = BlockParser().parse(content)
     return node
 
 
-# Default handler for block-level elements that do not allow nested blocks.
+# Handler for block-level elements that do not allow nested blocks.
 @register('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6')
 def terminal_block_handler(tag, pargs, kwargs, content):
     node = Node(tag, kwargs)
@@ -660,7 +680,23 @@ def terminal_block_handler(tag, pargs, kwargs, content):
     return node
 
 
-# Register the ':>>' sigil for blockquotes.
+# Handler for block-level elements with raw text content.
+@register('style', 'script')
+def rawtext_handler(tag, pargs, kwargs, content):
+    node = Node(tag, kwargs, meta='rawtext')
+    node.append(Text(strip(content)))
+    return node
+
+
+# Handler for the 'esc' tag and its associated sigil ':\\'.
+@register('esc', ESCBS)
+def raw_handler(tag, pargs, kwargs, content):
+    node = Node('esc', kwargs, meta='rawtext')
+    node.append(Text(strip(content)))
+    return node
+
+
+# Handler for the 'blockquote' tag and its associated sigil ':>>'.
 @register('blockquote', '>>')
 def blockquote_handler(tag, pargs, kwargs, content):
     node = Node('blockquote', kwargs)
@@ -668,11 +704,11 @@ def blockquote_handler(tag, pargs, kwargs, content):
     return node
 
 
-# Handler for code blocks. Syntax highlighting is controlled by the
-# `pygmentize` flag.
+# Handler for the 'pre' tag and its associated sigil ':::'.
+# Syntax highlighting is controlled by the `pygmentize` flag.
 @register('pre', '::')
 def code_handler(tag, pargs, kwargs, content):
-    node = Node('pre', kwargs)
+    node = Node('pre', kwargs, meta='rawtext')
     lang = pargs[0] if pargs else None
 
     if lang:
@@ -697,7 +733,8 @@ def code_handler(tag, pargs, kwargs, content):
     return node
 
 
-# This block turns on newline-to-linebreak mode for nested content.
+# Handler for the 'nl2br' tag and its associated sigil ':||'.
+# This tag turns on newline-to-linebreak mode for nested content.
 @register('nl2br', '||')
 def nl2lb_handler(tag, pargs, kwargs, content):
     node = Node('nl2br')
@@ -705,7 +742,7 @@ def nl2lb_handler(tag, pargs, kwargs, content):
     return node
 
 
-# Alert boxes.
+# Handler for the 'alert' tag and its associated sigil ':!!'
 @register('alert', '!!')
 def alertbox_handler(tag, pargs, kwargs, content):
     node = Node('div', kwargs)
@@ -717,15 +754,8 @@ def alertbox_handler(tag, pargs, kwargs, content):
     return node
 
 
-# The content of a 'raw' (':\\') block is completely unprocessed.
-@register('raw', ESCBS)
-def raw_handler(tag, pargs, kwargs, content):
-    node = Node('raw', kwargs)
-    node.append(Text(strip(content)))
-    return node
-
-
-# Block level image tag. Content is used as the alt text.
+# Handler for the block-level 'image' tag. The block's content is used as
+# the image's alt text.
 @register('image')
 def image_handler(tag, pargs, kwargs, content):
     node = Node('image', kwargs)
@@ -736,7 +766,8 @@ def image_handler(tag, pargs, kwargs, content):
     return node
 
 
-# A 'null' block passes its attributes on to each of its top-level children.
+# Handler for the 'null' tag and its associated sigil ':<<'.
+# A null block passes its attributes on to each of its top-level children.
 @register('null', '<<')
 def null_handler(tag, pargs, kwargs, content):
     node = Node('null')
@@ -751,8 +782,8 @@ def null_handler(tag, pargs, kwargs, content):
     return node
 
 
-# The 'insert' tag is used to insert automatically-generated elements into
-# a page, e.g. a table of contents.
+# Handler for the ':insert' tag used to insert automatically-generated elements
+# into a page, e.g. a table of contents.
 @register('insert')
 def insert_handler(tag, pargs, kwargs, content):
     node = Node('insert', kwargs)
@@ -760,14 +791,15 @@ def insert_handler(tag, pargs, kwargs, content):
     return node
 
 
-# The 'ignore' tag provides a commenting mechanism. Nested content will be
-# excluded from the output.
+# Handler for the ':ignore' tag and its associated sigil '://'. This tag
+# provides a commenting mechanism. Nested content will be skipped.
 @register('ignore', '//')
 def ignore_handler(tag, pargs, kwargs, content):
     return None
 
 
-# The 'comment' tag inserts a HTML comment into the output.
+# Handler for the 'comment' tag and its associated sigil ':##'. This tag
+# inserts a HTML comment into the output.
 @register('comment', '##')
 def html_comment_handler(tag, pargs, kwargs, content):
     node = Node('comment')
@@ -775,7 +807,7 @@ def html_comment_handler(tag, pargs, kwargs, content):
     return node
 
 
-# Register the ':++' sigil for tables.
+# Handler for the ':++' table sigil.
 @register('++')
 def table_handler(tag, pargs, kwargs, content):
     lines = [line.strip(' |') for line in content.splitlines()]
@@ -903,6 +935,8 @@ class HtmlRenderer:
         method = '_render_element_%s' % node.tag
         if hasattr(self, method):
             return getattr(self, method)(node)
+        elif node.meta == 'rawtext':
+            return self._render_element_rawtext(node)
         else:
             return self._render_element_default(node)
 
@@ -913,14 +947,16 @@ class HtmlRenderer:
         html.append('</%s>\n' % node.tag)
         return ''.join(html)
 
+    def _render_element_rawtext(self, node):
+        html = [node.get_tag(), '\n', node.get_text(), '\n']
+        html.append('</%s>\n' % node.tag)
+        return ''.join(html)
+
     def _render_element_root(self, node):
         return ''.join(self._render(child) for child in node)
 
     def _render_element_null(self, node):
         return ''.join(self._render(child) for child in node)
-
-    def _render_element_pre(self, node):
-        return '%s\n%s\n%s\n' % (node.get_tag(), node.get_text(), '</pre>')
 
     def _render_element_image(self, node):
         return node.get_tag('img', close=True) + '\n'
@@ -947,7 +983,7 @@ class HtmlRenderer:
         html.append('</dl>\n')
         return ''.join(html)
 
-    def _render_element_raw(self, node):
+    def _render_element_esc(self, node):
         return strip(node.get_text()) + '\n'
 
     def _render_element_comment(self, node):
@@ -1403,7 +1439,7 @@ def main():
         action="version",
         version=__version__,
     )
-    parser.add_argument('--help',
+    parser.add_argument('-h', '--help',
         action = HelpAction,
         nargs=0,
     )
