@@ -21,6 +21,7 @@ License: Public Domain
 
 import sys
 import re
+import os
 import collections
 import hashlib
 import unicodedata
@@ -1350,7 +1351,7 @@ def render_debug(text):
 
 
 # -------------------------------------------------------------------------
-# Public Interface
+# Library Interface
 # -------------------------------------------------------------------------
 
 
@@ -1361,11 +1362,43 @@ def render(text, debug=False):
         return render_html(text)
 
 
+# -------------------------------------------------------------------------
+# CLI
+# -------------------------------------------------------------------------
+
+
+helptext = """
+Usage: %s [FLAGS]
+
+  Syntex converter. Reads from stdin and prints to stdout.
+
+  Example:
+
+      $ syntex < input.txt > output.html
+
+Flags:
+  -d, --debug       Run in debug mode.
+      --help        Print the application's help text and exit.
+      --version     Print the application's version number and exit.
+""" % os.path.basename(sys.argv[0])
+
+
+class HelpAction(argparse.Action):
+    """ Custom argparse action to override the default help text. """
+    def __call__(self, parser, namespace, values, option_string=None):
+        print(helptext.strip())
+        sys.exit()
+
+
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('-v', '--version',
         action="version",
         version=__version__,
+    )
+    parser.add_argument('--help',
+        action = HelpAction,
+        nargs=0,
     )
     parser.add_argument('-d', '--debug',
         action="store_true",
