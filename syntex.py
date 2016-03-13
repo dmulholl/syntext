@@ -704,8 +704,9 @@ def blockquote_handler(tag, pargs, kwargs, content):
     return node
 
 
-# Handler for the 'pre' tag and its associated sigil ':::'.
-# Syntax highlighting is controlled by the `pygmentize` flag.
+# Handler for the 'pre' tag and its associated sigil ':::'. Code samples with
+# a language keyword specified will have syntax highlighting applied if the
+# `pygmentize` flag is set to true.
 @register('pre', '::')
 def code_handler(tag, pargs, kwargs, content):
     node = Node('pre', kwargs, meta='rawtext')
@@ -792,7 +793,8 @@ def insert_handler(tag, pargs, kwargs, content):
 
 
 # Handler for the ':ignore' tag and its associated sigil '://'. This tag
-# provides a commenting mechanism. Nested content will be skipped.
+# provides a commenting mechanism. Nested content will be omitted from the
+# output.
 @register('ignore', '//')
 def ignore_handler(tag, pargs, kwargs, content):
     return None
