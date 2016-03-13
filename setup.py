@@ -11,10 +11,10 @@ On the command line::
 
     $ syntex < input.txt > output.html
 
-As a Python library::
+As a library::
 
-    import syntex
-    html, meta = syntex.render(text)
+    >>> import syntex
+    >>> html = syntex.render(text)
 
 See the `package documentation <http://mulholland.xyz/docs/syntex/>`_ or the
 project's `Github homepage <https://github.com/dmulholland/syntex>`_ for
@@ -46,7 +46,6 @@ setup(
     },
     install_requires = [
         'Pygments',
-        'PyYAML',
     ],
     author = 'Darren Mulholland',
     url = 'https://github.com/dmulholland/syntex',
