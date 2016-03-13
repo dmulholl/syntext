@@ -1,0 +1,8 @@
+foo
+
+:style
+    p {
+        color: red;
+    }
+
+bar
