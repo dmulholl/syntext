@@ -1,0 +1,7 @@
+foo
+
+<div class="foobar">
+    <p>Hello world!</p>
+</div>
+
+bar

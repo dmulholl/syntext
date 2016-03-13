@@ -494,7 +494,7 @@ class HtmlProcessor:
         match = self.regex.match(text, pos)
         if not match:
             return False, None, pos
-        node = Node('raw', kwargs)
+        node = Node('esc', meta='rawtext')
         node.append(Text(match.group(0).strip()))
         return True, node, match.end(0)
 
