@@ -31,10 +31,6 @@ import textwrap
 import html
 
 
-# Library version number.
-__version__ = "0.11.0.dev"
-
-
 # Use the Pygments module for syntax highlighting, if available.
 try:
     import pygments
@@ -42,6 +38,14 @@ try:
     import pygments.formatters
 except ImportError:
     pygments = None
+
+
+# Library version number.
+__version__ = "0.11.0.dev"
+
+
+# Pygmentize flag. Set to true to add syntax highlighting to code samples.
+pygmentize = False
 
 
 # The following characters can be escaped with a backslash.
@@ -169,7 +173,8 @@ class CodeProcessor:
         if not match:
             return False, None, pos
         node = Node('pre')
-        node.append(Text(dedent(strip(match.group(0)))))
+        text = esc(match.group(0), False)
+        node.append(Text(dedent(strip(text))))
         return True, node, match.end(0)
 
 
@@ -663,15 +668,32 @@ def blockquote_handler(tag, pargs, kwargs, content):
     return node
 
 
-# Register the ':::' sigil for code blocks.
+# Handler for code blocks. Syntax highlighting is controlled by the
+# `pygmentize` flag.
 @register('pre', '::')
 def code_handler(tag, pargs, kwargs, content):
     node = Node('pre', kwargs)
-    node.append(Text(strip(content)))
-    if pargs:
-        node.meta = pargs[0]
-        node.attrs['data-lang'] = pargs[0]
-        node.add_class('lang-' + pargs[0])
+    lang = pargs[0] if pargs else None
+
+    if lang:
+        node.attrs['data-lang'] = lang
+        node.add_class('lang-%s' % lang)
+
+    text = esc(strip(content), False)
+    if pygmentize and pygments and lang:
+        try:
+            lexer = pygments.lexers.get_lexer_by_name(lang)
+        except pygments.util.ClassNotFound:
+            try:
+                lexer = pygments.lexers.guess_lexer(text)
+            except pygments.util.ClassNotFound:
+                lexer = None
+        if lexer:
+            node.add_class('pygments')
+            formatter = pygments.formatters.HtmlFormatter(nowrap=True)
+            text = strip(pygments.highlight(text, lexer, formatter))
+
+    node.append(Text(text))
     return node
 
 
@@ -898,24 +920,7 @@ class HtmlRenderer:
         return ''.join(self._render(child) for child in node)
 
     def _render_element_pre(self, node):
-        text = strip(node.get_text())
-        if pygments and node.meta:
-            try:
-                lexer = pygments.lexers.get_lexer_by_name(node.meta)
-            except pygments.util.ClassNotFound:
-                try:
-                    lexer = pygments.lexers.guess_lexer(text)
-                except pygments.util.ClassNotFound:
-                    lexer = None
-            if lexer:
-                node.add_class('pygments')
-                formatter = pygments.formatters.HtmlFormatter(nowrap=True)
-                text = strip(pygments.highlight(text, lexer, formatter))
-            else:
-                text = esc(text, False)
-        else:
-            text = esc(text, False)
-        return ''.join([node.get_tag(), '\n', text, '\n</pre>\n'])
+        return '%s\n%s\n%s\n' % (node.get_tag(), node.get_text(), '</pre>')
 
     def _render_element_image(self, node):
         return node.get_tag('img', close=True) + '\n'
@@ -1370,7 +1375,8 @@ def render(text, debug=False):
 helptext = """
 Usage: %s [FLAGS]
 
-  Syntex converter. Reads from stdin and prints to stdout.
+  Renders input text in Syntex format into HTML.
+  Reads from stdin and prints to stdout.
 
   Example:
 
@@ -1379,6 +1385,7 @@ Usage: %s [FLAGS]
 Flags:
   -d, --debug       Run in debug mode.
       --help        Print the application's help text and exit.
+  -p, --pygmentize  Add syntax highlighting to code samples.
       --version     Print the application's version number and exit.
 """ % os.path.basename(sys.argv[0])
 
@@ -1404,7 +1411,16 @@ def main():
         action="store_true",
         help="run in debug mode",
     )
+    parser.add_argument('-p', '--pygmentize',
+        action="store_true",
+        help="add syntax highlighting to code samples",
+    )
     args = parser.parse_args()
+
+    if args.pygmentize:
+        global pygmentize
+        pygmentize = True
+
     text = sys.stdin.read()
     rendered = render(text, args.debug)
     sys.stdout.write(rendered + '\n')
