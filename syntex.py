@@ -313,7 +313,9 @@ class HorizontalRuleProcessor:
 
 class UnorderedListProcessor:
 
-    """ Consumes an unordered list. The list item marker is '*', '•', or '-'.
+    """ Consumes an unordered list.
+
+    The list item marker is one of (*, •, -, or +).
 
     Each list item consists of its opening line plus all subsequent blank
     or indented lines. List item markers can be indented by up to three
@@ -342,7 +344,7 @@ class UnorderedListProcessor:
     re_blankline = re.compile(r"^[ ]*\n", re.MULTILINE)
 
     def __init__(self):
-        for marker in '*•-':
+        for marker in '*•-+':
             item = self.item % marker
             re_item = re.compile(item, re.VERBOSE | re.MULTILINE)
             re_list = re.compile('(%s)+' % item, re.VERBOSE | re.MULTILINE)
