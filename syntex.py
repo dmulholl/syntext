@@ -1415,8 +1415,8 @@ def render(text, debug=False):
 helptext = """
 Usage: %s [FLAGS]
 
-  Renders input text in Syntex format into HTML.
-  Reads from stdin and prints to stdout.
+  Renders input text in Syntex format into HTML. Reads from stdin and
+  prints to stdout.
 
   Example:
 
