@@ -340,7 +340,7 @@ h1 + ul {
 }
 
 /*
-    Small Screen (Tablet/Landscape Phone)
+    Tablet & Landscape Phone
 */
 
 @media (max-width: 800px) {
@@ -362,10 +362,13 @@ h1 + ul {
     .footer {
         display: none;
     }
+    .header ul {
+        display: block;
+    }
 }
 
 /*
-    Very Small Screen (Portrait Phone)
+    Portrait Phone
 */
 
 @media (max-width: 420px) {

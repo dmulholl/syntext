@@ -1,9 +1,8 @@
 
-Inline Syntax
-=============
+# Inline Syntax
 
 
-### Text Formatting
+### Formatting
 
 Single asterisks indicate *emphasised* text:
 
@@ -63,6 +62,6 @@ If the reference text is omitted from the image, the alt text will be used in it
 
 ### Inline HTML
 
-Syntex ignores html tags so it's fine to mix and match inline html and Syntex markup. Block-level html tags like `<div>` and `<p>` should be offset in a `:raw` block or Syntex will try to wrap them in paragraph tags in the output.
+Syntex ignores inline HTML tags so it's fine to mix and match inline HTML and Syntex markup.
 
-The html syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a html tag or character entity.
+The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or character entity.

@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Features</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/pygments.css">
-    <!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><![endif]-->
-    <script src="js/jquery-1.11.2.min.js"></script>
-    <script src="js/theme.js"></script>
-  </head>
-  <body class="pages single">
+<head>
+	<meta charset="utf-8">
+	<title>Features</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/theme.css">
+	<link rel="stylesheet" href="css/pygments.css">
+	<!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><![endif]-->
+	<script src="js/jquery-1.11.2.min.js"></script>
+	<script src="js/theme.js"></script>
+</head>
 
-    <header id="header" class="header meta">
-      
-        <div class="hamburger unselectable">☰</div>
-        <ul>
+<body class="pages single">
+
+	<header id="header" class="header meta">
+		
+			<div class="hamburger unselectable">☰</div>
+			<ul>
 <li><a href="index.html">Syntex</a></li>
 <li><a href="block.html">Block Syntax</a></li>
 <li><a href="inline.html">Inline Syntax</a></li>
 <li><a href="features.html">Features</a></li>
 </ul>
-      
-    </header>
+		
+	</header>
 
-    <article id="content" class="content">
-      
+	<article id="content" class="content">
+		
 
-      <h1 id="features">Features</h1>
+		<h1 id="features">Features</h1>
 <h3 id="footnotes">Footnotes</h3>
 <p>Syntex includes built-in support for footnotes:</p>
 <pre>
@@ -65,33 +66,20 @@ This sentence ends with an automatically-numbered reference.[^]
 <pre>
 :insert fulltoc
 </pre>
-<h3 id="document-metadata">Document Metadata</h3>
-<p>Syntex will use the <a href="http://pyyaml.org">PyYAML</a> module if available to parse each document for a metadata header in <a href="http://en.wikipedia.org/wiki/YAML">YAML</a> format. The header should be the first item in the document and should be enclosed by header and footer lines of three dashes <code>---</code>:</p>
-<pre>
----
-title: Important Document
-author: John Doe
-date: 2000-01-01
----
-</pre>
-<p>Parsed metadata is returned as a Python dictionary by the <code>render()</code> function:</p>
-<pre class="lang-python stx-pygments" data-lang="python">
-<span class="kn">import</span> <span class="nn">syntex</span>
-<span class="n">html</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">syntex</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-</pre>
-<p>This dictionary also includes an automatically-generated tree of the document's headings under the key <code>[toc]</code>.</p>
+<h3 id="escaping-characters">Escaping characters</h3>
+<p>The following characters can be escaped with a backslash: ``.</p>
 
-      
-    </article>
+		
+	</article>
 
-    <footer id="footer" class="footer meta">
-      <ul>
+	<footer id="footer" class="footer meta">
+		<ul>
 <li><a href="index.html">Syntex</a></li>
 <li><a href="block.html">Block Syntax</a></li>
 <li><a href="inline.html">Inline Syntax</a></li>
 <li><a href="features.html">Features</a></li>
 </ul>
-    </footer>
+	</footer>
 
-  </body>
+</body>
 </html>

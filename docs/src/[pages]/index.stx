@@ -1,30 +1,22 @@
 
-Syntex
-======
+# Syntex
 
-Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python 3 and can be used as both a command line script and a Python library.
+Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python and can be used both as a command line utility and a Python library.
 
 When used on the command line Syntex reads from `stdin` and prints to `stdout`:
 
     $ syntex < input.txt > output.html
 
-To use Syntex as a library module call its `render()` function with a string of text:
+To use Syntex as a library module call its `render()` function with a string of input:
 
 ::: python
 
-    import syntex
-    html, meta = syntex.render(text)
-
-This implementation also supports cross-compiling Syntex documents into Markdown:
-
-    $ syntex -f markdown < input.txt > output.md
-
-(Not all of Syntex's features can be translated into Markdown, so this capability should be used with care.)
+    >>> import syntex
+    >>> html = syntex.render(text)
 
 
 
-Overview
---------
+## Overview
 
 Syntex borrows most of its basic syntax from Markdown:
 
@@ -38,16 +30,13 @@ Syntex differs from Markdown in using an extensible, indentation-based syntax fo
     :tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar"]
         block content
         block content
-
-        block content
         ...
 
-Syntex also includes out of the box support for document metadata, tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
+Syntex also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
 
 
 
-Installation
-------------
+## Installation
 
 Install directly from the Python Package Index using `pip`:
 
@@ -57,31 +46,34 @@ Syntex requires Python 3.2 or later.
 
 
 
-Dependencies
-------------
+## Command Line Interface
 
-Installing Syntex automatically installs the following dependencies:
+Use the `syntex --help` flag to view the utility's command line help:
 
-* [PyYAML](http://pyyaml.org)
-* [Pygments](http://pygments.org)
+    Usage: syntex [FLAGS]
 
-Syntex uses the PyYAML module to parse document metadata and the Pygments module to add syntax highlighting to code samples.
+      Renders input text in Syntex format into HTML. Reads from stdin and
+      prints to stdout.
+
+      Example:
+
+          $ syntex < input.txt > output.html
+
+    Flags:
+      -d, --debug       Run in debug mode.
+          --help        Print the application's help text and exit.
+      -p, --pygmentize  Add syntax highlighting to code samples.
+          --version     Print the application's version number and exit.
+
+Syntex can use the [Pygments][] package to add syntax highlighting to code blocks - this feature can be enabled via the `--pygmentize` flag. (Pygments is installed automatically when you install Syntex using `pip`).
+
+Only code blocks with a language attribute will have syntax highlighting applied.
+
+[pygments]: http://pygments.org/
 
 
 
-Debug Mode
-----------
-
-It can be helpful to run Syntex in debug mode when experimenting with its features:
-
-    $ syntex -f debug < input.txt
-
-This will dump a selection of useful information to the console.
-
-
-
-Links
------
+## Links
 
 * [Github Homepage](https://github.com/dmulholland/syntex)
 * [Python Package Index](https://pypi.python.org/pypi/syntex/)
@@ -89,7 +81,6 @@ Links
 
 
 
-License
--------
+## License
 
 This work has been placed in the public domain.
