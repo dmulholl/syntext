@@ -42,15 +42,16 @@ def process(tag, pargs, kwargs, content, meta):
         return container_block_handler(tag, pargs, kwargs, content, meta)
 
 
-# Handler for block-level elements that allow nested blocks. This is the
-# default handler for unregistered tags.
+# Hanler for 'container' blocks, i.e. blocks that allow nested block-level
+# content. This is the default handler for unregistered tags.
 def container_block_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Container(tag, kwargs)
     node.children = parsers.BlockParser().parse(content, meta)
     return node
 
 
-# Handler for block-level elements that do not allow nested block.
+# Handler for 'leaf' blocks, i.e. blocks that do not allow nested block-level
+# content.
 @register('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6')
 def leaf_block_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Leaf(tag, kwargs)
@@ -58,7 +59,8 @@ def leaf_block_handler(tag, pargs, kwargs, content, meta):
     return node
 
 
-# Hander for block-level elements with raw text content.
+# Handler for 'raw' blocks, i.e. blocks whose content should not be processed
+# any further but should be included in the output as-is.
 @register('script', 'style')
 def raw_block_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Raw(tag, kwargs)
