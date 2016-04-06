@@ -142,22 +142,6 @@ class TextParser:
         return nodes.Text(stream.next())
 
 
-# Base class for the ordered and unordered list parsers.
-class ListParser:
-
-    # Merges the contents of adjacent Text nodes.
-    def merge_text_nodes(self, nodelist):
-        text = nodes.Text
-        out = []
-        for node in nodelist:
-            if out:
-                if isinstance(out[-1], text) and isinstance(node, text):
-                    out[-1].content = out[-1].content + '\n' + node.content
-                    continue
-            out.append(node)
-        return out
-
-
 # Consumes an unordered list. The list item marker is one of (*, •, -, or +).
 # List item markers can be indented by up to three spaces.
 #
@@ -233,7 +217,6 @@ class ULParser:
             else:
                 parsers = (ULParser(), OLParser(), TextParser())
                 children = BlockParser(parsers).parse(item, meta)
-                #children = self.merge_text_nodes(children)
             li.children = children
             ul.append(li)
 
@@ -321,7 +304,6 @@ class OLParser:
             else:
                 parsers = (ULParser(), OLParser(), TextParser())
                 children = BlockParser(parsers).parse(item, meta)
-                #children = self.merge_text_nodes(children)
             li.children = children
             ol.append(li)
 
