@@ -1,6 +1,0 @@
-foo
-
-:script
-    alert('Hello, world!');
-
-bar

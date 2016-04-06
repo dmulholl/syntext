@@ -1,8 +1,0 @@
-:blockquote
-    foo
-    bar
-
-    baz
-    
-:>>
-    foo

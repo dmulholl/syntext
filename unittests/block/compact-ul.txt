@@ -1,5 +1,0 @@
-* apples
-* oranges
-    * figs
-    * bananas
-* pears

@@ -1,0 +1,39 @@
+<table>
+<thead>
+<tr>
+<th class="stx-left">
+foo
+</th>
+<th class="stx-center">
+bar
+</th>
+<th class="stx-right">
+baz
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="stx-left">
+aaa
+</td>
+<td class="stx-center">
+bbb
+</td>
+<td class="stx-right">
+ccc
+</td>
+</tr>
+<tr>
+<td class="stx-left">
+ddd
+</td>
+<td class="stx-center">
+eee
+</td>
+<td class="stx-right">
+fff
+</td>
+</tr>
+</tbody>
+</table>

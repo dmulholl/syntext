@@ -1,6 +1,0 @@
-:div .class1 .class2 #id class="class3" attr=42
-
-    foo
-    bar
-
-    baz

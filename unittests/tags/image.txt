@@ -1,2 +1,0 @@
-:image http://example.com
-    alt text

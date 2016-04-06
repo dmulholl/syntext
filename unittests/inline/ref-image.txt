@@ -1,8 +1,0 @@
-![text1][ref1]
-
-![text2][ref2]
-
-![text3][ref3]
-
-[ref1]: http://example.com
-[ref2]: http://example.com "optional title"

@@ -1,9 +1,0 @@
-:pre 
-    <p>foo</p>
-    <p>bar</p>
-
-    <p>baz</p>
-
-:::
-    def hello():
-        print('hello world')

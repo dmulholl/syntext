@@ -1,5 +1,6 @@
 
 * [Syntex](@root/)
-* [Block Syntax](@root/block//)
+* [Blocks](@root/blocks//)
+* [Tagged Blocks](@root/tags//)
 * [Inline Syntax](@root/inline//)
-* [Features](@root/features//)
+* [Misc](@root/misc//)

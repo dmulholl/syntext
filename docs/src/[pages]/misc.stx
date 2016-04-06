@@ -1,0 +1,60 @@
+
+# Miscellanea
+
+Syntex includes built-in support for footnotes and tables of contents.
+
+
+
+## Escapes
+
+The following characters can be escaped by a preceding backslash:
+
+    !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~\n\t•
+
+Escaped characters lose any special significance they might otherwise have in Syntex's markup or formatting syntax.
+
+
+
+## Tables of Contents
+
+Syntex can automatically generate a table of contents for a document. This table can be inserted using the `insert` tag:
+
+    :insert toc
+
+The default listing skips H1 headings to avoid including the document title itself. A full listing of all the document's headings can be inserted using the `fulltoc` keyword:
+
+    :insert fulltoc
+
+The table of contents is generated as an unordered list with the class `stx-toc`. This list contains links to the document's headings along with nested lists of links to subheadings.
+
+
+
+## Footnotes
+
+Syntex includes built-in support for footnotes:
+
+    This sentence ends with a footnote reference.[^1]
+
+Footnote references can take advantage of automatic numbering:
+
+    This sentence ends with an automatically-numbered reference.[^]
+
+The footnotes themselves can be specified anywhere in the document. They take the form:
+
+    \[^1]: This is a footnote.
+
+Footnotes support block-level structures and inline markup:
+
+    \[^1]: This footnote contains multiple paragraphs.
+
+          It also contains a [link](http://example.com).
+
+Footnotes can also rely on automatic numbering:
+
+    \[^]: This is an automatically-numbered footnote.
+
+You can choose the insertion point for your footnotes using the `:insert` tag:
+
+    :insert footnotes
+
+Note that footnote references do not have to be numeric. Any character or sequence of characters can be used.

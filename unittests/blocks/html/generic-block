@@ -1,0 +1,9 @@
+<tag attr1 attr2="somevalue" class="class1 class2 class3" id="tagid">
+<p>
+foo
+</p>
+<p>
+bar
+baz
+</p>
+</tag>

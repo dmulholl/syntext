@@ -1,5 +1,0 @@
-:alert warning
-    cave canem!
-
-:!! warning
-    cave canem!

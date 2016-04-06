@@ -1,14 +1,8 @@
 #!/usr/bin/env python3
-"""
-Unit tests for the syntex module.
+# -------------------------------------------------------------------------
+# Unit tests for the syntex package.
+# -------------------------------------------------------------------------
 
-Note that this test script requires Python >= 3.4 as it relies on the
-TestCase.subTest() functionality introduced to the unittest module in
-that version.
-
-"""
-
-import unittest
 import syntex
 import os
 import sys
@@ -18,39 +12,55 @@ import sys
 testdir = os.path.join(os.path.dirname(__file__), 'unittests')
 
 
-# Load a file and return its content.
+# Loads a file and return its content as a string.
 def load(filepath):
     with open(filepath, encoding='utf-8') as file:
         return file.read()
 
 
-class TestBasicInput(unittest.TestCase):
+# Loads and renders the suite of test-input files.
+def main():
+    oks, fails = 0, 0
 
-    def test_empty_input(self):
-        self.assertEqual(syntex.render(''), '')
+    print('''
+--------------------------------------------------------------------------------
+    Directory    |                     File                      |    Result
+--------------------------------------------------------------------------------
+'''.strip())
 
-    def test_whitespace_input(self):
-        self.assertEqual(syntex.render(' '), '')
+    directories = [dn for dn in os.listdir(testdir) if not dn.startswith('.')]
+    for directory in directories:
+        files = os.listdir(os.path.join(testdir, directory, 'text'))
+        files = [fn for fn in files if not fn.startswith('.')]
+        for filename in files:
+            textfile = os.path.join(testdir, directory, 'text', filename)
+            htmlfile = os.path.join(testdir, directory, 'html', filename)
+            if os.path.isfile(htmlfile):
+                text = load(textfile)
+                html = load(htmlfile)
+                if syntex.render(text).strip() == html.strip():
+                    oks += 1
+                    result = 'ok'
+                else:
+                    fails += 1
+                    result = 'fail'
+            else:
+                fails += 1
+                result = '??????'
+            output  = '    '
+            output += directory.ljust(18)
+            output += filename.ljust(48)
+            output += result.center(6)
+            print(output)
 
-    def test_simple_string_input(self):
-        self.assertEqual(syntex.render('foo'), '<p>\nfoo\n</p>')
-
-
-class TestFiles(unittest.TestCase):
-
-    def test_files(self):
-        dirs = [dir for dir in os.listdir(testdir) if not dir.startswith('.')]
-        for dirname in dirs:
-            for filename in os.listdir(os.path.join(testdir, dirname)):
-                base, ext = os.path.splitext(filename)
-                if ext == '.txt':
-                    text = load(os.path.join(testdir, dirname, base + '.txt'))
-                    html = load(os.path.join(testdir, dirname, base + '.html'))
-                    with self.subTest(dir=dirname, test=base):
-                        self.assertEqual(syntex.render(text), html.strip())
-
+    result = 'FAIL' if fails else 'OK'
+    print('-' * 80)
+    output  = ('    %s/%s' % (oks, oks + fails)).ljust(70)
+    output += result.center(6)
+    print(output)
+    print('-' * 80)
+    if fails:
+        sys.exit(1)
 
 if __name__ == '__main__':
-    if sys.version_info < (3, 4):
-        sys.exit("Error: test script requires Python version >= 3.4.")
-    unittest.main()
+    main()

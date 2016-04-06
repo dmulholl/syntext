@@ -1,0 +1,5 @@
+:tag #tagid .class1 .class2 class="class3" @attr1 attr2="somevalue"
+    foo
+
+    bar
+    baz

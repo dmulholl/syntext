@@ -18,9 +18,10 @@
 			<div class="hamburger unselectable">☰</div>
 			<ul>
 <li><a href="index.html">Syntex</a></li>
-<li><a href="block.html">Block Syntax</a></li>
+<li><a href="blocks.html">Blocks</a></li>
+<li><a href="tags.html">Tagged Blocks</a></li>
 <li><a href="inline.html">Inline Syntax</a></li>
-<li><a href="features.html">Features</a></li>
+<li><a href="misc.html">Misc</a></li>
 </ul>
 		
 	</header>
@@ -29,7 +30,7 @@
 		
 
 		<h1 id="syntex">Syntex</h1>
-<p>Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python and can be used both as a command line utility and a Python library.</p>
+<p>Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python and can be used as both a command line utility and a Python library.</p>
 <p>When used on the command line Syntex reads from <code>stdin</code> and prints to <code>stdout</code>:</p>
 <pre>
 $ syntex &lt; input.txt &gt; output.html
@@ -40,7 +41,7 @@ $ syntex &lt; input.txt &gt; output.html
 <span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">syntex</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre>
 <h2 id="overview">Overview</h2>
-<p>Syntex borrows most of its basic syntax from Markdown:</p>
+<p>Syntex shares much of its basic syntax with Markdown:</p>
 <pre>
 This is a paragraph containing *emphasised* and **strong** text.
 It also contains a `code sample` in backticks.
@@ -49,7 +50,7 @@ This is a second paragraph containing a [link](http://example.com).
 </pre>
 <p>Syntex differs from Markdown in using an extensible, indentation-based syntax for block-level elements:</p>
 <pre>
-:tag [keyword] [.class1 .class2] [#id] [attr1=foo attr2="bar"]
+:tag [keyword] [.class] [#id] [@attr] [attr="value"]
     block content
     block content
     ...
@@ -96,9 +97,10 @@ Flags:
 	<footer id="footer" class="footer meta">
 		<ul>
 <li><a href="index.html">Syntex</a></li>
-<li><a href="block.html">Block Syntax</a></li>
+<li><a href="blocks.html">Blocks</a></li>
+<li><a href="tags.html">Tagged Blocks</a></li>
 <li><a href="inline.html">Inline Syntax</a></li>
-<li><a href="features.html">Features</a></li>
+<li><a href="misc.html">Misc</a></li>
 </ul>
 	</footer>
 

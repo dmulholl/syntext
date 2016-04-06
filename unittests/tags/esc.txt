@@ -1,7 +1,0 @@
-:esc
-    some *raw* text to render <strong>verbatim</strong>
-
-    <div>some more raw text</div>
-
-:\\
-    more raw text
