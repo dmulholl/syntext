@@ -166,14 +166,13 @@ def html_comment_handler(tag, pargs, kwargs, content, meta):
 # Handler for the 'pre' tag and its associated sigil ':::'.
 @register('pre', '::')
 def pre_tag_handler(tag, pargs, kwargs, content, meta):
-    node = nodes.Raw('pre', kwargs)
+    pre = nodes.Raw('pre', kwargs)
     lang = pargs[0] if pargs else None
+    text = str(content)
 
     if lang:
-        node.atts['data-lang'] = lang
-        node.add_class('lang-%s' % lang)
-
-    text = html.escape(str(content), False)
+        pre.atts['data-lang'] = lang
+        pre.add_class('lang-%s' % lang)
 
     if meta.get('pygmentize') and pygments and lang:
         try:
@@ -184,12 +183,15 @@ def pre_tag_handler(tag, pargs, kwargs, content, meta):
             except pygments.util.ClassNotFound:
                 lexer = None
         if lexer:
-            node.add_class('pygments')
+            pre.add_class('pygments')
             formatter = pygments.formatters.HtmlFormatter(nowrap=True)
             text = pygments.highlight(text, lexer, formatter).strip('\n')
+            pre.append(nodes.Text(text))
+            return pre
 
-    node.append(nodes.Text(text))
-    return node
+    text = html.escape(text, False)
+    pre.append(nodes.Text(text))
+    return pre
 
 
 # Handler for the 'nl2br' tag and its associated sigil ':||'.
