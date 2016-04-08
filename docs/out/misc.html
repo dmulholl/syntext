@@ -55,7 +55,7 @@ Escapes
 The following characters can be escaped by a preceding backslash:
 </p>
 <pre>
-!"#$%&amp;39()*+,-./:;&lt;=&gt;?@[92]^_`{|}~\n\t•
+!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~\n\t•
 </pre>
 <p>
 Escaped characters lose any special significance they might otherwise have in Syntex's markup or formatting syntax.
@@ -97,13 +97,13 @@ This sentence ends with an automatically-numbered reference.[^]
 The footnotes themselves can be specified anywhere in the document. They take the form:
 </p>
 <pre>
-91^1]: This is a footnote.
+[^1]: This is a footnote.
 </pre>
 <p>
 Footnotes support block-level structures and inline markup:
 </p>
 <pre>
-91^1]: This footnote contains multiple paragraphs.
+[^1]: This footnote contains multiple paragraphs.
 
       It also contains a [link](http://example.com).
 </pre>
@@ -111,7 +111,7 @@ Footnotes support block-level structures and inline markup:
 Footnotes can also rely on automatic numbering:
 </p>
 <pre>
-91^]: This is an automatically-numbered footnote.
+[^]: This is an automatically-numbered footnote.
 </pre>
 <p>
 You can choose the insertion point for your footnotes using the <code>:insert</code> tag:
