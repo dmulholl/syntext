@@ -39,30 +39,39 @@ def process(tag, pargs, kwargs, content, meta):
     if tag in tagmap:
         return tagmap[tag](tag, pargs, kwargs, content, meta)
     else:
-        return container_block_handler(tag, pargs, kwargs, content, meta)
+        return container_handler(tag, pargs, kwargs, content, meta)
 
 
-# Hanler for 'container' blocks, i.e. blocks that allow nested block-level
-# content. This is the default handler for unregistered tags.
-def container_block_handler(tag, pargs, kwargs, content, meta):
+# Default handler for 'container' elements, i.e. elements that allow nested
+# block-level content. This is also the default handler for unregistered tags.
+def container_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Container(tag, kwargs)
-    node.children = parsers.BlockParser().parse(content, meta)
+    node.children = parsers.ContainerParser().parse(content, meta)
     return node
 
 
-# Handler for 'leaf' blocks, i.e. blocks that do not allow nested block-level
-# content.
+# Default handler for 'leaf' elements, i.e. elements that do not allow nested
+# block-level content.
 @register('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6')
-def leaf_block_handler(tag, pargs, kwargs, content, meta):
+@register('span', 'time')
+@register('button', 'label', 'select', 'option', 'textarea')
+def leaf_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Leaf(tag, kwargs)
-    node.append(nodes.Text(str(content)))
+    node.children = parsers.LeafParser().parse(content, meta)
     return node
 
 
-# Handler for 'raw' blocks, i.e. blocks whose content should not be processed
-# any further but should be included in the output as-is.
+# Default handler for 'void' elements, i.e. elements with no closing tag and
+# hence no content.
+@register('hr', 'input')
+def void_handler(tag, pargs, kwargs, content, meta):
+    return nodes.Void(tag, kwargs)
+
+
+# Default handler for 'raw' elements, i.e. elements whose content should not be
+# processed any further but should be included in the output as-is.
 @register('script', 'style')
-def raw_block_handler(tag, pargs, kwargs, content, meta):
+def raw_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Raw(tag, kwargs)
     node.append(nodes.Text(str(content)))
     return node
@@ -79,7 +88,7 @@ def esc_tag_handler(tag, pargs, kwargs, content, meta):
 # Handler for the ':>>' blockquote sigil.
 @register('>>')
 def blockquote_tag_handler(tag, pargs, kwargs, content, meta):
-    return container_block_handler('blockquote', pargs, kwargs, content, meta)
+    return container_handler('blockquote', pargs, kwargs, content, meta)
 
 
 # Handler for the 'alert' tag and its associated sigil ':!!'
@@ -90,22 +99,8 @@ def alert_tag_handler(tag, pargs, kwargs, content, meta):
     if pargs:
         for arg in pargs:
             node.add_class('stx-%s' % arg)
-    node.children = parsers.BlockParser().parse(content, meta)
+    node.children = parsers.ContainerParser().parse(content, meta)
     return node
-
-
-# Handler for the 'hr' tag. Horizontal rules are void elements and do not
-# support content of any sort.
-@register('hr')
-def hr_tag_handler(tag, pargs, kwargs, content, meta):
-    return nodes.Void('hr', kwargs)
-
-
-# Handler for the 'input' tag. Input elements are void and cannot contain
-# content of any sort.
-@register('input')
-def input_tag_handler(tag, pargs, kwargs, content, meta):
-    return nodes.Void('input', kwargs)
 
 
 # Handler for the 'img' tag. The first keyword is used as the src attribute;
@@ -130,12 +125,22 @@ def img_tag_handler(tag, pargs, kwargs, content, meta):
     return link or image
 
 
+# Handler for the 'a' tag. The first keyword argument is used as the link url.
+@register('a')
+def a_tag_handler(tag, pargs, kwargs, content, meta):
+    if pargs:
+        kwargs['href'] = pargs[0]
+    node = nodes.Leaf('a', kwargs)
+    node.children = parsers.LeafParser().parse(content, meta)
+    return node
+
+
 # Handler for the 'null' tag and its associated sigil ':<<'.
 # A null block passes its attributes on to each of its top-level children.
 @register('null', '<<')
 def null_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Node()
-    node.children = parsers.BlockParser().parse(content, meta)
+    node.children = parsers.ContainerParser().parse(content, meta)
 
     classes = kwargs.pop('class', []).split()
     for child in node.children:
@@ -201,7 +206,7 @@ def pre_tag_handler(tag, pargs, kwargs, content, meta):
 @register('nl2br', '||')
 def nl2lb_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Nl2Br()
-    node.children = parsers.BlockParser().parse(content, meta)
+    node.children = parsers.ContainerParser().parse(content, meta)
     return node
 
 

@@ -12,6 +12,7 @@ from . import parsers
 from . import nodes
 from . import pkgmeta
 from . import toc
+from . import escapes
 
 
 # -------------------------------------------------------------------------
@@ -20,12 +21,16 @@ from . import toc
 
 
 def parse(text, meta):
+    escaped = escapes.escapechars(text)
+    stream = utils.LineStream(escaped)
     root = nodes.Node()
-    root.children = parsers.BlockParser().parse(utils.LineStream(text), meta)
+    root.children = parsers.ContainerParser().parse(stream, meta)
     tocbuilder = toc.TOCBuilder(root)
     meta['toc'] = tocbuilder.toc()
     meta['fulltoc'] = tocbuilder.fulltoc()
-    return root
+    html = root.render(meta)
+    html = escapes.unescapechars(html)
+    return html, root, meta
 
 
 # -------------------------------------------------------------------------
@@ -34,7 +39,8 @@ def parse(text, meta):
 
 
 def render(text, **meta):
-    return parse(text, meta).render(meta)
+    html, _, _ = parse(text, meta)
+    return html
 
 
 # -------------------------------------------------------------------------
@@ -90,9 +96,7 @@ def main():
     args = parser.parse_args()
 
     text = sys.stdin.read()
-    meta = {'pygmentize': args.pygmentize}
-    root = parse(text, meta)
-    html = root.render(meta)
+    html, root, meta = parse(text, {'pygmentize': args.pygmentize})
 
     output = []
     if args.debug:

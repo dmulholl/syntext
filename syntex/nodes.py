@@ -74,7 +74,7 @@ class Text(Node):
         return inline.render(self.content, meta)
 
 
-# Base class for block-level structures.
+# Base class for nodes with children.
 class Block(Node):
 
     def render(self, meta):
@@ -88,43 +88,42 @@ class Block(Node):
             html.append(self.text())
             html.append('\n')
         else:
-            content = ''.join(child.render(meta) for child in self.children)
-            html.append(content)
-            # if content and not content.endswith('\n'):
-            #     html.append('\n')
+            html.append(''.join(child.render(meta) for child in self.children))
 
-        if self.tag and not isinstance(self, Void):
+        if self.tag:
             html.append(self.closing_tag())
             html.append('\n')
 
         return ''.join(html)
 
 
-# Leaf blocks cannot contain nested block-level content, e.g. blocks
+# Leaf nodes cannot contain nested block-level content, e.g. nodes
 # representing <p> or <h1> elements.
 class Leaf(Block):
     pass
 
 
-# Container blocks can contain nested block-level content, e.g. blocks
+# Container nodes can contain nested block-level content, e.g. nodes
 # representing <div> or <ul> elements.
 class Container(Block):
     pass
 
 
-# Raw blocks contain text which should not parsed for inline markup, e.g.
-# blocks representing <pre> or <script> elements or raw HTML.
+# Raw nodes contain text which should not parsed for inline markup, e.g.
+# nodes representing <pre> or <script> elements or raw HTML.
 class Raw(Block):
     pass
 
 
-# Void (or empty) blocks have no closing tags, e.g. blocks representing
-# <hr> or <img> elements.
+# Void (or empty) nodes represent elements with no closing tags, e.g. <hr>
+# or <img> elements.
 class Void(Block):
-    pass
+
+    def render(self, meta):
+        return self.opening_tag() + '\n'
 
 
-# Comment blocks generate HTML comments in the output.
+# Comment nodes represent HTML comments.
 class Comment(Block):
 
     def render(self, meta):
@@ -137,7 +136,7 @@ class Comment(Block):
 
 
 # Insert nodes provide a mechanism for inserting generated content,
-# e.g. tables of contents or blocks of footnotes.
+# e.g. tables of contents or footnotes.
 class Insert(Block):
 
     def render(self, meta):

@@ -104,7 +104,8 @@ class HeadingParser:
             return None
 
 
-# Consumes a sequence of indented lines. The sequence may include blank lines.
+# Consumes a sequence of indented lines. The lines must be indented by at
+# least 4 spaces. The sequence may include blank lines.
 class IndentedCodeParser:
 
     def __call__(self, stream, meta):
@@ -116,7 +117,8 @@ class IndentedCodeParser:
                     lines.append(stream.next())
                 else:
                     break
-            text = html.escape(str(lines.dedent().trim()), False)
+            text = str(lines.dedent().trim())
+            text = html.escape(text, False)
             return nodes.Raw('pre').append(nodes.Text(text))
         return None
 
@@ -134,8 +136,7 @@ class HorizontalRuleParser:
             return None
 
 
-# Consumes a single line of text, returning it as a Text node. This parser is
-# used when parsing the contents of compact lists.
+# Consumes a single line of text, returning it as a Text node.
 class TextParser:
 
     def __call__(self, stream, meta):
@@ -213,10 +214,10 @@ class ULParser:
             item = item.trim()
             li = nodes.Container('li')
             if listtype == 'block':
-                children = BlockParser().parse(item, meta)
+                children = ContainerParser().parse(item, meta)
             else:
                 parsers = (ULParser(), OLParser(), TextParser())
-                children = BlockParser(parsers).parse(item, meta)
+                children = Parser(parsers).parse(item, meta)
             li.children = children
             ul.append(li)
 
@@ -300,10 +301,10 @@ class OLParser:
             item = item.trim()
             li = nodes.Container('li')
             if listtype == 'block':
-                children = BlockParser().parse(item, meta)
+                children = ContainerParser().parse(item, meta)
             else:
                 parsers = (ULParser(), OLParser(), TextParser())
-                children = BlockParser(parsers).parse(item, meta)
+                children = Parser(parsers).parse(item, meta)
             li.children = children
             ol.append(li)
 
@@ -347,7 +348,7 @@ class DefinitionListParser:
                         break
 
                 dd = nodes.Container('dd')
-                dd.children = BlockParser().parse(definition.dedent(), meta)
+                dd.children = ContainerParser().parse(definition.dedent(), meta)
                 dl.append(dd)
             else:
                 break
@@ -366,8 +367,7 @@ class ParagraphParser:
                 lines.append(nextline)
             else:
                 break
-        text = nodes.Text('\n'.join(lines))
-        return nodes.Leaf('p').append(text)
+        return nodes.Leaf('p').append(nodes.Text('\n'.join(lines)))
 
 
 # Consumes one or more lines of raw block-level HTML.
@@ -483,7 +483,7 @@ class FootnoteParser:
         dt.append(nodes.Text(ref))
 
         dd = nodes.Container('dd')
-        dd.children = BlockParser().parse(lines, meta)
+        dd.children = ContainerParser().parse(lines, meta)
 
         if not 'footnotes' in meta:
             meta['footnotes'] = nodes.Container('dl', {'class': 'stx-footnotes'})
@@ -494,7 +494,7 @@ class FootnoteParser:
         return True
 
 
-# Consumes a generic block of the form:
+# Consumes a tagged block of the form:
 #
 #   :tag [keyword] [.class1 .class2] [#id] [attr=foo attr="bar"] [@attr]
 #       block content
@@ -507,7 +507,7 @@ class FootnoteParser:
 # following the block header. How this content is processed depends on
 # the tag; in the general case content is processed recursively and can
 # contain nested block-level structures.
-class GenericBlockParser:
+class TaggedBlockParser:
 
     # Regex for parsing the block's arguments.
     args_regex = re.compile(r"""
@@ -586,34 +586,18 @@ class GenericBlockParser:
 
 
 # -------------------------------------------------------------------------
-# Top-level parser for block structures.
+# Top-level parsers for block structures.
 # -------------------------------------------------------------------------
 
 
-class BlockParser:
+# Base parser class. Parses an input stream into a list of nodes.
+class Parser:
 
-    # Default list of block-structure parsers to use.
-    default_parsers = [
-        GenericBlockParser(),
-        IndentedCodeParser(),
-        H1Parser(),
-        H2Parser(),
-        HeadingParser(),
-        HorizontalRuleParser(),
-        ULParser(),
-        OLParser(),
-        DefinitionListParser(),
-        FootnoteParser(),
-        LinkRefParser(),
-        HtmlParser(),
-        ParagraphParser(),
-    ]
-
-    def __init__(self, parsers=None):
-        self.parsers = parsers or self.default_parsers
+    def __init__(self, parsers):
+        self.parsers = parsers
 
     def parse(self, stream, meta):
-        blocks = []
+        nodelist = []
         while stream.has_next():
 
             # If the next line in the stream is blank, discard it.
@@ -632,11 +616,59 @@ class BlockParser:
                 result = parser(stream, meta)
                 if result is not None:
                     if isinstance(result, nodes.Node):
-                        blocks.append(result)
+                        nodelist.append(result)
                     break
 
             # An unparsable line is an error.
             if result is None:
                 sys.stderr.write("UNPARSED: %s\n" % stream.next())
 
-        return blocks
+        # Merge adjacent text nodes.
+        mergedlist = []
+        for node in nodelist:
+            if mergedlist and isinstance(mergedlist[-1], nodes.Text):
+                if isinstance(node, nodes.Text):
+                    mergedlist[-1].content += '\n' + node.content
+                    continue
+            mergedlist.append(node)
+
+        return mergedlist
+
+
+# Default parser for parsing the content of container elements.
+class ContainerParser(Parser):
+
+    # List of structure parsers for parsing the content of container elements,
+    # i.e. elements that can contain nested block-level content.
+    container_parsers = [
+        TaggedBlockParser(),
+        IndentedCodeParser(),
+        H1Parser(),
+        H2Parser(),
+        HeadingParser(),
+        HorizontalRuleParser(),
+        ULParser(),
+        OLParser(),
+        DefinitionListParser(),
+        FootnoteParser(),
+        LinkRefParser(),
+        HtmlParser(),
+        ParagraphParser(),
+    ]
+
+    def __init__(self):
+        self.parsers = self.container_parsers
+
+
+# Default parser for parsing the content of leaf elements.
+class LeafParser(Parser):
+
+    # List of structure parsers for parsing the content of leaf elements,
+    # i.e. elements that cannot contain nested block-level content.
+    leaf_parsers = [
+        TaggedBlockParser(),
+        TextParser(),
+    ]
+
+    def __init__(self):
+        self.parsers = self.leaf_parsers

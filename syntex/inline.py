@@ -6,8 +6,6 @@ import html
 import hashlib
 import re
 
-from . import escapes
-
 
 # -------------------------------------------------------------------------
 # Regular expressions for identifying inline markup.
@@ -86,7 +84,7 @@ def render(text, meta):
     for key, value in hashes.items():
         text = text.replace(key, value)
 
-    return escapes.unescapechars(text) + '\n'
+    return text + '\n'
 
 
 # Hashes a string, stores it as a {digest: string} pair in 'hashes', and
