@@ -2,7 +2,9 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Miscellanea</title>
+	<title>
+Miscellanea
+</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="css/theme.css">
 	<link rel="stylesheet" href="css/pygments.css">
@@ -17,76 +19,133 @@
 		
 			<div class="hamburger unselectable">☰</div>
 			<ul>
-<li><a href="index.html">Syntex</a></li>
-<li><a href="blocks.html">Blocks</a></li>
-<li><a href="tags.html">Tagged Blocks</a></li>
-<li><a href="inline.html">Inline Syntax</a></li>
-<li><a href="misc.html">Misc</a></li>
+<li>
+<a href="index.html">Syntex</a>
+</li>
+<li>
+<a href="blocks.html">Blocks</a>
+</li>
+<li>
+<a href="tags.html">Tags</a>
+</li>
+<li>
+<a href="inline.html">Inline Syntax</a>
+</li>
+<li>
+<a href="misc.html">Misc</a>
+</li>
 </ul>
+
 		
 	</header>
 
 	<article id="content" class="content">
 		
 
-		<h1 id="miscellanea">Miscellanea</h1>
-<p>Syntex includes built-in support for footnotes and tables of contents.</p>
-<h2 id="escapes">Escapes</h2>
-<p>The following characters can be escaped by a preceding backslash:</p>
+		<h1 id="miscellanea">
+Miscellanea
+</h1>
+<p>
+Syntex includes built-in support for footnotes and tables of contents.
+</p>
+<h2 id="escapes">
+Escapes
+</h2>
+<p>
+The following characters can be escaped by a preceding backslash:
+</p>
 <pre>
-!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~\n\t•
+!"#$%&amp;39()*+,-./:;&lt;=&gt;?@[92]^_`{|}~\n\t•
 </pre>
-<p>Escaped characters lose any special significance they might otherwise have in Syntex's markup or formatting syntax.</p>
-<h2 id="tables-of-contents">Tables of Contents</h2>
-<p>Syntex can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:</p>
+<p>
+Escaped characters lose any special significance they might otherwise have in Syntex's markup or formatting syntax.
+</p>
+<h2 id="tables-of-contents">
+Tables of Contents
+</h2>
+<p>
+Syntex can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:
+</p>
 <pre>
 :insert toc
 </pre>
-<p>The default listing skips H1 headings to avoid including the document title itself. A full listing of all the document's headings can be inserted using the <code>fulltoc</code> keyword:</p>
+<p>
+The default listing skips H1 headings to avoid including the document title itself. A full listing of all the document's headings can be inserted using the <code>fulltoc</code> keyword:
+</p>
 <pre>
 :insert fulltoc
 </pre>
-<p>The table of contents is generated as an unordered list with the class <code>stx-toc</code>. This list contains links to the document's headings along with nested lists of links to subheadings.</p>
-<h2 id="footnotes">Footnotes</h2>
-<p>Syntex includes built-in support for footnotes:</p>
+<p>
+The table of contents is generated as an unordered list with the class <code>stx-toc</code>. This list contains links to the document's headings along with nested lists of links to subheadings.
+</p>
+<h2 id="footnotes">
+Footnotes
+</h2>
+<p>
+Syntex includes built-in support for footnotes:
+</p>
 <pre>
 This sentence ends with a footnote reference.[^1]
 </pre>
-<p>Footnote references can take advantage of automatic numbering:</p>
+<p>
+Footnote references can take advantage of automatic numbering:
+</p>
 <pre>
 This sentence ends with an automatically-numbered reference.[^]
 </pre>
-<p>The footnotes themselves can be specified anywhere in the document. They take the form:</p>
+<p>
+The footnotes themselves can be specified anywhere in the document. They take the form:
+</p>
 <pre>
-[^1]: This is a footnote.
+91^1]: This is a footnote.
 </pre>
-<p>Footnotes support block-level structures and inline markup:</p>
+<p>
+Footnotes support block-level structures and inline markup:
+</p>
 <pre>
-[^1]: This footnote contains multiple paragraphs.
+91^1]: This footnote contains multiple paragraphs.
 
       It also contains a [link](http://example.com).
 </pre>
-<p>Footnotes can also rely on automatic numbering:</p>
+<p>
+Footnotes can also rely on automatic numbering:
+</p>
 <pre>
-[^]: This is an automatically-numbered footnote.
+91^]: This is an automatically-numbered footnote.
 </pre>
-<p>You can choose the insertion point for your footnotes using the <code>:insert</code> tag:</p>
+<p>
+You can choose the insertion point for your footnotes using the <code>:insert</code> tag:
+</p>
 <pre>
 :insert footnotes
 </pre>
-<p>Note that footnote references do not have to be numeric. Any character or sequence of characters can be used.</p>
+<p>
+Note that footnote references do not have to be numeric. Any character or sequence of characters can be used.
+</p>
+
 
 		
 	</article>
 
 	<footer id="footer" class="footer meta">
 		<ul>
-<li><a href="index.html">Syntex</a></li>
-<li><a href="blocks.html">Blocks</a></li>
-<li><a href="tags.html">Tagged Blocks</a></li>
-<li><a href="inline.html">Inline Syntax</a></li>
-<li><a href="misc.html">Misc</a></li>
+<li>
+<a href="index.html">Syntex</a>
+</li>
+<li>
+<a href="blocks.html">Blocks</a>
+</li>
+<li>
+<a href="tags.html">Tags</a>
+</li>
+<li>
+<a href="inline.html">Inline Syntax</a>
+</li>
+<li>
+<a href="misc.html">Misc</a>
+</li>
 </ul>
+
 	</footer>
 
 </body>

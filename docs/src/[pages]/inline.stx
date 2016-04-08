@@ -60,7 +60,7 @@ Syntex also supports Markdown-style reference images:
 
 Image references can be specified anywhere in the document. They take the form:
 
-    \[reference]: http://example.com/image.jpg optional title text
+    [reference]: http://example.com/image.jpg optional title text
 
 If the reference text is omitted from the image, the alt text will be used instead when searching for references.
 

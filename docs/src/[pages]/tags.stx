@@ -1,7 +1,7 @@
 
-# Tagged Blocks
+# Tags
 
-Syntex supports an extensible, indentation-based syntax for generating arbitrary block-level elements:
+Syntex supports an extensible, indentation-based syntax for generating arbitrary HTML:
 
     :tag [keyword] [.class] [#id] [@attr] [attr="value"]
         block content
@@ -54,7 +54,7 @@ will generate the following HTML:
 
 By default, all unregistered tags are rendered like the `div` tag above.
 
-A subset of HTML tags do not behave like the `div` tag and require special processing, e.g. leaf elements like paragraphs and headings which cannot contain nested block-level content, or void elements like `input` and `hr` which cannot contain any content at all. All such tags with registered handlers are listed below.
+A subset of HTML tags do not behave like the `div` tag and require special processing. *Leaf* tags like paragraphs and headings and *inline* tags like `a` and `span` cannot contain nested block-level content; *void* tags like `input` and `hr` cannot contain any content at all. All tags with registered handlers are listed below.
 
 Syntex also supports a set of custom tags with no HTML equivalents, e.g. the `:alert` tag for creating alert boxes. All custom tags are listed below.
 
@@ -63,6 +63,14 @@ Note that a tag can have one or more aliases which are treated identically, e.g.
 
 
 ## Tag Reference
+
+
+#### `:a`
+
+    :a <url>
+
+Creates an `<a>` element. The link's url may be supplied as a keyword argument. Links are inline elements and do not support nested block-level content.
+
 
 #### `:alert`
 
@@ -78,6 +86,13 @@ Creates an alert box - a `<div>` element with the class `stx-alert` which can be
     :>>
 
 Creates a `<blockquote>` element. This tag supports nested block-level content.
+
+
+#### `:button`
+
+    :button
+
+Creates a `<button>` element. This is an inline element and does not support nested block-level content.
 
 
 #### `:comment`
@@ -125,7 +140,7 @@ Instructs Syntex to ignore the block's content. This tag can be used to add comm
 
 #### `:img`
 
-    :img <src-url> [link-url]
+    :img <src-url> <link-url>
 
 Block-level alternative to the inline image tag. The block's content is used as the image's `alt` text.
 
@@ -137,6 +152,13 @@ The image's `src` url may be supplied as a keyword argument. If a second url is 
     :input
 
 Creates an `<input>` element. This is a void element which cannot contain content of any sort.
+
+
+#### `:label`
+
+    :label
+
+Creates a `<label>` element. This is an inline element and does not support nested block-level content.
 
 
 #### `:nl2br`
@@ -186,11 +208,32 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 Creates a `<script>` element. The block's content is not processed any further but is included in the output in its raw state.
 
 
+#### `:span`
+
+    :span
+
+Creates a `<span>` element. This is an inline element and does not support nested block-level content.
+
+
 #### `:style`
 
     :style
 
 Creates a `<style>` element. The block's content is not processed any further but is included in the output in its raw state.
+
+
+#### `:textarea`
+
+    :textarea
+
+Creates a `<textarea>` element. This is an inline element and does not support nested block-level content.
+
+
+#### `:time`
+
+    :time
+
+Creates a `<time>` element. This is an inline element and does not support nested block-level content.
 
 
 #### `:++`
