@@ -19,7 +19,7 @@ Syntex shares much of its basic syntax with Markdown:
 
     This is a second paragraph containing a [link](http://example.com).
 
-Syntex differs from Markdown in using an extensible, indentation-based syntax for block-level elements:
+Syntex differs from Markdown in offering an extensible, indentation-based syntax for generating arbitrary HTML:
 
     :tag [keyword] [.class] [#id] [@attr] [attr="value"]
         block content
