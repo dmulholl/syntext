@@ -23,7 +23,7 @@ generates the following HTML:
         <p>This is a paragraph.</p>
     </div>
 
-A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied (whether these are used depends on the specific tag). So the markup below:
+A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied (whether these are used depends on the tag). So the markup below:
 
     :div .myclass #myid
         This is a paragraph.
@@ -52,9 +52,9 @@ will generate the following HTML:
         </div>
     </div>
 
-By default, all unregistered tags are rendered like the `div` tag above.
+By default, all unregistered tags are rendered like the `:div` tag above.
 
-A subset of HTML tags do not behave like the `div` tag and require special processing. *Leaf* tags like paragraphs and headings and *inline* tags like `a` and `span` cannot contain nested block-level content; *void* tags like `input` and `hr` cannot contain any content at all. All tags with registered handlers are listed below.
+A subset of HTML tags do not behave like the `:div` tag and require special processing. *Leaf* tags like paragraphs and headings and *inline* tags like `:a` and `:span` cannot contain nested block-level content; *void* tags like `:input` and `:hr` cannot contain any content at all. All tags with registered handlers are listed below.
 
 Syntex also supports a set of custom tags with no HTML equivalents, e.g. the `:alert` tag for creating alert boxes. All custom tags are listed below.
 

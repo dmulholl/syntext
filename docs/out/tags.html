@@ -76,7 +76,7 @@ generates the following HTML:
 &lt;/div&gt;
 </pre>
 <p>
-A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied (whether these are used depends on the specific tag). So the markup below:
+A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied (whether these are used depends on the tag). So the markup below:
 </p>
 <pre>
 :div .myclass #myid
@@ -115,10 +115,10 @@ will generate the following HTML:
 &lt;/div&gt;
 </pre>
 <p>
-By default, all unregistered tags are rendered like the <code>div</code> tag above.
+By default, all unregistered tags are rendered like the <code>:div</code> tag above.
 </p>
 <p>
-A subset of HTML tags do not behave like the <code>div</code> tag and require special processing. <em>Leaf</em> tags like paragraphs and headings and <em>inline</em> tags like <code>a</code> and <code>span</code> cannot contain nested block-level content; <em>void</em> tags like <code>input</code> and <code>hr</code> cannot contain any content at all. All tags with registered handlers are listed below.
+A subset of HTML tags do not behave like the <code>:div</code> tag and require special processing. <em>Leaf</em> tags like paragraphs and headings and <em>inline</em> tags like <code>:a</code> and <code>:span</code> cannot contain nested block-level content; <em>void</em> tags like <code>:input</code> and <code>:hr</code> cannot contain any content at all. All tags with registered handlers are listed below.
 </p>
 <p>
 Syntex also supports a set of custom tags with no HTML equivalents, e.g. the <code>:alert</code> tag for creating alert boxes. All custom tags are listed below.
