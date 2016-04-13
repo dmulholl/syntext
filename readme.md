@@ -21,7 +21,7 @@ Syntex shares much of its basic syntax with Markdown:
 
 Syntex differs from Markdown in offering an extensible, indentation-based syntax for generating arbitrary HTML:
 
-    :tag [keyword] [.class] [#id] [@attr] [attr="value"]
+    :tag [keyword] [.class] [#id] [&attr] [attr="value"]
         block content
         block content
         ...
