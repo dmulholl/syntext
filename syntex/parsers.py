@@ -571,8 +571,8 @@ class TaggedBlockParser:
             if arg.startswith('#'):
                 kwargs['id'] = arg[1:]
                 pargs.remove(arg)
-            if arg.startswith('@'):
-                kwargs[arg.lstrip('@')] = None
+            if arg.startswith('&'):
+                kwargs[arg.lstrip('&')] = None
                 pargs.remove(arg)
 
         # Convert the classes list into a space-separated string.
