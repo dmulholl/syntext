@@ -22,13 +22,13 @@ re_emphasis = re.compile(r"\*(\S.*?\S)\*")
 re_backticks = re.compile(r"`(.+?)`")
 
 # [link text](http://example.com optional title text)
-re_link = re.compile(r"\[([^\]]+)\]\(([^ \)]+)([ ].+)?\)")
+re_link = re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
 
 # [link text][ref]
 re_ref_link = re.compile(r"\[([^\]]+)\]\[([^\]]*)\]")
 
 # ![alt text](http://example.com optional title text)
-re_img = re.compile(r"!\[([^\]]*)\]\(([^ \)]+)([ ].+)?\)")
+re_img = re.compile(r"!\[([^\]]*)\]\(([^\)]+)\)")
 
 # ![alt text][ref]
 re_ref_img = re.compile(r"!\[([^\]]*)\]\[([^\]]*)\]")
@@ -128,8 +128,9 @@ def render_emphasis(text):
 def render_images(text):
     def callback(match):
         alt = html.escape(match.group(1))
-        url = match.group(2)
-        title = html.escape(match.group(3) or '').strip()
+        atts = match.group(2).strip().split(' ', maxsplit=1)
+        url = atts[0]
+        title = html.escape(atts[1] if len(atts) > 1 else '').strip()
         if title:
             return '<img src="%s" alt="%s" title="%s">' % (url, alt, title)
         else:
@@ -153,8 +154,9 @@ def render_ref_images(text, meta):
 def render_links(text):
     def callback(match):
         text = match.group(1)
-        url = match.group(2)
-        title = html.escape(match.group(3) or '').strip()
+        atts = match.group(2).strip().split(' ', maxsplit=1)
+        url = atts[0]
+        title = html.escape(atts[1] if len(atts) > 1 else '').strip()
         if title:
             return '<a href="%s" title="%s">%s</a>' % (url, title, text)
         else:
