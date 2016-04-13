@@ -22,13 +22,13 @@ re_emphasis = re.compile(r"\*(\S.*?\S)\*")
 re_backticks = re.compile(r"`(.+?)`")
 
 # [link text](http://example.com optional title text)
-re_link = re.compile(r"\[([^\]]+)\]\((\S+)([ ].+)?\)")
+re_link = re.compile(r"\[([^\]]+)\]\(([^ \)]+)([ ].+)?\)")
 
 # [link text][ref]
 re_ref_link = re.compile(r"\[([^\]]+)\]\[([^\]]*)\]")
 
 # ![alt text](http://example.com optional title text)
-re_img = re.compile(r"!\[([^\]]*)\]\((\S+)([ ].+)?\)")
+re_img = re.compile(r"!\[([^\]]*)\]\(([^ \)]+)([ ].+)?\)")
 
 # ![alt text][ref]
 re_ref_img = re.compile(r"!\[([^\]]*)\]\[([^\]]*)\]")
