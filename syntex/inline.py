@@ -132,9 +132,9 @@ def render_images(text):
         url = atts[0]
         title = html.escape(atts[1] if len(atts) > 1 else '').strip()
         if title:
-            return '<img src="%s" alt="%s" title="%s">' % (url, alt, title)
+            return '<img alt="%s" src="%s" title="%s">' % (alt, url, title)
         else:
-            return '<img src="%s" alt="%s">' % (url, alt)
+            return '<img alt="%s" src="%s">' % (alt, url)
     return re_img.sub(callback, text)
 
 
@@ -145,9 +145,9 @@ def render_ref_images(text, meta):
         url, title = meta.get('linkrefs', {}).get(ref, ('', ''))
         if title:
             title = html.escape(title)
-            return '<img src="%s" alt="%s" title="%s">' % (url, alt, title)
+            return '<img alt="%s" src="%s" title="%s">' % (alt, url, title)
         else:
-            return '<img src="%s" alt="%s">' % (url, alt)
+            return '<img alt="%s" src="%s">' % (alt, url)
     return re_ref_img.sub(callback, text)
 
 
