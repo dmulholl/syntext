@@ -1,166 +1,199 @@
 /*
-    Layout
+    Reset
 */
 
 html {
-    font-size: 62.5%;
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    box-sizing: border-box;
 }
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
 body {
-    margin: 0;
-    padding: 0 30px;
-    font-family: "Georgia", serif;
-    font-size: 1.5rem;
-    line-height: 1.6;
-    color: #333;
-}
-.content {
-    max-width: 650px;
-    margin: 0 auto;
-    padding: 40px 45px 50px;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px #ddd;
-}
-.meta {
-    max-width: 650px;
-    margin: 0 auto;
-    padding: 25px 45px;
-    font-size: 1.4rem;
-    color: #aaa;
-}
-
-/*
-    Header & Footer
-*/
-
-.header {
-    text-align: right;
-}
-.footer {
-    text-align: center;
-}
-.meta ul {
-    list-style: none;
     margin: 0;
     padding: 0;
 }
-.footer ul {
-    margin: 5px 0;
-}
-.meta ul ul {
-    display: none;
-}
-.meta li {
+
+form, fieldset, legend {
     margin: 0;
-    display: inline-block;
+    padding: 0;
 }
-.header li:before {
-    content: "\A0│\A0\A0";
-}
-.footer li:before {
-    content: "\A0·\A0\A0";
-}
-.meta li:first-child:before {
-    content: none;
-}
-.meta a {
-    border: none;
-    color: #aaa;
-    transition: color 0.5s;
-}
-.meta a:hover {
-    border: none;
-    color: #4183C4;
-    transition: color 0.3s;
-}
-.hamburger {
-    display: none;
+
+button, input, select, textarea, label {
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 /*
-    Headings
+    Typography
 */
+
+html {
+    font-size: 15px;
+}
+
+body {
+    font-family: "Georgia", serif;
+    color: #333;
+    line-height: 1.6;
+}
 
 h1, h2, h3, h4, h5, h6 {
     padding: 0;
     line-height: 1.25;
 }
-h1, h2 {
-    margin: 4rem 0 2.5rem;
-    border-bottom: 1px solid #ccc;
+
+h1 {
     color: black;
-    padding-bottom: 0.5rem;
-    font-size: 3.2rem;
+    font-size: 32px;
     font-weight: normal;
-}
-h2 {
-    font-size: 2.4rem;
-}
-h3 {
-    margin: 3.5rem 0 2rem;
-    font-size: 1.7rem;
-    font-weight: bold;
-}
-h4, h5, h6 {
-    margin: 3rem 0 2rem;
-    font-size: 1.5rem;
-    font-weight: bold;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    margin: 2.7rem 0 1.7rem
 }
 
-/*
-    Paragraphs
-*/
+h2 {
+    color: black;
+    font-size: 24px;
+    font-weight: normal;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ccc;
+    margin: 2.7rem 0 1.7rem
+}
+
+h3 {
+    font-size: 17px;
+    font-weight: bold;
+    margin: 2.3rem 0 1.3rem
+}
+
+h4, h5, h6 {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 2rem 0 1.3rem
+}
 
 p {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
     padding: 0;
     text-align: justify;
 }
 
-/*
-    Quotes
-*/
-
 blockquote {
-    margin: 3rem 1rem;
-    padding: 0 2rem;
+    margin: 2rem 0.7rem;
+    padding: 0 1.3rem;
     border-left: 3px solid #e8e8e8;
     color: #666;
     font-style: italic;
 }
 
+pre, code {
+    font-size: 13px;
+    font-family: Consolas, monospace;
+    color: #222;
+}
+
+code {
+    margin: 0 2px;
+    padding: 1px 5px;
+    white-space: nowrap;
+    border: 1px solid #e8e8e8;
+    border-radius: 3px;
+    background-color: #f8f8f8;
+}
+
+pre {
+    margin: 1.5rem 0;
+    padding: .7rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #f8f8f8;
+    overflow: auto;
+}
+
+abbr[title] {
+    border-bottom: 1px dotted;
+    cursor: help;
+}
+
+sup, sub {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sup {
+    bottom: 1ex;
+}
+
+sub {
+    top: .5ex;
+}
+
+small {
+    font-size: 75%;
+}
+
+big {
+    font-size: 125%;
+}
+
 /*
-    Ordered/Unordered Lists
+    Elements
 */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px dotted #ddd;
+    margin: 2.5rem 3rem;
+    padding: 0;
+}
 
 ul, ol {
-    margin: 2rem 0;
-    padding: 0 0 0 2rem;
-}
-ul ul, ol ol, ul ol, ol ul {
-    margin: 1rem;
-}
-li {
-    margin: 0.5rem 0;
-    padding: 0;
+    margin: 1.3rem 0;
+    padding: 0 0 0 1.3rem;
 }
 
-/*
-    Definition Lists
-*/
+ul ul, ol ol, ul ol, ol ul {
+    margin: 0.7rem;
+}
+
+li {
+    margin: 5px 0;
+    padding: 0;
+}
 
 dl {
-    margin: 3rem 0;
+    margin: 2rem 0;
     padding: 0;
 }
+
 dt {
-    margin: 2rem 0;
+    margin: 1.5rem 0;
     padding: 0;
     font-weight: bold;
 }
+
 dd {
-    margin: 2rem 1rem;
-    padding: 0 2rem;
+    margin: 1.3rem 0.7rem;
+    padding: 0 1.3rem;
     border-left: 3px solid #e8e8e8;
+}
+
+img {
+    border: 0;
+    max-width: 100%;
+    margin: 1.3rem auto;
+    display: block;
 }
 
 /*
@@ -177,76 +210,157 @@ a:hover {
 }
 
 /*
-    Code
+    Layout
 */
 
-pre, code {
-    font-size: 1.3rem;
-    font-family: Consolas, monospace;
-    color: #222;
+body {
+    margin: 0 auto;
+    padding: 0 3rem;
 }
-code {
-    margin: 0 2px;
-    padding: 1px 5px;
-    white-space: nowrap;
-    border: 1px solid #e8e8e8;
-    border-radius: 3px;
-    background-color: #f8f8f8;
-}
-pre {
-    margin: 2rem 0;
-    padding: 1rem 1.5rem;
+
+.main {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 40px 50px 50px;
     border: 1px solid #ccc;
-    border-radius: 3px;
-    background-color: #f8f8f8;
-    overflow: auto;
+    box-shadow: 0 0 10px #ddd;
 }
 
 /*
-    Horizontal Rules
+    Site Header
 */
 
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ddd;
-    margin: 3rem 4rem;
+.head {
+    text-align: right;
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 25px 50px;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.head ul {
+    list-style: none;
+    margin: 0;
     padding: 0;
 }
 
+.head ul ul {
+    display: none;
+}
+
+.head li {
+    margin: 0;
+    display: inline-block;
+}
+
+.head li:before {
+    content: "\A0│\A0\A0";
+}
+
+.head li:first-child:before {
+    content: none;
+}
+
+.head a {
+    border: none;
+    color: #aaa;
+    transition: color 0.5s;
+}
+.head a:hover {
+    border: none;
+    color: #4183C4;
+    transition: color 0.3s;
+}
+
 /*
-    Misc. Typography
+    Site Footer
 */
 
-abbr[title] {
-    border-bottom: 1px dotted;
+.foot {
+    text-align: center;
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 25px 50px;
+    font-size: 14px;
+    color: #aaa;
 }
-small {
-    font-size: 80%;
+
+.foot ul {
+    list-style: none;
+    margin: 5px 0;
+    padding: 0;
 }
-sub, sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline;
+
+.foot ul ul {
+    display: none;
 }
-sup {
-    top: -0.5em;
+
+.foot li {
+    margin: 0;
+    display: inline-block;
 }
-sub {
-    bottom: -0.25em;
+
+.foot li:before {
+    content: "\A0·\A0\A0";
+}
+
+.foot li:first-child:before {
+    content: none;
+}
+
+.foot a {
+    border: none;
+    color: #aaa;
+    transition: color 0.5s;
+}
+.foot a:hover {
+    border: none;
+    color: #4183C4;
+    transition: color 0.3s;
 }
 
 /*
-    Images
+    Content
 */
 
-img {
-    border: 0;
-    max-width: 100%;
-    margin: 2rem auto;
-    display: block;
+h1 + ul {
+    margin-top: 2rem;
+}
+.main > :first-child {
+    margin-top: 0;
+}
+.main > :last-child {
+    margin-bottom: 0;
+}
+
+/*
+    Alert Boxes
+*/
+
+.stx-alert {
+    margin: 2rem;
+    border: 1px solid;
+    padding: 5px 20px;
+    border-radius: 3px;
+}
+
+.stx-info {
+    color: #224466;
+    border-color: #bac6d3;
+    background-color: #e2eef9;
+}
+
+.stx-warning {
+    color: #4c4a42;
+    border-color: #dfd8c2;
+    background-color: #fff9ea;
+}
+
+.stx-error {
+    color: #991111;
+    border-color: #d2b2b2;
+    background-color: #fcdede;
 }
 
 /*
@@ -256,76 +370,35 @@ img {
 table {
     border-collapse: collapse;
     border-spacing: 0;
-    margin: 3rem auto;
+    margin: 2.5rem auto;
     width: 80%;
-    font-size: 1.4rem;
+    font-size: 14px;
 }
-thead {
+
+thead, tfoot {
     background-color: #eee;
 }
+
 tr:nth-child(even) {
     background-color: #f8f8f8;
 }
+
 th, td {
     border: 1px solid #ccc;
-    padding: 0.6rem 1.2rem;
+    padding: 6px 12px;
     text-align: left;
 }
+
+table .stx-left {
+    text-align: left;
+}
+
 table .stx-center {
     text-align: center;
 }
+
 table .stx-right {
     text-align: right;
-}
-
-/*
-    Paging
-*/
-
-.paging {
-    text-align: center;
-    font-size: 1.4rem;
-    font-style: italic;
-}
-
-/*
-    Smoothing
-*/
-
-h1 + ul {
-    margin-top: 3rem;
-}
-.content > :first-child {
-    margin-top: 0;
-}
-.content > :last-child {
-    margin-bottom: 0;
-}
-
-/*
-    Alert Boxes
-*/
-
-.stx-alert {
-    margin: 3rem;
-    border: 1px solid;
-    padding: 0.5rem 2rem;
-    border-radius: 3px;
-}
-.stx-info {
-    color: #224466;
-    border-color: #bac6d3;
-    background-color: #e2eef9;
-}
-.stx-warning {
-    color: #4c4a42;
-    border-color: #dfd8c2;
-    background-color: #fff9ea;
-}
-.stx-error {
-    color: #991111;
-    border-color: #d2b2b2;
-    background-color: #fcdede;
 }
 
 /*
@@ -340,30 +413,81 @@ h1 + ul {
 }
 
 /*
+    Checkbox Hack
+*/
+
+#togglebox {
+    display: none;
+}
+
+#togglelabel {
+    display: none;
+}
+
+/*
+    Media Queries
+*/
+
+/*
+    Does the same thing as <meta name="viewport" content="width=device-width">,
+    but in the future W3C standard way. -ms- prefix is required for IE10+ to
+    render responsive styling in Windows 8 "snapped" views; IE10+ does not honor
+    the meta tag.
+*/
+
+@-ms-viewport {
+    width: device-width;
+}
+
+@viewport {
+    width: device-width;
+}
+
+/*
     Tablet & Landscape Phone
 */
 
-@media (max-width: 800px) {
+@media screen and (max-width: 840px) {
     html {
-        font-size: 58.333333%;
-        -webkit-text-size-adjust: 100%;
+        font-size: 14px;
     }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    h4, h5, h6 {
+        font-size: 14px;
+    }
+
     body {
         padding: 0;
     }
-    .content {
-        padding: 0 30px 40px;
+
+    pre, code {
+        font-size: 12px;
+    }
+
+    .main {
         border: none;
         box-shadow: none;
+        padding: 0 50px 50px
     }
-    .header {
-        padding: 20px 30px;
+
+    .head {
+        font-size: 13px;
     }
-    .footer {
+
+    .foot {
         display: none;
-    }
-    .header ul {
-        display: block;
     }
 }
 
@@ -371,46 +495,98 @@ h1 + ul {
     Portrait Phone
 */
 
-@media (max-width: 420px) {
+@media screen and (max-width: 480px) {
     html {
-        font-size: 54.166667%;
-        -webkit-text-size-adjust: 100%;
+        font-size: 13px;
     }
-    .content {
-        padding: 0 20px 30px;
+
+    h1 {
+        font-size: 28px;
     }
-    .header {
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 15px;
+    }
+
+    h4, h5, h6 {
+        font-size: 13px;
+    }
+
+    pre, code {
+        font-size: 11px;
+    }
+
+    .main {
+        padding: 15px 30px 40px;
+    }
+
+    .head {
         text-align: center;
-        font-size: 1.6rem;
-        padding: 20px 0;
+        font-size: 14px;
+    }
+
+    .head a {
+        border: none;
         color: #333;
     }
-    .hamburger {
-        display: block;
-        margin: 0 auto;
-        width: 10rem;
-        text-align: center;
-        font-size: 4rem;
-        color: #888;
-        cursor: pointer;
+
+    .head a:hover {
+        border: none;
+        color: #4183C4;
     }
-    .header ul {
-        border-top: 1px dotted #ccc;
-        margin: 15px 80px;
+
+    #togglelabel {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        line-height: 50px;
+        color: #333;
+        font-size: 20px;
+        margin-top: 10px;
+    }
+
+    #togglelabel:hover, #togglelabel:focus {
+        border: 1px solid #bbb;
+    }
+
+    #togglebox ~ label:before {
+        content: "☰";
+    }
+
+    #togglebox:checked ~ label:before {
+        content: "✕"
+    }
+
+    #togglebox ~ ul {
         display: none;
     }
-    .header li {
-        margin: 0;
-        display: list-item;
+
+    #togglebox:checked ~ ul {
+        display: block;
+        margin: 40px 20px 10px;
+    }
+
+    .head li {
+        display: block;
         border-bottom: 1px dotted #ccc;
     }
-    .header li:before, .header li:first-child:before {
+
+    .head li:first-child {
+        border-top: 1px dotted #ccc;
+    }
+
+    .head li:before {
         content: none;
     }
-    .header a {
-        display: inline-block;
-        padding: 8px 10px;
-        color: #4183C4;
-        text-decoration: none;
+
+    .head li a {
+        display: block;
+        padding: 15px 0;
     }
 }

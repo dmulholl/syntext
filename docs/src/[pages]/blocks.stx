@@ -37,7 +37,7 @@ In each case the upper line of symbols is optional. The text can extend over mul
      Text
     ------
 
-Headings can also be indicated by prefacing their text with an appropriate number of hashes `#`:
+Headings can also be indicated by prefacing their text with an appropriate number of hash symbols `#`:
 
     ### H3 Heading ###
 

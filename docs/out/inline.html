@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>
+    <meta charset="utf-8">
+    <title>
+        
 Inline Syntax
-</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="css/theme.css">
-	<link rel="stylesheet" href="css/pygments.css">
-	<!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><![endif]-->
-	<script src="js/jquery-1.11.2.min.js"></script>
-	<script src="js/theme.js"></script>
+
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/pygments.css">
+    <!--[if lt IE 9]>
+        <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+    <script src="js/jquery-1.12.3.min.js"></script>
+    <script src="js/theme.js"></script>
 </head>
 
 <body class="pages single">
 
-	<header id="header" class="header meta">
-		
-			<div class="hamburger unselectable">☰</div>
-			<ul>
+    <header id="head" class="head">
+        <input id="togglebox" type="checkbox">
+        <label id="togglelabel" for="togglebox" class="unselectable"></label>
+        <ul>
 <li>
 <a href="index.html">Syntex</a>
 </li>
@@ -36,13 +40,12 @@ Inline Syntax
 </li>
 </ul>
 
-		
-	</header>
+    </header>
 
-	<article id="content" class="content">
-		
+    <article id="main" class="main">
+        
 
-		<h1 id="inline-syntax">
+        <h1 id="inline-syntax">
 Inline Syntax
 </h1>
 <p>
@@ -142,12 +145,10 @@ Syntex ignores inline HTML tags so it's fine to mix and match inline HTML and Sy
 The HTML syntax characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code> are automatically escaped unless they form part of a HTML tag or character entity.
 </p>
 
+    </article>
 
-		
-	</article>
-
-	<footer id="footer" class="footer meta">
-		<ul>
+    <footer id="foot" class="foot">
+        <ul>
 <li>
 <a href="index.html">Syntex</a>
 </li>
@@ -165,7 +166,7 @@ The HTML syntax characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;
 </li>
 </ul>
 
-	</footer>
+    </footer>
 
 </body>
 </html>

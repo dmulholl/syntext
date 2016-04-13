@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>
+    <meta charset="utf-8">
+    <title>
+        
 Tags
-</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="css/theme.css">
-	<link rel="stylesheet" href="css/pygments.css">
-	<!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><![endif]-->
-	<script src="js/jquery-1.11.2.min.js"></script>
-	<script src="js/theme.js"></script>
+
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/pygments.css">
+    <!--[if lt IE 9]>
+        <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+    <script src="js/jquery-1.12.3.min.js"></script>
+    <script src="js/theme.js"></script>
 </head>
 
 <body class="pages single">
 
-	<header id="header" class="header meta">
-		
-			<div class="hamburger unselectable">☰</div>
-			<ul>
+    <header id="head" class="head">
+        <input id="togglebox" type="checkbox">
+        <label id="togglelabel" for="togglebox" class="unselectable"></label>
+        <ul>
 <li>
 <a href="index.html">Syntex</a>
 </li>
@@ -36,20 +40,19 @@ Tags
 </li>
 </ul>
 
-		
-	</header>
+    </header>
 
-	<article id="content" class="content">
-		
+    <article id="main" class="main">
+        
 
-		<h1 id="tags">
+        <h1 id="tags">
 Tags
 </h1>
 <p>
 Syntex supports an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
-:tag [keyword] [.class] [#id] [@attr] [attr="value"]
+:tag [keyword] [.class] [#id] [&amp;attr] [attr="value"]
     block content
     block content
     ...
@@ -91,7 +94,7 @@ generates the following HTML:
 &lt;/div&gt;
 </pre>
 <p>
-Boolean attributes can be specified using an <code>@</code> symbol, e.g. <code>@checked</code>. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
+Boolean attributes can be specified using an <code>&amp;</code> symbol, e.g. <code>&amp;checked</code>. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
 </p>
 <pre>
 :div attr1=foo attr2="bar" attr3='baz'
@@ -388,12 +391,10 @@ Cells in the left column above receive the class <code>stx-left</code>, cells in
 Attributes specified in the block header will be applied to the <code>&lt;table&gt;</code> element.
 </p>
 
+    </article>
 
-		
-	</article>
-
-	<footer id="footer" class="footer meta">
-		<ul>
+    <footer id="foot" class="foot">
+        <ul>
 <li>
 <a href="index.html">Syntex</a>
 </li>
@@ -411,7 +412,7 @@ Attributes specified in the block header will be applied to the <code>&lt;table&
 </li>
 </ul>
 
-	</footer>
+    </footer>
 
 </body>
 </html>

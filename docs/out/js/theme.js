@@ -1,24 +1,15 @@
-
-// Resize the #content div so it fills the available vertical screen space.
+// Resize the #main div so it fills the available vertical screen space.
 $(function() {
-    var header = $("#header").outerHeight();
-    var footer = $("#footer").outerHeight();
-    var chrome = $("#content").outerHeight() - $("#content").height();
+    var header_height = $("#head").outerHeight();
+    var footer_height = $("#foot").outerHeight();
 
     function resizeContent() {
-        $("#content").css(
+        $("#main").css(
             'minHeight',
-            $(window).height() - header - footer - chrome
+            $(window).height() - header_height - footer_height
         );
     }
 
     $(window).resize(resizeContent);
     resizeContent();
-});
-
-// Hamburger dropdown menu for phones in portrait mode.
-$(function() {
-    $(".hamburger").click(function(){
-        $(".header ul").slideToggle();
-    });
 });

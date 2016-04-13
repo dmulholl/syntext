@@ -3,7 +3,7 @@
 
 Syntex supports an extensible, indentation-based syntax for generating arbitrary HTML:
 
-    :tag [keyword] [.class] [#id] [@attr] [attr="value"]
+    :tag [keyword] [.class] [#id] [&attr] [attr="value"]
         block content
         block content
         ...
@@ -34,7 +34,7 @@ generates the following HTML:
         <p>This is a paragraph.</p>
     </div>
 
-Boolean attributes can be specified using an `@` symbol, e.g. `@checked`. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
+Boolean attributes can be specified using an `&` symbol, e.g. `&checked`. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
 
     :div attr1=foo attr2="bar" attr3='baz'
 
