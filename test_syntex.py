@@ -12,13 +12,13 @@ import sys
 testdir = os.path.join(os.path.dirname(__file__), 'unittests')
 
 
-# Loads a file and return its content as a string.
+# Load a file and return its content as a string.
 def load(filepath):
     with open(filepath, encoding='utf-8') as file:
         return file.read()
 
 
-# Loads and renders the suite of test-input files.
+# Load and render the suite of test-input files.
 def main():
     oks, fails = 0, 0
 
