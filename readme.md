@@ -3,11 +3,11 @@
 
 Syntex is a lightweight, markdownish markup language for generating HTML. It's implemented in Python 3 and can be used as both a command line tool and a Python library.
 
-On the command line::
+On the command line:
 
     $ syntex < input.txt > output.html
 
-As a library::
+As a library:
 
     >>> import syntex
     >>> html = syntex.render(text)
