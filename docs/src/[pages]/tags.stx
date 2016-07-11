@@ -149,9 +149,9 @@ The image's `src` url may be supplied as a keyword argument. If a second url is 
 
 #### `:input`
 
-    :input
+    :input <type>
 
-Creates an `<input>` element. This is a void element which cannot contain content of any sort.
+Creates an `<input>` element. This is a void element which cannot contain content of any sort. The element's type may be supplied as a keyword argument.
 
 
 #### `:label`
@@ -243,7 +243,7 @@ Creates a `<time>` element. This is an inline element and does not support neste
 This sigil indicates that the block contains a simple table literal in the one of the following formats:
 
     foo | bar | baz      foo | bar | baz
-    ---------------      ---------------  
+    ---------------      ---------------
     aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc
     ddd | eee | fff      ddd | eee | fff      ddd | eee | fff      ddd | eee | fff
     ---------------                           ---------------

@@ -10,14 +10,12 @@ Tags
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/pygments.css">
-    <!--[if lt IE 9]>
-        <script src="js/html5shiv.min.js"></script>
-    <![endif]-->
+    <!--[if lt IE 9]><script src="js/html5shiv.js"></script><![endif]-->
     <script src="js/jquery-1.12.3.min.js"></script>
     <script src="js/theme.js"></script>
 </head>
 
-<body class="pages single">
+<body class="type-pages single">
 
     <header id="head" class="head">
         <input id="togglebox" type="checkbox">
@@ -239,10 +237,10 @@ The image's <code>src</code> url may be supplied as a keyword argument. If a sec
 <code>:input</code>
 </h4>
 <pre>
-:input
+:input &lt;type&gt;
 </pre>
 <p>
-Creates an <code>&lt;input&gt;</code> element. This is a void element which cannot contain content of any sort.
+Creates an <code>&lt;input&gt;</code> element. This is a void element which cannot contain content of any sort. The element's type may be supplied as a keyword argument.
 </p>
 <h4 id="label">
 <code>:label</code>

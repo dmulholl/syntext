@@ -286,6 +286,11 @@ body {
     color: #aaa;
 }
 
+.foot p {
+    text-align: center;
+    margin: 5px 0;
+}
+
 .foot ul {
     list-style: none;
     margin: 5px 0;
