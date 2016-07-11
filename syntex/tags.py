@@ -297,8 +297,6 @@ def table_handler(tag, pargs, kwargs, content, meta):
     return table
 
 
-# Default handler for 'void' elements, i.e. elements with no closing tag and
-# hence no content.
 # Handler for the 'input' tag.
 @register('input')
 def input_tag_handler(tag, pargs, kwargs, content, meta):
