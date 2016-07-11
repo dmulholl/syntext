@@ -63,7 +63,7 @@ def leaf_handler(tag, pargs, kwargs, content, meta):
 
 # Default handler for 'void' elements, i.e. elements with no closing tag and
 # hence no content.
-@register('hr', 'input')
+@register('hr')
 def void_handler(tag, pargs, kwargs, content, meta):
     return nodes.Void(tag, kwargs)
 
@@ -295,3 +295,13 @@ def table_handler(tag, pargs, kwargs, content, meta):
     table.append(tbody)
 
     return table
+
+
+# Default handler for 'void' elements, i.e. elements with no closing tag and
+# hence no content.
+# Handler for the 'input' tag.
+@register('input')
+def input_tag_handler(tag, pargs, kwargs, content, meta):
+    if pargs:
+        kwargs['type'] = pargs[0]
+    return nodes.Void(tag, kwargs)
