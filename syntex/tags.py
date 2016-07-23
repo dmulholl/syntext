@@ -158,7 +158,7 @@ def null_tag_handler(tag, pargs, kwargs, content, meta):
 # output.
 @register('ignore', '//')
 def ignore_tag_handler(tag, pargs, kwargs, content, meta):
-    return True
+    return None
 
 
 # Handler for the 'comment' tag and its associated sigil ':##'. This tag
@@ -330,4 +330,4 @@ def footnote_handler(tag, pargs, kwargs, content, meta):
     meta['footnotes'].append(dt)
     meta['footnotes'].append(dd)
 
-    return True
+    return None

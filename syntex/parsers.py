@@ -44,10 +44,10 @@ class H1Parser:
             if re.fullmatch(r'=+', lines[0]):
                 lines.pop(0)
             text = nodes.Text('\n'.join(lines[:-1]))
-            return nodes.Leaf('h1').append(text)
+            return True, nodes.Leaf('h1').append(text)
         else:
             stream.rewind(len(lines))
-            return None
+            return False, None
 
 
 # Consumes a H2 heading of the form:
@@ -79,10 +79,10 @@ class H2Parser:
             if re.fullmatch(r'-+', lines[0]):
                 lines.pop(0)
             text = nodes.Text('\n'.join(lines[:-1]))
-            return nodes.Leaf('h2').append(text)
+            return True, nodes.Leaf('h2').append(text)
         else:
             stream.rewind(len(lines))
-            return None
+            return False, None
 
 
 # Consumes an arbitrary level heading of the form:
@@ -99,9 +99,9 @@ class HeadingParser:
             line = stream.next()
             text = line.strip('#').strip()
             tag = 'h' + str(len(match.group(1)))
-            return nodes.Leaf(tag).append(nodes.Text(text))
+            return True, nodes.Leaf(tag).append(nodes.Text(text))
         else:
-            return None
+            return False, None
 
 
 # Consumes a sequence of indented lines. The lines must be indented by at
@@ -119,8 +119,8 @@ class IndentedCodeParser:
                     break
             text = str(lines.dedent().trim())
             text = html.escape(text, False)
-            return nodes.Raw('pre').append(nodes.Text(text))
-        return None
+            return True, nodes.Raw('pre').append(nodes.Text(text))
+        return False, None
 
 
 # Consumes a line containing three or more '-' or '*' symbols. The symbols
@@ -131,16 +131,16 @@ class HorizontalRuleParser:
         match = re.match(r'[ ]{0,3}([-*])[ ]*\1[ ]*\1.*', stream.peek())
         if match:
             stream.next()
-            return nodes.Void('hr')
+            return True, nodes.Void('hr')
         else:
-            return None
+            return False, None
 
 
 # Consumes a single line of text, returning it as a Text node.
 class TextParser:
 
     def __call__(self, stream, meta):
-        return nodes.Text(stream.next())
+        return True, nodes.Text(stream.next())
 
 
 # Consumes an unordered list. The list item marker is one of (*, •, -, or +).
@@ -166,7 +166,7 @@ class ULParser:
     def __call__(self, stream, meta):
         match = re.fullmatch(r'[ ]{0,3}([*•+-])([ ].+)?', stream.peek())
         if not match:
-            return None
+            return False, None
 
         # A new marker means a new list.
         marker = match.group(1)
@@ -221,7 +221,7 @@ class ULParser:
             li.children = children
             ul.append(li)
 
-        return ul
+        return True, ul
 
 
 # Consumes an ordered list. The list item marker is '#.' or '<int>.'.
@@ -247,7 +247,7 @@ class OLParser:
     def __call__(self, stream, meta):
         match = re.fullmatch(r'[ ]{0,3}([#]|\d+)[.]([ ].+)?', stream.peek())
         if not match:
-            return None
+            return False, None
 
         # A new marker means a new list.
         marker = match.group(1)
@@ -308,7 +308,7 @@ class OLParser:
             li.children = children
             ol.append(li)
 
-        return ol
+        return True, ol
 
 
 # Consumes a definition list of the form:
@@ -326,7 +326,7 @@ class DefinitionListParser:
     def __call__(self, stream, meta):
         match = re.fullmatch(r'\|\|(.+)', stream.peek())
         if not match:
-            return None
+            return False, None
 
         dl = nodes.Container('dl')
         while stream.has_next():
@@ -353,7 +353,7 @@ class DefinitionListParser:
             else:
                 break
 
-        return dl
+        return True, dl
 
 
 # Consumes a sequence of adjacent non-blank lines.
@@ -363,11 +363,11 @@ class ParagraphParser:
         lines = []
         while stream.has_next():
             nextline = stream.next()
-            if nextline:
+            if nextline != '':
                 lines.append(nextline)
             else:
                 break
-        return nodes.Leaf('p').append(nodes.Text('\n'.join(lines)))
+        return True, nodes.Leaf('p').append(nodes.Text('\n'.join(lines)))
 
 
 # Consumes one or more lines of raw block-level HTML.
@@ -387,14 +387,14 @@ class HtmlParser:
             tag = match.group(1)
             lines = [stream.next()]
         else:
-            return None
+            return False, None
 
         # Do we have a one-liner?
         match = re.fullmatch(r'<([a-zA-Z][^>]*?)>.*</\1>', lines[0])
         if match:
             node = nodes.Raw()
             node.append(nodes.Text(lines[0]))
-            return node
+            return True, node
 
         # Look for the corresponding closing tag.
         found, endtag = False, '</%s>' % tag
@@ -407,10 +407,10 @@ class HtmlParser:
         if found:
             node = nodes.Raw()
             node.append(nodes.Text('\n'.join(lines)))
-            return node
+            return True, node
         else:
             sys.stderr.write("Error: missing closing tag '%s'.\n" % endtag)
-            return True
+            return True, None
 
 
 # Consumes a link reference of the form:
@@ -425,7 +425,7 @@ class LinkRefParser:
         if match:
             stream.next()
         else:
-            return None
+            return False, None
 
         ref = match.group(1).lower()
         url = match.group(2)
@@ -445,7 +445,7 @@ class LinkRefParser:
         title = ' '.join(lines)
 
         meta.setdefault('linkrefs', {})[ref] = (url, title)
-        return True
+        return True, None
 
 
 # Consumes a tagged block of the form:
@@ -482,7 +482,7 @@ class TaggedBlockParser:
         if match:
             stream.next()
         else:
-            return None
+            return False, None
 
         tag = match.group(1)
         argstr = match.group(2) or ''
@@ -494,9 +494,10 @@ class TaggedBlockParser:
                 content.append(stream.next())
             else:
                 break
+        content = content.trim().dedent()
 
-        # Hand off responsibility to the appropriate tag handler.
-        return tags.process(tag, pargs, kwargs, content.trim().dedent(), meta)
+        # Hand off responsibility to the registered tag handler.
+        return True, tags.process(tag, pargs, kwargs, content, meta)
 
     def parse_args(self, argstr):
         pargs, kwargs, classes = [], {}, []
@@ -559,22 +560,16 @@ class Parser:
                 stream.next()
                 continue
 
-            # Give each structure parser an opportunity to parse the stream.
-            # A return value of None indicates that the parser was unable to
-            # parse the stream. A return value other than None indicates that
-            # the parser has consumed one or more lines from the stream. The
-            # value returned *may* be a Node instance; if so it is added to
-            # the block list.
-            result = None
+            # Give each parser an opportunity to parse the stream.
             for parser in self.parsers:
-                result = parser(stream, meta)
-                if result is not None:
+                parsed, result = parser(stream, meta)
+                if parsed:
                     if isinstance(result, nodes.Node):
                         nodelist.append(result)
                     break
 
-            # An unparsable line is an error.
-            if result is None:
+            # If we have an unparsable line, print an error and skip it.
+            if not parsed:
                 sys.stderr.write("UNPARSED: %s\n" % stream.next())
 
         # Merge adjacent text nodes.
