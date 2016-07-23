@@ -1,7 +1,7 @@
 
 # Syntex
 
-Syntex is a lightweight, markdownish markup language for generating HTML. It's implemented in Python 3 and can be used as both a command line tool and a Python library.
+Syntex is a lightweight, markdownish markup language for generating HTML. It's implemented in Python and can be used as both a command line utility and a Python library.
 
 On the command line:
 
@@ -12,14 +12,14 @@ As a library:
     >>> import syntex
     >>> html = syntex.render(text)
 
-Syntex shares much of its basic syntax with Markdown:
+Syntex inherits much of its basic syntax from Markdown:
 
     This is a paragraph containing *emphasised* and **strong** text.
     It also contains `code` in backticks.
 
     This is a second paragraph containing a [link](http://example.com).
 
-Syntex differs from Markdown in offering an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntex differs from Markdown in providing an extensible, indentation-based syntax for generating arbitrary HTML:
 
     :tag [keyword] [.class] [#id] [&attr] [attr="value"]
         block content
