@@ -53,7 +53,7 @@ Escapes
 The following characters can be escaped by a preceding backslash:
 </p>
 <pre>
-!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~•
+! " # $ % &amp; \ ' ( ) * + , - . / : ; &lt; = &gt; ? @ [ ] ^ _ ` { | } ~ •
 </pre>
 <p>
 Escaped characters lose any special significance they might otherwise have.
@@ -116,6 +116,36 @@ You can specify the insertion point for your footnotes using the <code>:insert</
 </pre>
 <p>
 Footnotes are inserted as a definition list with indices as definition terms.
+</p>
+<h3 id="extensions">
+Extensions
+</h3>
+<p>
+Syntex can easily be extended to support custom tags.
+</p>
+<p>
+To create a new custom tag, register its handler function using the <code>@tags.register()</code> decorator:
+</p>
+<pre class="lang-python pygments" data-lang="python">
+<span class="kn">import</span> <span class="nn">syntex</span>
+
+<span class="nd">@syntex.tags.register</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">pargs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">meta</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="n">node</span>
+</pre>
+<p>
+See the <code>tags.py</code> file for numerous examples to follow.
+</p>
+<p>
+Custom tag names should be prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>":foo"</code>. The tag can then be used with a double colon:
+</p>
+<pre>
+::foo
+    Block content.
+</pre>
+<p>
+This convention makes custom tags easy to identify and prevents potential name clashes as new builtin tags are added over time.
 </p>
 
     </article>
