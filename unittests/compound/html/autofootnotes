@@ -4,7 +4,7 @@ This line contains a footnote.<sup class="fn-ref"><a href="#fn-1">1</a></sup>
 <p>
 This line contains a footnote.<sup class="fn-ref"><a href="#fn-2">2</a></sup>
 </p>
-<dl class="stx-footnotes">
+<dl class="footnotes">
 <dt id="fn-1">
 1
 </dt>
