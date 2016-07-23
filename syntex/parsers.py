@@ -362,11 +362,9 @@ class ParagraphParser:
     def __call__(self, stream, meta):
         lines = []
         while stream.has_next():
-            nextline = stream.next()
-            if nextline != '':
-                lines.append(nextline)
-            else:
+            if stream.peek() == '':
                 break
+            lines.append(stream.next())
         return True, nodes.Leaf('p').append(nodes.Text('\n'.join(lines)))
 
 
