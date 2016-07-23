@@ -47,7 +47,7 @@ Syntex
 Syntex
 </h1>
 <p>
-Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python and can be used as both a command line utility and a Python library.
+Syntex is a lightweight, markdownish markup language for generating HTML. It's implemented in Python and can be used as both a command line utility and a Python library.
 </p>
 <p>
 When used on the command line Syntex reads from <code>stdin</code> and prints to <code>stdout</code>:
@@ -56,7 +56,7 @@ When used on the command line Syntex reads from <code>stdin</code> and prints to
 $ syntex &lt; input.txt &gt; output.html
 </pre>
 <p>
-To use Syntex as a library module call its <code>render()</code> function with a string of input:
+To use Syntex as a Python library call its <code>render()</code> function with a string of input:
 </p>
 <pre class="lang-python pygments" data-lang="python">
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">syntex</span>
@@ -66,7 +66,7 @@ To use Syntex as a library module call its <code>render()</code> function with a
 Overview
 </h2>
 <p>
-Syntex shares much of its basic syntax with Markdown:
+Syntex inherits much of its basic syntax from Markdown:
 </p>
 <pre>
 This is a paragraph containing *emphasised* and **strong** text.
@@ -75,7 +75,7 @@ It also contains a `code sample` in backticks.
 This is a second paragraph containing a [link](http://example.com).
 </pre>
 <p>
-Syntex differs from Markdown in using an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntex differs from Markdown in providing an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
 :tag [keyword] [.class] [#id] [&amp;attr] [attr="value"]
@@ -121,7 +121,7 @@ Flags:
       --version     Print the application's version number and exit.
 </pre>
 <p>
-Syntex can use the <a href="http://pygments.org/">Pygments</a> package to add syntax highlighting to code blocks - this feature can be enabled via the <code>--pygmentize</code> flag. (Pygments is installed automatically when you install Syntex using <code>pip</code>).
+Syntex can use the <a href="http://pygments.org/">Pygments</a> package to add syntax highlighting to code blocks; this feature can be enabled via the <code>--pygmentize</code> flag. (Pygments is installed automatically when you install Syntex using <code>pip</code>).
 </p>
 <p>
 Only code blocks with a language attribute will have syntax highlighting applied.

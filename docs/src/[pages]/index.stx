@@ -1,13 +1,13 @@
 
 # Syntex
 
-Syntex is a lightweight, markdownish markup language for generating HTML from plain text. It's implemented in Python and can be used as both a command line utility and a Python library.
+Syntex is a lightweight, markdownish markup language for generating HTML. It's implemented in Python and can be used as both a command line utility and a Python library.
 
 When used on the command line Syntex reads from `stdin` and prints to `stdout`:
 
     $ syntex < input.txt > output.html
 
-To use Syntex as a library module call its `render()` function with a string of input:
+To use Syntex as a Python library call its `render()` function with a string of input:
 
 ::: python
 
@@ -18,14 +18,14 @@ To use Syntex as a library module call its `render()` function with a string of 
 
 ## Overview
 
-Syntex shares much of its basic syntax with Markdown:
+Syntex inherits much of its basic syntax from Markdown:
 
     This is a paragraph containing *emphasised* and **strong** text.
     It also contains a `code sample` in backticks.
 
     This is a second paragraph containing a [link](http://example.com).
 
-Syntex differs from Markdown in using an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntex differs from Markdown in providing an extensible, indentation-based syntax for generating arbitrary HTML:
 
     :tag [keyword] [.class] [#id] [&attr] [attr="value"]
         block content
@@ -65,7 +65,7 @@ Use the `syntex --help` flag to view the utility's command line help:
       -p, --pygmentize  Add syntax highlighting to code samples.
           --version     Print the application's version number and exit.
 
-Syntex can use the [Pygments][] package to add syntax highlighting to code blocks - this feature can be enabled via the `--pygmentize` flag. (Pygments is installed automatically when you install Syntex using `pip`).
+Syntex can use the [Pygments][] package to add syntax highlighting to code blocks; this feature can be enabled via the `--pygmentize` flag. (Pygments is installed automatically when you install Syntex using `pip`).
 
 Only code blocks with a language attribute will have syntax highlighting applied.
 

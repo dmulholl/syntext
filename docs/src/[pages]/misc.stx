@@ -1,21 +1,19 @@
 
 # Miscellanea
 
-Syntex includes built-in support for footnotes and tables of contents.
 
 
-
-## Escapes
+### Escapes
 
 The following characters can be escaped by a preceding backslash:
 
-    !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~\n\t•
+    !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~•
 
-Escaped characters lose any special significance they might otherwise have in Syntex's markup or formatting syntax.
+Escaped characters lose any special significance they might otherwise have.
 
 
 
-## Tables of Contents
+### Tables of Contents
 
 Syntex can automatically generate a table of contents for a document. This table can be inserted using the `insert` tag:
 
@@ -25,36 +23,39 @@ The default listing skips H1 headings to avoid including the document title itse
 
     :insert fulltoc
 
-The table of contents is generated as an unordered list with the class `stx-toc`. This list contains links to the document's headings along with nested lists of links to subheadings.
+The table of contents is generated as an unordered list of links.
 
 
 
-## Footnotes
+### Footnotes
 
 Syntex includes built-in support for footnotes:
 
     This sentence ends with a footnote reference.[^1]
 
-Footnote references can take advantage of automatic numbering:
+Footnote references can omit their index to take advantage of automatic numbering:
 
     This sentence ends with an automatically-numbered reference.[^]
 
-The footnotes themselves can be specified anywhere in the document. They take the form:
+Footnotes themselves can be specified anywhere in the document using the `footnote` tag:
 
-    \[^1]: This is a footnote.
+    :footnote 1
 
-Footnotes support block-level structures and inline markup:
+        This is a footnote. It can contain any kind of block-level
+        and inline markup.
 
-    \[^1]: This footnote contains multiple paragraphs.
+        Including paragraphs and [links](http://example.com).
 
-          It also contains a [link](http://example.com).
 
-Footnotes can also rely on automatic numbering:
+Footnotes can also omit their index to take advantage of automatic numbering:
 
-    \[^]: This is an automatically-numbered footnote.
+    :footnote
+        This is an automatically-numbered footnote.
 
-You can choose the insertion point for your footnotes using the `:insert` tag:
+Note that footnote indices do not have to be numeric. Any character or sequence of characters can be used.
+
+You can specify the insertion point for your footnotes using the `:insert` tag:
 
     :insert footnotes
 
-Note that footnote references do not have to be numeric. Any character or sequence of characters can be used.
+Footnotes are inserted as a definition list with indices as definition terms.

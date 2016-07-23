@@ -108,17 +108,17 @@ Note that a list consisting of a single item will always be treated as a block l
 
 ### Definition Lists
 
-Syntex supports definition lists in the following format:
+Syntex supports definition lists with terms enclosed in double pipes:
 
-    ~ Term 1
+    ||  Term 1  ||
 
         This is the definition of the first term.
 
-    ~ Term 2
+    ||  Term 2  ||
 
         This is the definition of the second term.
 
-A *term* is indicated by an opening tilde `~`, which may be indented by up to three spaces. The term's *definition* consists of all subsequent blank or indented lines and can contain any number of block-level elements.
+A term's definition consists of all subsequent blank or indented lines and can contain any number of block-level elements.
 
 
 

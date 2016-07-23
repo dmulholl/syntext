@@ -46,24 +46,21 @@ Miscellanea
         <h1 id="miscellanea">
 Miscellanea
 </h1>
-<p>
-Syntex includes built-in support for footnotes and tables of contents.
-</p>
-<h2 id="escapes">
+<h3 id="escapes">
 Escapes
-</h2>
+</h3>
 <p>
 The following characters can be escaped by a preceding backslash:
 </p>
 <pre>
-!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~\n\t•
+!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~•
 </pre>
 <p>
-Escaped characters lose any special significance they might otherwise have in Syntex's markup or formatting syntax.
+Escaped characters lose any special significance they might otherwise have.
 </p>
-<h2 id="tables-of-contents">
+<h3 id="tables-of-contents">
 Tables of Contents
-</h2>
+</h3>
 <p>
 Syntex can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:
 </p>
@@ -77,11 +74,11 @@ The default listing skips H1 headings to avoid including the document title itse
 :insert fulltoc
 </pre>
 <p>
-The table of contents is generated as an unordered list with the class <code>stx-toc</code>. This list contains links to the document's headings along with nested lists of links to subheadings.
+The table of contents is generated as an unordered list of links.
 </p>
-<h2 id="footnotes">
+<h3 id="footnotes">
 Footnotes
-</h2>
+</h3>
 <p>
 Syntex includes built-in support for footnotes:
 </p>
@@ -89,39 +86,40 @@ Syntex includes built-in support for footnotes:
 This sentence ends with a footnote reference.[^1]
 </pre>
 <p>
-Footnote references can take advantage of automatic numbering:
+Footnote references can omit their index to take advantage of automatic numbering:
 </p>
 <pre>
 This sentence ends with an automatically-numbered reference.[^]
 </pre>
 <p>
-The footnotes themselves can be specified anywhere in the document. They take the form:
+Footnotes themselves can be specified anywhere in the document using the <code>footnote</code> tag:
 </p>
 <pre>
-[^1]: This is a footnote.
-</pre>
-<p>
-Footnotes support block-level structures and inline markup:
-</p>
-<pre>
-[^1]: This footnote contains multiple paragraphs.
+:footnote 1
 
-      It also contains a [link](http://example.com).
+    This is a footnote. It can contain any kind of block-level
+    and inline markup.
+
+    Including paragraphs and [links](http://example.com).
 </pre>
 <p>
-Footnotes can also rely on automatic numbering:
+Footnotes can also omit their index to take advantage of automatic numbering:
 </p>
 <pre>
-[^]: This is an automatically-numbered footnote.
+:footnote
+    This is an automatically-numbered footnote.
 </pre>
 <p>
-You can choose the insertion point for your footnotes using the <code>:insert</code> tag:
+Note that footnote indices do not have to be numeric. Any character or sequence of characters can be used.
+</p>
+<p>
+You can specify the insertion point for your footnotes using the <code>:insert</code> tag:
 </p>
 <pre>
 :insert footnotes
 </pre>
 <p>
-Note that footnote references do not have to be numeric. Any character or sequence of characters can be used.
+Footnotes are inserted as a definition list with indices as definition terms.
 </p>
 
     </article>

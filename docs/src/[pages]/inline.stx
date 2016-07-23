@@ -1,10 +1,10 @@
 
 # Inline Syntax
 
-Syntex shares much of its inline syntax with Markdown.
+Syntex inherits its inline syntax directly from Markdown.
 
 
-## Formatting
+### Formatting
 
 Single asterisks indicate *emphasised* text:
 
@@ -22,7 +22,7 @@ HTML in code samples is automatically escaped.
 
 
 
-## Links
+### Links
 
 Link syntax is borrowed directly from Markdown:
 
@@ -44,7 +44,7 @@ If the reference text is omitted from the link, the link text will be used inste
 
 
 
-## Images
+### Images
 
 Image syntax is borrowed directly from Markdown:
 
@@ -66,7 +66,7 @@ If the reference text is omitted from the image, the alt text will be used inste
 
 
 
-## HTML
+### Inline HTML
 
 Syntex ignores inline HTML tags so it's fine to mix and match inline HTML and Syntex markup.
 
