@@ -448,52 +448,6 @@ class LinkRefParser:
         return True
 
 
-# Consumes a footnote of the form:
-#
-#   [^ref]: line 1
-#       line 2
-#       ...
-#
-class FootnoteParser:
-
-    def __call__(self, stream, meta):
-        match = re.fullmatch(r'\[\^([^\]]*)\][:]([ ].+)?', stream.peek())
-        if match:
-            stream.next()
-        else:
-            return None
-
-        ref = match.group(1)
-        if not ref:
-            ref = str(meta.setdefault('footnote-index', 1))
-            meta['footnote-index'] += 1
-
-        lines = utils.LineStream()
-        while stream.has_next():
-            if stream.peek().startswith(' ') or stream.peek() == '':
-                lines.append(stream.next())
-            else:
-                break
-
-        lines.dedent()
-        if match.group(2):
-            lines.prepend(match.group(2).strip())
-
-        dt = nodes.Leaf('dt', {'id': 'fn-%s' % ref})
-        dt.append(nodes.Text(ref))
-
-        dd = nodes.Container('dd')
-        dd.children = ContainerParser().parse(lines, meta)
-
-        if not 'footnotes' in meta:
-            meta['footnotes'] = nodes.Container('dl', {'class': 'stx-footnotes'})
-
-        meta['footnotes'].append(dt)
-        meta['footnotes'].append(dd)
-
-        return True
-
-
 # Consumes a tagged block of the form:
 #
 #   :tag [keyword] [.class1 .class2] [#id] [attr=foo attr="bar"] [@attr]
@@ -650,7 +604,6 @@ class ContainerParser(Parser):
         ULParser(),
         OLParser(),
         DefinitionListParser(),
-        FootnoteParser(),
         LinkRefParser(),
         HtmlParser(),
         ParagraphParser(),

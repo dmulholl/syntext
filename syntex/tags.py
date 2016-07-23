@@ -303,3 +303,31 @@ def input_tag_handler(tag, pargs, kwargs, content, meta):
     if pargs:
         kwargs['type'] = pargs[0]
     return nodes.Void(tag, kwargs)
+
+
+# Handler for the 'footnote' tag.
+@register('footnote')
+def footnote_handler(tag, pargs, kwargs, content, meta):
+
+    # Autogenerate a footnote index if the user hasn't specified one.
+    ref = pargs[0] if pargs else ''
+    if not ref:
+        ref = str(meta.setdefault('footnote-index', 1))
+        meta['footnote-index'] += 1
+
+    # Generate a term node.
+    dt = nodes.Leaf('dt', {'id': 'fn-%s' % ref})
+    dt.append(nodes.Text(ref))
+
+    # Generate a definition node.
+    dd = nodes.Container('dd')
+    dd.children = parsers.ContainerParser().parse(content, meta)
+
+    # Generate a definition list node if necessary.
+    if not 'footnotes' in meta:
+        meta['footnotes'] = nodes.Container('dl', {'class': 'footnotes'})
+
+    meta['footnotes'].append(dt)
+    meta['footnotes'].append(dd)
+
+    return True
