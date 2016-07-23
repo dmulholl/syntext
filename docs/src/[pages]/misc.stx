@@ -40,12 +40,7 @@ Footnote references can omit their index to take advantage of automatic numberin
 Footnotes themselves can be specified anywhere in the document using the `footnote` tag:
 
     :footnote 1
-
-        This is a footnote. It can contain any kind of block-level
-        and inline markup.
-
-        Including paragraphs and [links](http://example.com).
-
+        This is a footnote. It can contain any number of block-level elements.
 
 Footnotes can also omit their index to take advantage of automatic numbering:
 
