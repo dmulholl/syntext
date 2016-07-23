@@ -313,34 +313,34 @@ class OLParser:
 
 # Consumes a definition list of the form:
 #
-#   ~ Term 1
+#   ||  Term 1  ||
 #
-#     This is the definition of the term.
+#       This is the definition of the term.
 #
-#   ~ Term 2
+#   ||  Term 2  ||
 #
-#     This is the definition of the term.
+#       This is the definition of the term.
 #
 class DefinitionListParser:
 
     def __call__(self, stream, meta):
-        match = re.fullmatch(r'[ ]{0,3}[~]([ ].+)?', stream.peek())
+        match = re.fullmatch(r'\|\|(.+)', stream.peek())
         if not match:
             return None
 
         dl = nodes.Container('dl')
         while stream.has_next():
-            match = re.fullmatch(r'[ ]{0,3}[~]([ ].+)?', stream.peek())
+            match = re.fullmatch(r'\|\|(.+)', stream.peek())
             if match:
                 stream.next()
 
-                term = match.group(1).strip()
+                term = match.group(1).strip('|').strip()
                 dt = nodes.Leaf('dt').append(nodes.Text(term))
                 dl.append(dt)
 
                 definition = utils.LineStream()
                 while stream.has_next():
-                    if re.fullmatch(r'[ ]{0,3}[~]([ ].+)?', stream.peek()):
+                    if re.fullmatch(r'\|\|(.+)', stream.peek()):
                         break
                     elif stream.peek().startswith(' ') or stream.peek() == '':
                         definition.append(stream.next())
