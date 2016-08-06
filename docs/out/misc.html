@@ -106,7 +106,7 @@ Footnotes can also omit their index to take advantage of automatic numbering:
     This is an automatically-numbered footnote.
 </pre>
 <p>
-Note that footnote indices do not have to be numeric. Any character or sequence of characters can be used.
+Note that footnote indices do not have to be numeric. Any sequence of non-whitespace characters can be used.
 </p>
 <p>
 You can specify the insertion point for your footnotes using the <code>:insert</code> tag:
@@ -135,14 +135,14 @@ To create a new custom tag, register its handler function using the <code>@tags.
     <span class="k">return</span> <span class="n">node</span>
 </pre>
 <p>
-See the <code>tags.py</code> file for numerous examples to follow.
+See the <code>syntex/tags.py</code> file for numerous examples to follow.
 </p>
 <p>
-Custom tag names should be prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>":foo"</code>. The tag can then be used with a double colon:
+By convention, custom tag names are prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>":foo"</code>. The tag can then be used with a double colon:
 </p>
 <pre>
 ::foo
-    Block content.
+    block content
 </pre>
 <p>
 This convention makes custom tags easy to identify and prevents potential name clashes as new builtin tags are added over time.

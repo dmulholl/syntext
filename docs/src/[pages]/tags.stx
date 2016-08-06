@@ -25,7 +25,7 @@ generates the following HTML:
 
 A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied (whether these are used depends on the tag). So the markup below:
 
-    :div .myclass #myid
+    :div #myid .myclass
         This is a paragraph.
 
 generates the following HTML:
