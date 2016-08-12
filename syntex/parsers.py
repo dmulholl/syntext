@@ -7,7 +7,6 @@ import html
 
 from . import nodes
 from . import utils
-from . import tags
 
 
 # -------------------------------------------------------------------------
@@ -495,6 +494,7 @@ class TaggedBlockParser:
         content = content.trim().dedent()
 
         # Hand off responsibility to the registered tag handler.
+        from . import tags
         return True, tags.process(tag, pargs, kwargs, content, meta)
 
     def parse_args(self, argstr):
