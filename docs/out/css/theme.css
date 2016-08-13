@@ -421,11 +421,11 @@ table .stx-right {
     Checkbox Hack
 */
 
-#togglebox {
+#menu-check {
     display: none;
 }
 
-#togglelabel {
+#menu-label {
     display: none;
 }
 
@@ -544,9 +544,9 @@ table .stx-right {
         color: #4183C4;
     }
 
-    #togglelabel {
+    #menu-label {
         display: inline-block;
-        width: 50px;
+        padding: 0 20px;
         height: 50px;
         border: 1px solid #ddd;
         cursor: pointer;
@@ -556,23 +556,35 @@ table .stx-right {
         margin-top: 10px;
     }
 
-    #togglelabel:hover, #togglelabel:focus {
+    #menu-label:hover, #menu-label:focus {
         border: 1px solid #bbb;
     }
 
-    #togglebox ~ label:before {
-        content: "☰";
+    #menu-label .icon {
+        padding-right: 8px;
     }
 
-    #togglebox:checked ~ label:before {
-        content: "✕"
-    }
-
-    #togglebox ~ ul {
+    #menu-check ~ label .close {
         display: none;
     }
 
-    #togglebox:checked ~ ul {
+    #menu-check ~ label .open {
+        display: inline-block;
+    }
+
+    #menu-check:checked ~ label .close {
+        display: inline-block;
+    }
+
+    #menu-check:checked ~ label .open {
+        display: none;
+    }
+
+    #menu-check ~ ul {
+        display: none;
+    }
+
+    #menu-check:checked ~ ul {
         display: block;
         margin: 40px 20px 10px;
     }
