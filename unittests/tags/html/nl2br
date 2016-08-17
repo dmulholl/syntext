@@ -5,3 +5,12 @@ bar
 <p>
 baz
 </p>
+<p>
+foo<br>
+bar
+</p>
+<p>
+foo<br>
+<br>
+bar
+</p>

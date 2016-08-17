@@ -367,6 +367,16 @@ class ParagraphParser:
         return True, nodes.Leaf('p').append(nodes.Text('\n'.join(lines)))
 
 
+# Consumes and discards a single blank line.
+class BlankLineParser:
+
+    def __call__(self, stream, meta):
+        if stream.peek() == '':
+            stream.next()
+            return True, None
+        return False, None
+
+
 # Consumes one or more lines of raw block-level HTML.
 class HtmlParser:
 
@@ -553,11 +563,6 @@ class Parser:
         nodelist = []
         while stream.has_next():
 
-            # If the next line in the stream is blank, discard it.
-            if stream.peek() == '':
-                stream.next()
-                continue
-
             # Give each parser an opportunity to parse the stream.
             for parser in self.parsers:
                 parsed, result = parser(stream, meta)
@@ -588,6 +593,7 @@ class ContainerParser(Parser):
     # List of structure parsers for parsing the content of container elements,
     # i.e. elements that can contain nested block-level content.
     container_parsers = [
+        BlankLineParser(),
         TaggedBlockParser(),
         IndentedCodeParser(),
         H1Parser(),

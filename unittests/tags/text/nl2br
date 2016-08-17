@@ -3,3 +3,14 @@
     bar
 
     baz
+
+:nl2br
+    :p
+        foo
+        bar
+
+:nl2br
+    :p
+        foo
+
+        bar
