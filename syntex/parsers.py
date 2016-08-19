@@ -457,7 +457,7 @@ class LinkRefParser:
 
 # Consumes a tagged block of the form:
 #
-#   :tag [keyword] [.class1 .class2] [#id] [attr=foo attr="bar"] [@attr]
+#   :tag [keyword] [.class1 .class2] [#id] [attr=foo attr="bar"] [&attr]
 #       block content
 #       block content
 #
