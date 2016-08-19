@@ -113,14 +113,11 @@ Indicates that the block contains content which should not be processed any furt
 
 #### `:h1 ... :h6`
 
-    :h1
-    :h2
-    :h3
-    :h4
-    :h5
-    :h6
+    :h1 [nl2br]
 
 Creates a heading element of the specified level. Headings are leaf elements and do not support nested block-level content.
+
+Heading tags support an optional `nl2br` keyword argument which turns on newline-to-linebreak mode for the heading's content.
 
 
 #### `:hr`
@@ -140,7 +137,7 @@ Instructs Syntex to ignore the block's content. This tag can be used to add comm
 
 #### `:img`
 
-    :img <src-url> <link-url>
+    :img <src-url> [link-url]
 
 Block-level alternative to the inline image tag. The block's content is used as the image's `alt` text.
 
@@ -179,9 +176,11 @@ A `:null` block has no HTML representation of its own; instead it passes its att
 
 #### `:p`
 
-    :p
+    :p [nl2br]
 
 Creates a paragraph element. Paragraphs are leaf elements and do not support nested block-level content.
+
+The `p` tag supports an optional `nl2br` keyword argument which turns on newline-to-linebreak mode for the paragraph's content.
 
 
 #### `:pre`

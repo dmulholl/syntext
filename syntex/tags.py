@@ -51,13 +51,16 @@ def container_handler(tag, pargs, kwargs, content, meta):
 
 
 # Default handler for 'leaf' elements, i.e. elements that do not allow nested
-# block-level content.
+# block-level content. All these elements support a 'nl2br' keyword which turns
+# on newline-to-linebreak mode for their content.
 @register('p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6')
 @register('span', 'time')
 @register('button', 'label', 'select', 'option', 'textarea')
 def leaf_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Leaf(tag, kwargs)
     node.children = parsers.LeafParser().parse(content, meta)
+    if pargs and pargs[0] in ('nl2br', '||'):
+        return nodes.Nl2Br().append(node)
     return node
 
 
