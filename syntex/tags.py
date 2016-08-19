@@ -315,19 +315,25 @@ def footnote_handler(tag, pargs, kwargs, content, meta):
         ref = str(meta.setdefault('footnote-index', 1))
         meta['footnote-index'] += 1
 
-    # Generate a term node.
-    dt = nodes.Leaf('dt', {'id': 'fn-%s' % ref})
-    dt.append(nodes.Text(ref))
+    # Wrap each footnote in a div.
+    footnote = nodes.Container(
+        'div',
+        {'class': 'footnote', 'id': 'footnote-%s' % ref}
+    )
 
-    # Generate a definition node.
-    dd = nodes.Container('dd')
-    dd.children = parsers.ContainerParser().parse(content, meta)
+    # Generate a div node for the footnote index.
+    index = nodes.Container('div', {'class': 'footnote-index'})
+    index.append(nodes.Text(ref))
+    footnote.append(index)
 
-    # Generate a definition list node if necessary.
+    # Generate a div node containing the parsed footnote body.
+    body = nodes.Container('div', {'class': 'footnote-body'})
+    body.children = parsers.ContainerParser().parse(content, meta)
+    footnote.append(body)
+
+    # Generate a footnotes div node if we haven't done so already.
     if not 'footnotes' in meta:
-        meta['footnotes'] = nodes.Container('dl', {'class': 'footnotes'})
+        meta['footnotes'] = nodes.Container('div', {'class': 'footnotes'})
 
-    meta['footnotes'].append(dt)
-    meta['footnotes'].append(dd)
-
+    meta['footnotes'].append(footnote)
     return None
