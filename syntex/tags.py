@@ -324,9 +324,13 @@ def footnote_handler(tag, pargs, kwargs, content, meta):
         {'class': 'footnote', 'id': 'footnote-%s' % ref}
     )
 
+    # Generate a backlink node.
+    link = nodes.Leaf('a', {'href': '#footnote-ref-%s' % ref})
+    link.append(nodes.Text(ref))
+
     # Generate a div node for the footnote index.
     index = nodes.Container('div', {'class': 'footnote-index'})
-    index.append(nodes.Text(ref))
+    index.append(link)
     footnote.append(index)
 
     # Generate a div node containing the parsed footnote body.

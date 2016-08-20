@@ -40,7 +40,7 @@ Footnote references can omit their index to take advantage of automatic numberin
 Footnotes themselves can be specified anywhere in the document using the `footnote` tag:
 
     :footnote 1
-        This is a footnote. It can contain any number of block-level elements.
+        This is a footnote. It can contain any kind of block-level markup.
 
 Footnotes can also omit their index to take advantage of automatic numbering:
 
@@ -53,7 +53,26 @@ You can specify the insertion point for your footnotes using the `:insert` tag:
 
     :insert footnotes
 
-Footnotes are inserted as a definition list with indices as definition terms.
+Footnote references are wrapped in the following markup:
+
+::: html
+
+    <sup class="footnote-ref" id="footnote-ref-123">
+        <a href="#footnote-123">123</a>
+    </sup>
+
+Footnotes are wrapped in the following markup:
+
+::: html
+
+    <div class="footnote" id="footnote-123">
+        <div class="footnote-index">
+            <a href="#footnote-ref-123">123</a>
+        </div>
+        <div class="footnote-body"> ... </div>
+    </div>
+
+Each footnote is backlined to its reference in the document.
 
 
 

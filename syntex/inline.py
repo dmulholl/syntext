@@ -184,6 +184,7 @@ def render_footnotes(text, meta):
         else:
             ref = meta.setdefault('footnote-ref-index', 1)
             meta['footnote-ref-index'] += 1
-        fmstr = '<sup class="footnote-ref"><a href="#footnote-%s">%s</a></sup>'
-        return fmstr % (ref, ref)
+        link = '<a href="#footnote-%s">%s</a>' % (ref, ref)
+        wrap = '<sup class="footnote-ref" id="footnote-ref-%s">%s</sup>'
+        return wrap % (ref, link)
     return re_footnote.sub(callback, text)

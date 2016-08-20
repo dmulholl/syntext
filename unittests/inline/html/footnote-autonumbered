@@ -1,6 +1,6 @@
 <p>
-<sup class="footnote-ref"><a href="#footnote-1">1</a></sup>
+<sup class="footnote-ref" id="footnote-ref-1"><a href="#footnote-1">1</a></sup>
 </p>
 <p>
-<sup class="footnote-ref"><a href="#footnote-2">2</a></sup>
+<sup class="footnote-ref" id="footnote-ref-2"><a href="#footnote-2">2</a></sup>
 </p>
