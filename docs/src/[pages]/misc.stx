@@ -72,7 +72,7 @@ Footnotes are wrapped in the following markup:
         <div class="footnote-body"> ... </div>
     </div>
 
-Each footnote is backlined to its reference in the document.
+Each footnote is backlinked to its reference in the document.
 
 
 
