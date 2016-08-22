@@ -1,18 +1,22 @@
 
 # Inline Syntax
 
-Syntex inherits its inline syntax directly from Markdown.
+Syntex inherits most of its inline syntax directly from Markdown.
 
 
 ### Formatting
 
-Single asterisks indicate *emphasised* text:
+Single asterisks indicate *italic* text:
 
-    This text is *emphasised*.
+    This text is *italic*.
 
 Double asterisks indicate **bold** text:
 
     This text is **bold**.
+
+Triple asterisks indicate ***bold italic*** text:
+
+    This text is ***bold and italic***.
 
 Backticks are used to enclose `code` samples:
 

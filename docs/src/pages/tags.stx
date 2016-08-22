@@ -185,8 +185,8 @@ The `p` tag supports an optional `nl2br` keyword argument which turns on newline
 
 #### `:pre`
 
-    :pre <language>
-    ::: <language>
+    :pre [language]
+    ::: [language]
 
 Creates a `<pre>` element. Accepts an optional keyword argument specifying the language of the code.
 
