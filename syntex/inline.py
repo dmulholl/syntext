@@ -12,11 +12,14 @@ import re
 # -------------------------------------------------------------------------
 
 
+# *foo bar*
+re_emphasis = re.compile(r"\*(\S.*?\S)\*")
+
 # **foo bar**
 re_strong = re.compile(r"\*{2}(\S.*?\S)\*{2}")
 
-# *foo bar*
-re_emphasis = re.compile(r"\*(\S.*?\S)\*")
+# ***foo bar***
+re_stremphasis = re.compile(r"\*{3}(\S.*?\S)\*{3}")
 
 # `foo bar`
 re_backticks = re.compile(r"`(.+?)`")
@@ -70,6 +73,7 @@ def render(text, meta):
 
     text = html.escape(text, False)
 
+    text = render_stremphasis(text)
     text = render_strong(text)
     text = render_emphasis(text)
     text = render_images(text)
@@ -123,6 +127,10 @@ def render_strong(text):
 
 def render_emphasis(text):
     return re_emphasis.sub(r"<em>\1</em>", text)
+
+
+def render_stremphasis(text):
+    return re_stremphasis.sub(r"<strong><em>\1</em></strong>", text)
 
 
 def render_images(text):
