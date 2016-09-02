@@ -2,8 +2,5 @@
 __pycache__/
 *.py[cod]
 
-# Development scratch files
-dev/
-
-# Documentation cache files
-.ark/
+# Pytest
+.cache/
