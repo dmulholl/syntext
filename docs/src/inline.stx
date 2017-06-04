@@ -34,9 +34,14 @@ Syntex also supports Markdown-style reference links:
 
     [link text][reference]
 
-Link references can be specified anywhere in the document. They take the form:
+Link references can be specified anywhere in the document. They take one of the following forms:
 
-    \[reference]: http://example.com optional title text
+    \[reference]: http://example.com
+        optional indented title text
+
+    \[reference]:
+        http://example.com
+        optional title text
 
 If the reference text is omitted from the link, the link text will be used instead when searching for link references.
 
@@ -56,15 +61,11 @@ Syntex also supports Markdown-style reference images:
 
     ![alt text][reference]
 
-Image references can be specified anywhere in the document. They take the form:
-
-    [reference]: http://example.com/image.jpg optional title text
-
-If the reference text is omitted from the image, the alt text will be used instead when searching for references.
+Image references can be specified anywhere in the document. Their form is identical to that of link references. If the reference text is omitted from the image, the alt text will be used instead when searching for references.
 
 
 
-### Inline HTML
+### HTML
 
 Syntex ignores inline HTML tags so it's fine to mix and match inline HTML and Syntex markup.
 

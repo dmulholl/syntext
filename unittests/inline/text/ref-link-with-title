@@ -1,3 +1,4 @@
 [link text][ref]
 
-[ref]: http://example.com title text
+[ref]: http://example.com
+  title text

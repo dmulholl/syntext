@@ -420,23 +420,26 @@ class HtmlParser:
             return True, None
 
 
-# Consumes a link reference of the form:
+# Consumes a link reference.
 #
-#   [ref]: http://example.com optional title text
+#   [ref]: http://example.com
+#     optional title text indented on following line
 #
-# The content of any following indented lines will be appended to the title.
+#   [ref]:
+#     http://example.com
+#     optional title text
+#
 class LinkRefParser:
 
     def __call__(self, stream, meta):
-        match = re.fullmatch(r'\[([^\]]+)\][:][ ]+(\S+)([ ].+)?', stream.peek())
+        match = re.match(r'\[([^\]]+)\][:][ ]*(\S+)?', stream.peek())
         if match:
             stream.next()
         else:
             return False, None
 
         ref = match.group(1).lower()
-        url = match.group(2)
-        title = match.group(3) or ''
+        url = match.group(2) or ''
 
         lines = []
         while stream.has_next():
@@ -447,12 +450,15 @@ class LinkRefParser:
             else:
                 break
 
-        if title:
-            lines.insert(0, title.strip())
-        title = ' '.join(lines)
+        if lines and not url:
+            url = lines[0]
+            lines.pop(0)
+
+        title = ' '.join(lines).strip()
 
         meta.setdefault('linkrefs', {})[ref] = (url, title)
         return True, None
+
 
 
 # Consumes a tagged block of the form:

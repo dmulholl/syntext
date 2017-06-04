@@ -95,10 +95,15 @@ Syntex also supports Markdown-style reference links:
 [link text][reference]
 </pre>
 <p>
-Link references can be specified anywhere in the document. They take the form:
+Link references can be specified anywhere in the document. They take one of the following forms:
 </p>
 <pre>
-[reference]: http://example.com optional title text
+[reference]: http://example.com
+    optional indented title text
+
+[reference]:
+    http://example.com
+    optional title text
 </pre>
 <p>
 If the reference text is omitted from the link, the link text will be used instead when searching for link references.
@@ -125,16 +130,10 @@ Syntex also supports Markdown-style reference images:
 ![alt text][reference]
 </pre>
 <p>
-Image references can be specified anywhere in the document. They take the form:
+Image references can be specified anywhere in the document. Their form is identical to that of link references. If the reference text is omitted from the image, the alt text will be used instead when searching for references.
 </p>
-<pre>
-[reference]: http://example.com/image.jpg optional title text
-</pre>
-<p>
-If the reference text is omitted from the image, the alt text will be used instead when searching for references.
-</p>
-<h3 id="inline-html">
-Inline HTML
+<h3 id="html">
+HTML
 </h3>
 <p>
 Syntex ignores inline HTML tags so it's fine to mix and match inline HTML and Syntex markup.

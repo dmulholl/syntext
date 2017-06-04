@@ -14,6 +14,8 @@ The case of the reference is not [IMPORTANT][].
 
 [1]: http://example.com
 [reference]: http://example.com
-[with title]: http://example.com link title
+[with title]:
+  http://example.com
+  link title
 [capsref]: http://example.com
 [ImpoRTanT]: http://example.com
