@@ -22,11 +22,7 @@ HTML in code samples is automatically escaped.
 
 ### Links
 
-Link syntax is borrowed directly from Markdown:
-
-    [link text](http://example.com)
-
-Title text can optionally be specified after the url:
+Link syntax is borrowed directly from Markdown. Title text can optionally be specified after the url:
 
     [link text](http://example.com title text)
 
@@ -37,7 +33,7 @@ Syntex also supports Markdown-style reference links:
 Link references can be specified anywhere in the document. They take one of the following forms:
 
     \[reference]: http://example.com
-        optional indented title text
+        optional title text
 
     \[reference]:
         http://example.com
@@ -49,11 +45,7 @@ If the reference text is omitted from the link, the link text will be used inste
 
 ### Images
 
-Image syntax is borrowed directly from Markdown:
-
-    ![alt text](http://example.com/image.jpg)
-
-Title text can optionally be specified after the url:
+Image syntax is borrowed directly from Markdown. Title text can optionally be specified after the url:
 
     ![alt text](http://example.com/image.jpg title text)
 
