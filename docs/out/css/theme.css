@@ -55,7 +55,7 @@ h1 {
     font-weight: normal;
     padding-bottom: 5px;
     border-bottom: 1px solid #ccc;
-    margin: 2.7rem 0 1.7rem
+    margin: 3.2rem 0 1.7rem
 }
 
 h2 {
@@ -64,13 +64,13 @@ h2 {
     font-weight: normal;
     padding-bottom: 5px;
     border-bottom: 1px solid #ccc;
-    margin: 2.7rem 0 1.7rem
+    margin: 3.2rem 0 1.7rem
 }
 
 h3 {
     font-size: 17px;
     font-weight: bold;
-    margin: 2.3rem 0 1.3rem
+    margin: 2.6rem 0 1.3rem
 }
 
 h4, h5, h6 {
@@ -153,7 +153,7 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px dotted #ddd;
+    border-top: 1px dotted #bbb;
     margin: 2.5rem 3rem;
     padding: 0;
 }
@@ -205,6 +205,7 @@ a {
     text-decoration: none;
     border-bottom: 1px dotted;
 }
+
 a:hover {
     border-bottom: 1px solid;
 }
@@ -213,17 +214,10 @@ a:hover {
     Layout
 */
 
-body {
-    margin: 0 auto;
-    padding: 0 3rem;
-}
-
 .main {
     max-width: 740px;
     margin: 0 auto;
-    padding: 40px 50px 50px;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px #ddd;
+    padding: 0px 50px 80px;
 }
 
 /*
@@ -234,7 +228,7 @@ body {
     text-align: right;
     max-width: 740px;
     margin: 0 auto;
-    padding: 25px 50px;
+    padding: 30px 50px;
     font-size: 14px;
     color: #aaa;
 }
@@ -267,59 +261,8 @@ body {
     color: #aaa;
     transition: color 0.5s;
 }
+
 .head a:hover {
-    border: none;
-    color: #4183C4;
-    transition: color 0.3s;
-}
-
-/*
-    Site Footer
-*/
-
-.foot {
-    text-align: center;
-    max-width: 740px;
-    margin: 0 auto;
-    padding: 25px 50px;
-    font-size: 14px;
-    color: #aaa;
-}
-
-.foot p {
-    text-align: center;
-    margin: 5px 0;
-}
-
-.foot ul {
-    list-style: none;
-    margin: 5px 0;
-    padding: 0;
-}
-
-.foot ul ul {
-    display: none;
-}
-
-.foot li {
-    margin: 0;
-    display: inline-block;
-}
-
-.foot li:before {
-    content: "\A0·\A0\A0";
-}
-
-.foot li:first-child:before {
-    content: none;
-}
-
-.foot a {
-    border: none;
-    color: #aaa;
-    transition: color 0.5s;
-}
-.foot a:hover {
     border: none;
     color: #4183C4;
     transition: color 0.3s;
@@ -332,9 +275,11 @@ body {
 h1 + ul {
     margin-top: 2rem;
 }
+
 .main > :first-child {
     margin-top: 0;
 }
+
 .main > :last-child {
     margin-bottom: 0;
 }
@@ -434,10 +379,13 @@ table .stx-right {
 */
 
 /*
-    Does the same thing as <meta name="viewport" content="width=device-width">,
+    Does the same thing as:
+
+        <meta name="viewport" content="width=device-width">
+
     but in the future W3C standard way. -ms- prefix is required for IE10+ to
-    render responsive styling in Windows 8 "snapped" views; IE10+ does not honor
-    the meta tag.
+    render responsive styling in Windows 8 "snapped" views; IE10+ does not
+    honor the meta tag.
 */
 
 @-ms-viewport {
@@ -452,7 +400,7 @@ table .stx-right {
     Tablet & Landscape Phone
 */
 
-@media screen and (max-width: 840px) {
+@media screen and (max-width: 740px) {
     html {
         font-size: 14px;
     }
@@ -482,9 +430,7 @@ table .stx-right {
     }
 
     .main {
-        border: none;
-        box-shadow: none;
-        padding: 0 50px 50px
+        padding: 0 50px 60px
     }
 
     .head {
