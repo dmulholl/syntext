@@ -54,7 +54,7 @@ Tags
 Syntex supports an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
-:tag [keyword] [.class] [#id] [&amp;attr] [attr="value"]
+:tag [arguments] [.class] [#id] [&amp;attr] [attr="value"]
     block content
     block content
     ...
@@ -81,7 +81,7 @@ generates the following HTML:
 &lt;/div&gt;
 </pre>
 <p>
-A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more keyword arguments to be supplied (whether these are used depends on the tag). So the markup below:
+A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more arguments to be supplied (whether these are used depends on the tag). So the markup below:
 </p>
 <pre>
 :div #myid .myclass
