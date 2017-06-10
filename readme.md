@@ -28,18 +28,4 @@ Syntex differs from Markdown in providing an extensible, indentation-based synta
 
 Syntex also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
 
-See the package's [documentation](http://mulholland.xyz/docs/syntex/) for further details.
-
-
-## Installation
-
-Install directly from the Python Package Index using `pip`:
-
-    $ pip install syntex
-
-Syntex requires Python 3.4 or later.
-
-
-## License
-
-This work has been placed in the public domain.
+See the [documentation](http://mulholland.xyz/docs/syntex/) for details.
