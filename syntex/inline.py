@@ -56,6 +56,12 @@ re_bare_url = re.compile(r"""
     ($|\W)
     """, re.VERBOSE | re.MULTILINE | re.IGNORECASE)
 
+# n-dash
+re_ndash = re.compile(r"((?<=[ ])|\b)--(?=[ ]|\b)")
+
+# m-dash
+re_mdash = re.compile(r"((?<=[ ])|\b)---(?=[ ]|\b)")
+
 
 # -------------------------------------------------------------------------
 # Renderers.
@@ -70,6 +76,7 @@ def render(text, meta):
     text = render_bracketed_urls(text, hashes)
     text = render_inline_html(text, hashes)
     text = render_html_entities(text, hashes)
+    text = render_dashes(text, hashes)
 
     text = html.escape(text, False)
 
@@ -119,6 +126,12 @@ def render_inline_html(text, hashes):
 
 def render_html_entities(text, hashes):
     return re_entity.sub(lambda match: hashstr(match.group(), hashes), text)
+
+
+def render_dashes(text, hashes):
+    text = re_ndash.sub(hashstr("&ndash;", hashes), text)
+    text = re_mdash.sub(hashstr("&mdash;", hashes), text)
+    return text
 
 
 def render_strong(text):
