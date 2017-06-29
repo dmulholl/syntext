@@ -57,10 +57,10 @@ re_bare_url = re.compile(r"""
     """, re.VERBOSE | re.MULTILINE | re.IGNORECASE)
 
 # n-dash
-re_ndash = re.compile(r"((?<=[ ])|\b)--(?=[ ]|\b)")
+re_ndash = re.compile(r"((?<=\s)|\b|^)--(?=[ ]|\b|$)")
 
 # m-dash
-re_mdash = re.compile(r"((?<=[ ])|\b)---(?=[ ]|\b)")
+re_mdash = re.compile(r"((?<=\s)|\b|^)---(?=[ ]|\b|$)")
 
 
 # -------------------------------------------------------------------------
