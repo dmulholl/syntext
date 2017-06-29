@@ -122,12 +122,12 @@ class IndentedCodeParser:
         return False, None
 
 
-# Consumes a line containing three or more '-' or '*' symbols. The symbols
+# Consumes a line consisting of three or more '-' or '*' symbols. The symbols
 # may optionally be separated by any number of spaces.
 class HorizontalRuleParser:
 
     def __call__(self, stream, meta):
-        match = re.match(r'[ ]{0,3}([-*])[ ]*\1[ ]*\1.*', stream.peek())
+        match = re.fullmatch(r'[ ]{0,3}([-*])[ ]*\1[ ]*\1+', stream.peek())
         if match:
             stream.next()
             return True, nodes.Void('hr')
