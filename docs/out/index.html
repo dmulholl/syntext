@@ -82,10 +82,9 @@ This is a second paragraph containing a [link](http://example.com).
 Syntex differs from Markdown in providing an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
-:tag [arguments] [.class] [#id] [&amp;attr] [attr="value"]
-    block content
-    block content
-    ...
+:div .outer
+    :div .inner
+        This is a paragraph.
 </pre>
 <p>
 Syntex also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
