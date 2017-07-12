@@ -21,7 +21,7 @@ Syntex inherits much of its basic syntax from Markdown:
 
 Syntex differs from Markdown in supporting an extensible, indentation-based syntax for generating arbitrary HTML:
 
-    :div .outer #id
+    :div .outer
         :div .inner
             This is a paragraph.
 
