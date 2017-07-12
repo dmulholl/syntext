@@ -19,12 +19,11 @@ Syntex inherits much of its basic syntax from Markdown:
 
     This is a second paragraph containing a [link](http://example.com).
 
-Syntex differs from Markdown in providing an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntex differs from Markdown in supporting an extensible, indentation-based syntax for generating arbitrary HTML:
 
-    :tag [arguments] [.class] [#id] [&attr] [attr="value"]
-        block content
-        block content
-        ...
+    :div .outer #id
+        :div .inner
+            This is a paragraph.
 
 Syntex also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
 
