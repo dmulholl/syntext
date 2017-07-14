@@ -1,6 +1,6 @@
-
-# Miscellanea
-
+---
+title: Miscellanea
+---
 
 
 ### Escapes
@@ -97,5 +97,6 @@ By convention, custom tag names are prefixed with a colon, i.e. the custom tag `
 
     ::foo
         block content
+        ...
 
 This convention makes custom tags easy to identify and prevents potential name clashes as new builtin tags are added over time.

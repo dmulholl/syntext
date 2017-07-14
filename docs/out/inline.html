@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>
-        
-Inline Syntax
+    <head>
+        <meta charset="utf-8">
+        <title>Inline Syntax</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="fonts.css">
+        <link rel="stylesheet" href="theme.css">
+        <link rel="stylesheet" href="pygments.css">
+    </head>
+    <body class="node-inline node">
+        <header class="masthead">
+            <h1>
+                <a href="index.html">Syntex</a>
+            </h1>
 
-    </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/pygments.css">
-    <!--[if lt IE 9]>
-        <script src="js/html5shiv.js"></script>
-    <![endif]-->
-</head>
+            
+                <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
+            
 
-<body class="node-inline node">
-
-    <header id="head" class="head">
-        <input id="menu-check" type="checkbox"/>
-        <label id="menu-label" for="menu-check" class="unselectable">
-            <span class="icon close">✕</span>
-            <span class="icon open">☰</span>
-            <span class="text">MENU</span>
-        </label>
-        <ul>
+            <nav class="menu">
+                <input id="menu-check" type="checkbox"/>
+                <label id="menu-label" for="menu-check" class="unselectable">
+                    <span class="icon close-icon">✕</span>
+                    <span class="icon open-icon">☰</span>
+                    <span class="text">Menu</span>
+                </label>
+                <ul>
 <li>
-<a href="index.html">Syntex</a>
+<a href="index.html">Home</a>
 </li>
 <li>
 <a href="blocks.html">Blocks</a>
@@ -38,19 +39,20 @@ Inline Syntax
 <a href="inline.html">Inline Syntax</a>
 </li>
 <li>
-<a href="misc.html">Misc</a>
+<a href="misc.html">Miscellanea</a>
 </li>
 </ul>
 
-    </header>
+            </nav>
+        </header>
 
-    <article id="main" class="main">
-        
-
-        <h1 id="inline-syntax">
-Inline Syntax
-</h1>
-<p>
+        <article class="main">
+            <header class="title">
+                <h1>Inline Syntax</h1>
+                
+                <hr>
+            </header>
+            <p>
 Syntex inherits most of its inline syntax directly from Markdown.
 </p>
 <h3 id="formatting">
@@ -130,7 +132,6 @@ Syntex ignores inline HTML tags so it's fine to mix and match inline HTML and Sy
 The HTML syntax characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code> are automatically escaped unless they form part of a HTML tag or character entity.
 </p>
 
-    </article>
-
-</body>
+        </article>
+    </body>
 </html>

@@ -1,5 +1,6 @@
-
-# Tags
+---
+title: Tags
+---
 
 Syntex supports an extensible, indentation-based syntax for generating arbitrary HTML:
 
@@ -36,7 +37,7 @@ generates the following HTML:
 
 Boolean attributes can be specified using an `&` symbol, e.g. `&checked`. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
 
-    :div attr1=foo attr2="bar" attr3='baz'
+    :div attr1=foo attr2="bar baz"
 
 A block's tag determines how its content is processed. In  general blocks can be nested to any depth and can contain any block-level content, e.g. the markup below:
 

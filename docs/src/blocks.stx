@@ -1,5 +1,6 @@
-
-# Block Syntax
+---
+title: Block Syntax
+---
 
 Syntex supports two kinds of block-level markup: custom syntax for common elements and generic syntax for generating arbitrary HTML. Syntax for common elements is described below.
 
