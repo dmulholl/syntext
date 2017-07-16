@@ -236,11 +236,11 @@ def table_handler(tag, pargs, kwargs, content, meta):
         if match:
             for cell in [cell.strip() for cell in line.split('|')]:
                 if cell.startswith(':') and cell.endswith(':'):
-                    alignment.append('stx-center')
+                    alignment.append('center')
                 elif cell.startswith(':'):
-                    alignment.append('stx-left')
+                    alignment.append('left')
                 elif cell.endswith(':'):
-                    alignment.append('stx-right')
+                    alignment.append('right')
                 else:
                     alignment.append(None)
             break

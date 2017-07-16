@@ -1,37 +1,37 @@
 <table>
 <thead>
 <tr>
-<th class="stx-left">
+<th class="left">
 foo
 </th>
-<th class="stx-center">
+<th class="center">
 bar
 </th>
-<th class="stx-right">
+<th class="right">
 baz
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="stx-left">
+<td class="left">
 aaa
 </td>
-<td class="stx-center">
+<td class="center">
 bbb
 </td>
-<td class="stx-right">
+<td class="right">
 ccc
 </td>
 </tr>
 <tr>
-<td class="stx-left">
+<td class="left">
 ddd
 </td>
-<td class="stx-center">
+<td class="center">
 eee
 </td>
-<td class="stx-right">
+<td class="right">
 fff
 </td>
 </tr>
