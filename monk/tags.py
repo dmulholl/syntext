@@ -73,17 +73,12 @@ def void_handler(tag, pargs, kwargs, content, meta):
 
 # Default handler for 'raw' elements, i.e. elements whose content should not be
 # processed any further but should be included in the output as-is.
-@register('script', 'style')
+@register('script', 'style', 'raw')
 def raw_handler(tag, pargs, kwargs, content, meta):
-    node = nodes.Raw(tag, kwargs)
-    node.append(nodes.Text(str(content)))
-    return node
-
-
-# Handler for the 'esc' tag. Includes content in its raw state.
-@register('esc', escapes.char2esc['\\'])
-def esc_tag_handler(tag, pargs, kwargs, content, meta):
-    node = nodes.Raw()
+    if tag == 'raw':
+        node = nodes.Raw()
+    else:
+        node = nodes.Raw(tag, kwargs)
     node.append(nodes.Text(str(content)))
     return node
 
@@ -156,17 +151,16 @@ def null_tag_handler(tag, pargs, kwargs, content, meta):
     return node
 
 
-# Handler for the 'ignore' tag and its associated sigil '://'. This tag
-# provides a commenting mechanism. Nested content will be omitted from the
-# output.
-@register('ignore', '//')
+# Handler for the 'ignore' tag. This tag provides a commenting mechanism.
+# Nested content will be omitted from the output.
+@register('ignore')
 def ignore_tag_handler(tag, pargs, kwargs, content, meta):
     return None
 
 
-# Handler for the 'comment' tag and its associated sigil ':##'. This tag
-# inserts a HTML comment into the output.
-@register('comment', '##')
+# Handler for the 'comment' tag. This tag inserts a HTML comment into the
+# output.
+@register('comment', 'htmlcomment')
 def html_comment_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Comment()
     node.append(nodes.Text(str(content.indent(4))))

@@ -78,7 +78,7 @@ Creates an `<a>` element. The link's url may be supplied as a keyword argument. 
     :alert [ info | warning | error ]
     :!! [ info | warning | error ]
 
-Creates an alert box - a `<div>` element with the class `alertbox` which can be styled appropriately using CSS. Keywords are added as classes. This tag supports nested block-level content.
+Creates an alert box --- a `<div>` element with the class `alertbox` which can be styled appropriately using CSS. Keywords are added as classes. This tag supports nested block-level content.
 
 
 #### `:blockquote`
@@ -99,17 +99,9 @@ Creates a `<button>` element. This is an inline element and does not support nes
 #### `:comment`
 
     :comment
-    :##
+    :htmlcomment
 
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
-
-
-#### `:esc`
-
-    :esc
-    :\\\\
-
-Indicates that the block contains content which should not be processed any further but should be included in the output in its raw state.
 
 
 #### `:h1 ... :h6`
@@ -131,7 +123,6 @@ Creates a horizontal rule. A horizontal rule is a void element and cannot contai
 #### `:ignore`
 
     :ignore
-    ://
 
 Instructs Monk to ignore the block's content. This tag can be used to add comments to a document that will not appear in the rendered output.
 
@@ -199,6 +190,13 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 
     >>> import monk
     >>> html = monk.render(text, pygmentize=True)
+
+
+#### `:raw`
+
+    :raw
+
+Indicates that the block contains content which should not be processed any further but should be included in the output in its raw state.
 
 
 #### `:script`
