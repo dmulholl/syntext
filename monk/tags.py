@@ -98,10 +98,10 @@ def blockquote_tag_handler(tag, pargs, kwargs, content, meta):
 @register('alert', '!!')
 def alert_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Container('div', kwargs)
-    node.add_class('stx-alert')
+    node.add_class('alertbox')
     if pargs:
         for arg in pargs:
-            node.add_class('stx-%s' % arg)
+            node.add_class(arg)
     node.children = parsers.ContainerParser().parse(content, meta)
     return node
 

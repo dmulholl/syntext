@@ -78,7 +78,7 @@ Creates an `<a>` element. The link's url may be supplied as a keyword argument. 
     :alert [ info | warning | error ]
     :!! [ info | warning | error ]
 
-Creates an alert box - a `<div>` element with the class `stx-alert` which can be styled appropriately using CSS. Keywords are added as classes in the form `stx-<keyword>`. This tag supports nested block-level content.
+Creates an alert box - a `<div>` element with the class `alertbox` which can be styled appropriately using CSS. Keywords are added as classes. This tag supports nested block-level content.
 
 
 #### `:blockquote`

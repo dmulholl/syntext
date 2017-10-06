@@ -1,9 +1,9 @@
-<div class="stx-alert stx-warning">
+<div class="alertbox warning">
 <p>
 foo
 </p>
 </div>
-<div class="stx-alert stx-warning">
+<div class="alertbox warning">
 <p>
 foo
 </p>
