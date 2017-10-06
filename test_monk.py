@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -------------------------------------------------------------------------
-# Unit tests for the syntex package.
+# Unit tests for the monk package.
 # -------------------------------------------------------------------------
 
-import syntex
+import monk
 import os
 import sys
 
@@ -38,7 +38,7 @@ def main():
             if os.path.isfile(htmlfile):
                 text = load(textfile)
                 html = load(htmlfile)
-                if syntex.render(text).strip() == html.strip():
+                if monk.render(text).strip() == html.strip():
                     oks += 1
                     result = 'ok'
                 else:

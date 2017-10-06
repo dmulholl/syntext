@@ -52,18 +52,18 @@ def render(text, **meta):
 helptext = """
 Usage: %s [FLAGS]
 
-  Renders input text in Syntex format into HTML. Reads from stdin and
+  Renders input text in Monk format into HTML. Reads from stdin and
   prints to stdout.
 
   Example:
 
-    $ syntex < input.txt > output.html
+    $ monk < input.txt > output.html
 
 Flags:
   -d, --debug       Run in debug mode.
-      --help        Print the application's help text and exit.
+  -h, --help        Print the application's help text and exit.
   -p, --pygmentize  Add syntax highlighting to code samples.
-      --version     Print the application's version number and exit.
+  -v, --version     Print the application's version number and exit.
 """ % os.path.basename(sys.argv[0])
 
 

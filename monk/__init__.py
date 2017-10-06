@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------
-# Syntex: a lightweight, markdownish markup language.
+# Monk: a lightweight, markdownish markup language.
 #
 # Author: Darren Mulholland <darren@mulholland.xyz>
 # License: Public Domain
