@@ -106,11 +106,11 @@ Creates a HTML comment. The block's content is not processed any further but is 
 
 #### `:h1 ... :h6`
 
-    :h1 [nl2br]
+    :h1 [||]
 
 Creates a heading element of the specified level. Headings are leaf elements and do not support nested block-level content.
 
-Heading tags support an optional `nl2br` keyword argument which turns on newline-to-linebreak mode for the heading's content.
+Heading tags support an optional `||` argument which turns on newline-to-linebreak mode for the heading's content.
 
 
 #### `:hr`
@@ -172,7 +172,7 @@ A `:null` block has no HTML representation of its own; instead it passes its att
 
 Creates a paragraph element. Paragraphs are leaf elements and do not support nested block-level content.
 
-The `p` tag supports an optional `||` keyword argument which turns on newline-to-linebreak mode for the paragraph's content.
+The `p` tag supports an optional `||` argument which turns on newline-to-linebreak mode for the paragraph's content.
 
     :p ||
 
@@ -185,7 +185,7 @@ The `p` tag supports an optional `||` keyword argument which turns on newline-to
     :pre [language]
     ::: [language]
 
-Creates a `<pre>` element. Accepts an optional keyword argument specifying the language of the code.
+Creates a `<pre>` element. Accepts an optional argument specifying the language of the code.
 
 If a language is specified then a `lang-<language>` class and a `data-lang="<language>"` attribute are added to the `<pre>` element.
 

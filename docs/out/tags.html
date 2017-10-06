@@ -188,13 +188,13 @@ Creates a HTML comment. The block's content is not processed any further but is 
 <code>:h1 ... :h6</code>
 </h4>
 <pre>
-:h1 [nl2br]
+:h1 [||]
 </pre>
 <p>
 Creates a heading element of the specified level. Headings are leaf elements and do not support nested block-level content.
 </p>
 <p>
-Heading tags support an optional <code>nl2br</code> keyword argument which turns on newline-to-linebreak mode for the heading's content.
+Heading tags support an optional <code>||</code> argument which turns on newline-to-linebreak mode for the heading's content.
 </p>
 <h4 id="hr">
 <code>:hr</code>
@@ -274,7 +274,7 @@ A <code>:null</code> block has no HTML representation of its own; instead it pas
 Creates a paragraph element. Paragraphs are leaf elements and do not support nested block-level content.
 </p>
 <p>
-The <code>p</code> tag supports an optional <code>||</code> keyword argument which turns on newline-to-linebreak mode for the paragraph's content.
+The <code>p</code> tag supports an optional <code>||</code> argument which turns on newline-to-linebreak mode for the paragraph's content.
 </p>
 <pre>
 :p ||
@@ -290,7 +290,7 @@ The <code>p</code> tag supports an optional <code>||</code> keyword argument whi
 ::: [language]
 </pre>
 <p>
-Creates a <code>&lt;pre&gt;</code> element. Accepts an optional keyword argument specifying the language of the code.
+Creates a <code>&lt;pre&gt;</code> element. Accepts an optional argument specifying the language of the code.
 </p>
 <p>
 If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang="&lt;language&gt;"</code> attribute are added to the <code>&lt;pre&gt;</code> element.
