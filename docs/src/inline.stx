@@ -63,3 +63,9 @@ Image references can be specified anywhere in the document. Their form is identi
 Monk ignores inline HTML tags so it's fine to mix and match inline HTML and Monk markup.
 
 The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or character entity.
+
+
+
+### Dashes
+
+Double hyphens `--` are converted into en-dashes `&ndash;`; triple hyphens are converted into em-dashes `&mdash;`.
