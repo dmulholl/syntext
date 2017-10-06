@@ -3,23 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title>Miscellanea</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="pygments.css">
     
+    
   </head>
+
   <body class="node-misc node">
 
     <header class="masthead">
-      <h1>
-        <a href="index.html">Syntex</a>
-      </h1>
-
+      <h1><a href="index.html">Monk</a></h1>
       
-        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
+        <p class="tagline">A markdownish markup language for generating HTML.</p>
       
-
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
         <label id="menu-label" for="menu-check" class="unselectable">
@@ -70,7 +68,7 @@ Escaped characters lose any special significance they might otherwise have.
 Tables of Contents
 </h3>
 <p>
-Syntex can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:
+Monk can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:
 </p>
 <pre>
 :insert toc
@@ -88,7 +86,7 @@ The table of contents is generated as an unordered list of links.
 Footnotes
 </h3>
 <p>
-Syntex includes built-in support for footnotes:
+Monk includes built-in support for footnotes:
 </p>
 <pre>
 This sentence ends with a footnote reference.[^1]
@@ -148,21 +146,21 @@ Each footnote is backlinked to its reference in the document.
 Extensions
 </h3>
 <p>
-Syntex can easily be extended to support custom tags.
+Monk can easily be extended to support custom tags.
 </p>
 <p>
 To create a new custom tag, register its handler function using the <code>@tags.register()</code> decorator:
 </p>
 <pre class="lang-python pygments" data-lang="python">
-<span class="kn">import</span> <span class="nn">syntex</span>
+<span class="kn">import</span> <span class="nn">monk</span>
 
-<span class="nd">@syntex.tags.register</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span>
+<span class="nd">@monk.tags.register</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">pargs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">meta</span><span class="p">):</span>
     <span class="o">...</span>
     <span class="k">return</span> <span class="n">node</span>
 </pre>
 <p>
-See the <code>syntex/tags.py</code> file for numerous examples to follow.
+See the <code>monk/tags.py</code> file for numerous examples to follow.
 </p>
 <p>
 By convention, custom tag names are prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>":foo"</code>. The tag can then be used with a double colon:
@@ -179,5 +177,6 @@ This convention makes custom tags easy to identify and prevents potential name c
     </article>
 
     
+
   </body>
 </html>

@@ -3,23 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title>Block Syntax</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="pygments.css">
     
+    
   </head>
+
   <body class="node-blocks node">
 
     <header class="masthead">
-      <h1>
-        <a href="index.html">Syntex</a>
-      </h1>
-
+      <h1><a href="index.html">Monk</a></h1>
       
-        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
+        <p class="tagline">A markdownish markup language for generating HTML.</p>
       
-
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
         <label id="menu-label" for="menu-check" class="unselectable">
@@ -55,7 +53,7 @@
         <hr>
       </header>
       <p>
-Syntex supports two kinds of block-level markup: custom syntax for common elements and generic syntax for generating arbitrary HTML. Syntax for common elements is described below.
+Monk supports two kinds of block-level markup: custom syntax for common elements and generic syntax for generating arbitrary HTML. Syntax for common elements is described below.
 </p>
 <h3 id="paragraphs">
 Paragraphs
@@ -189,7 +187,7 @@ Note that a list consisting of a single item will always be treated as a block l
 Definition Lists
 </h3>
 <p>
-Syntex supports definition lists with terms enclosed in double pipes:
+Monk supports definition lists with terms enclosed in double pipes:
 </p>
 <pre>
 ||  Term 1  ||
@@ -210,9 +208,17 @@ Code Blocks
 A block of text indented by one tab or four spaces is treated as a code block and wrapped in <code>&lt;pre&gt;</code> tags in the HTML output. The code block can contain blank lines and is ended by the first non-indented line.
 </p>
 <pre>
-This is a paragraph followed by a code block.
+This paragraph is followed by a code block.
 
     &lt;p&gt;Hello world!&lt;/p&gt;
+</pre>
+<p>
+The language can be specified using a <code>:pre</code> <a href="tags.html#pre">tag</a>:
+</p>
+<pre>
+::: python
+
+    print("hello world")
 </pre>
 <p>
 HTML in code blocks is automatically escaped.
@@ -231,10 +237,10 @@ A line containing three or more <code>*</code> or <code>-</code> characters (opt
 Raw HTML
 </h3>
 <p>
-Syntex can recognise and ignore block-level HTML in its input so you can freely mix and match Syntex markup and raw HTML.
+Monk can recognise and ignore block-level HTML in its input so you can freely mix and match Monk markup and raw HTML.
 </p>
 <p>
-Syntex uses two simple rules for identifying block-level HTML:
+Monk uses two simple rules for identifying block-level HTML:
 </p>
 <ul>
 <li>
@@ -259,7 +265,7 @@ tag, e.g.
 </li>
 </ul>
 <p>
-The opening and closing tags should not be indented <em>relative to their context</em> but can be freely mixed with other block-level Syntex elements, e.g.
+The opening and closing tags should not be indented <em>relative to their context</em> but can be freely mixed with other block-level Monk elements, e.g.
 </p>
 <pre>
 :div .outer
@@ -272,11 +278,12 @@ The opening and closing tags should not be indented <em>relative to their contex
     This is another paragraph.
 </pre>
 <p>
-Note that inline Syntex formatting will not be processed inside block-level HTML.
+Note that inline Monk formatting will not be processed inside block-level HTML.
 </p>
 
     </article>
 
     
+
   </body>
 </html>

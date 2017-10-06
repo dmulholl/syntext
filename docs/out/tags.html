@@ -3,23 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title>Tags</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="theme.css">
     <link rel="stylesheet" href="pygments.css">
     
+    
   </head>
+
   <body class="node-tags node">
 
     <header class="masthead">
-      <h1>
-        <a href="index.html">Syntex</a>
-      </h1>
-
+      <h1><a href="index.html">Monk</a></h1>
       
-        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
+        <p class="tagline">A markdownish markup language for generating HTML.</p>
       
-
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
         <label id="menu-label" for="menu-check" class="unselectable">
@@ -55,7 +53,7 @@
         <hr>
       </header>
       <p>
-Syntex supports an extensible, indentation-based syntax for generating arbitrary HTML:
+Monk supports an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
 :tag [arguments] [.class] [#id] [&amp;attr] [attr="value"]
@@ -130,7 +128,7 @@ By default, all unregistered tags are rendered like the <code>:div</code> tag ab
 A subset of HTML tags do not behave like the <code>:div</code> tag and require special processing. <em>Leaf</em> tags like paragraphs and headings and <em>inline</em> tags like <code>:a</code> and <code>:span</code> cannot contain nested block-level content; <em>void</em> tags like <code>:input</code> and <code>:hr</code> cannot contain any content at all. All tags with registered handlers are listed below.
 </p>
 <p>
-Syntex also supports a set of custom tags with no HTML equivalents, e.g. the <code>:alert</code> tag for creating alert boxes. All custom tags are listed below.
+Monk also supports a set of custom tags with no HTML equivalents, e.g. the <code>:alert</code> tag for creating alert boxes. All custom tags are listed below.
 </p>
 <p>
 Note that a tag can have one or more aliases which are treated identically, e.g. the tag <code>:blockquote</code> and the sigil <code>:&gt;&gt;</code> both create a <code>&lt;blockquote&gt;</code> element in the HTML output. Tags with registered aliases are listed below.
@@ -225,7 +223,7 @@ Creates a horizontal rule. A horizontal rule is a void element and cannot contai
 ://
 </pre>
 <p>
-Instructs Syntex to ignore the block's content. This tag can be used to add comments to a document that will not appear in the rendered output.
+Instructs Monk to ignore the block's content. This tag can be used to add comments to a document that will not appear in the rendered output.
 </p>
 <h4 id="img">
 <code>:img</code>
@@ -306,8 +304,8 @@ If a language is specified then a <code>lang-&lt;language&gt;</code> class and a
 If a language is specified and the <a href="http://pygments.org">Pygments</a> package is installed then syntax highlighting can be applied to the code sample. This feature is turned off by default but can be enabled by supplying a <code>pygmentize=True</code> keyword argument to the <code>render()</code> function:
 </p>
 <pre class="lang-python pygments" data-lang="python">
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">syntex</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">syntex</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pygmentize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">monk</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">monk</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pygmentize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre>
 <h4 id="script">
 <code>:script</code>
@@ -401,5 +399,6 @@ Attributes specified in the block header will be applied to the <code>&lt;table&
     </article>
 
     
+
   </body>
 </html>
