@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Monk
-======
+====
 
 Monk is a lightweight, markdownish markup language for generating HTML from
 plain text. It's implemented in Python 3 and can be used as both a command line
@@ -48,7 +48,7 @@ setup(
         'pygments',
     ],
     author = 'Darren Mulholland',
-    url = 'https://github.com/dmulholland/monk',
+    url = 'http://mulholland.xyz/docs/monk/',
     license = 'Public Domain',
     description = ('A markdownish markup language.'),
     long_description = __doc__,

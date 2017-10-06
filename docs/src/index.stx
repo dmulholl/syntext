@@ -62,9 +62,9 @@ Use the `monk --help` flag to view the utility's command line help:
 
     Flags:
       -d, --debug       Run in debug mode.
-          --help        Print the application's help text.
+      -h, --help        Print the application's help text.
       -p, --pygmentize  Add syntax highlighting to code.
-          --version     Print the application's version.
+      -v, --version     Print the application's version.
 
 Monk can use the [Pygments][] package to add syntax highlighting to code blocks; this feature can be enabled via the `--pygmentize` flag. (Pygments is installed automatically when you install Monk using `pip`).
 
@@ -77,7 +77,7 @@ Only code blocks with a language attribute will have syntax highlighting applied
 ### Links
 
 * [Github Homepage](https://github.com/dmulholland/monk)
-* [Python Package Index](https://pypi.python.org/pypi/monk/)
+* [Python Package Index](https://pypi.python.org/pypi/libmonk/)
 * [Online Documentation](http://mulholland.xyz/docs/monk/)
 
 
