@@ -35,12 +35,14 @@ Monk includes built-in support for footnotes:
 
 Footnote references can omit their index to take advantage of automatic numbering:
 
-    This sentence ends with an automatically-numbered reference.[^]
+    This sentence ends with an automatically-numbered
+    reference.[^]
 
 Footnotes themselves can be specified anywhere in the document using the `footnote` tag:
 
     :footnote 1
-        This is a footnote. It can contain any kind of block-level markup.
+        This is a footnote. It can contain any kind of
+        block-level markup.
 
 Footnotes can also omit their index to take advantage of automatic numbering:
 

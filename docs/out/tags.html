@@ -268,14 +268,20 @@ A <code>:null</code> block has no HTML representation of its own; instead it pas
 <code>:p</code>
 </h4>
 <pre>
-:p [nl2br]
+:p [||]
 </pre>
 <p>
 Creates a paragraph element. Paragraphs are leaf elements and do not support nested block-level content.
 </p>
 <p>
-The <code>p</code> tag supports an optional <code>nl2br</code> keyword argument which turns on newline-to-linebreak mode for the paragraph's content.
+The <code>p</code> tag supports an optional <code>||</code> keyword argument which turns on newline-to-linebreak mode for the paragraph's content.
 </p>
+<pre>
+:p ||
+
+    These linebreaks
+    will be preserved.
+</pre>
 <h4 id="pre">
 <code>:pre</code>
 </h4>

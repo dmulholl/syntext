@@ -168,11 +168,16 @@ A `:null` block has no HTML representation of its own; instead it passes its att
 
 #### `:p`
 
-    :p [nl2br]
+    :p [||]
 
 Creates a paragraph element. Paragraphs are leaf elements and do not support nested block-level content.
 
-The `p` tag supports an optional `nl2br` keyword argument which turns on newline-to-linebreak mode for the paragraph's content.
+The `p` tag supports an optional `||` keyword argument which turns on newline-to-linebreak mode for the paragraph's content.
+
+    :p ||
+
+        These linebreaks
+        will be preserved.
 
 
 #### `:pre`
