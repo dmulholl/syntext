@@ -175,7 +175,6 @@ Creates a paragraph element. Paragraphs are leaf elements and do not support nes
 The `p` tag supports an optional `||` argument which turns on newline-to-linebreak mode for the paragraph's content.
 
     :p ||
-
         These linebreaks
         will be preserved.
 
