@@ -193,7 +193,7 @@ def pre_tag_handler(tag, pargs, kwargs, content, meta):
             pre.append(nodes.Text(text))
             return pre
 
-    text = html.escape(text, False)
+    text = html.escape(text)
     pre.append(nodes.Text(text))
     return pre
 

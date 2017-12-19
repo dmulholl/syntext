@@ -117,7 +117,7 @@ class IndentedCodeParser:
                 else:
                     break
             text = str(lines.dedent().trim())
-            text = html.escape(text, False)
+            text = html.escape(text)
             return True, nodes.Raw('pre').append(nodes.Text(text))
         return False, None
 

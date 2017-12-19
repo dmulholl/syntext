@@ -111,7 +111,7 @@ def hashstr(text, hashes):
 
 def render_backticks(text, hashes):
     def callback(match):
-        content = html.escape(match.group(1), False)
+        content = html.escape(match.group(1))
         return hashstr('<code>%s</code>' % content, hashes)
     return re_backticks.sub(callback, text)
 
