@@ -44,6 +44,9 @@
 <li>
 <a href="changelog.html">Changelog</a>
 </li>
+<li>
+<a href="https://github.com/dmulholland/monk">Source</a>
+</li>
 </ul>
 
       </nav>
@@ -59,7 +62,7 @@
 Monk supports an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
-:tag [arguments] [.class] [#id] [&amp;attr] [attr="value"]
+:tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
     block content
     block content
     ...
@@ -96,7 +99,7 @@ A block header can contain a single ID, any number of classes, and any number of
 generates the following HTML:
 </p>
 <pre>
-&lt;div class="myclass" id="myid"&gt;
+&lt;div class=&quot;myclass&quot; id=&quot;myid&quot;&gt;
     &lt;p&gt;This is a paragraph.&lt;/p&gt;
 &lt;/div&gt;
 </pre>
@@ -104,7 +107,7 @@ generates the following HTML:
 Boolean attributes can be specified using an <code>&amp;</code> symbol, e.g. <code>&amp;checked</code>. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
 </p>
 <pre>
-:div attr1=foo attr2="bar baz"
+:div attr1=foo attr2=&quot;bar baz&quot;
 </pre>
 <p>
 A block's tag determines how its content is processed. In  general blocks can be nested to any depth and can contain any block-level content, e.g. the markup below:
@@ -118,8 +121,8 @@ A block's tag determines how its content is processed. In  general blocks can be
 will generate the following HTML:
 </p>
 <pre>
-&lt;div class="outer"&gt;
-    &lt;div class="inner"&gt;
+&lt;div class=&quot;outer&quot;&gt;
+    &lt;div class=&quot;inner&quot;&gt;
         &lt;p&gt;This is a paragraph.&lt;/p&gt;
     &lt;/div&gt;
 &lt;/div&gt;
@@ -295,7 +298,7 @@ The <code>p</code> tag supports an optional <code>||</code> argument which turns
 Creates a <code>&lt;pre&gt;</code> element. Accepts an optional argument specifying the language of the code.
 </p>
 <p>
-If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang="&lt;language&gt;"</code> attribute are added to the <code>&lt;pre&gt;</code> element.
+If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang=&quot;&lt;language&gt;&quot;</code> attribute are added to the <code>&lt;pre&gt;</code> element.
 </p>
 <p>
 If a language is specified and the <a href="http://pygments.org">Pygments</a> package is installed then syntax highlighting can be applied to the code sample. This feature is turned off by default but can be enabled by supplying a <code>pygmentize=True</code> keyword argument to the <code>render()</code> function:

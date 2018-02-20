@@ -2,7 +2,7 @@
 title: Inline Syntax
 ---
 
-Monk inherits most of its inline syntax directly from Markdown.
+Monk shares most of its inline markup syntax with Markdown.
 
 
 ### Formatting

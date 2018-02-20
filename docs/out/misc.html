@@ -44,6 +44,9 @@
 <li>
 <a href="changelog.html">Changelog</a>
 </li>
+<li>
+<a href="https://github.com/dmulholland/monk">Source</a>
+</li>
 </ul>
 
       </nav>
@@ -62,7 +65,7 @@ Escapes
 The following characters can be escaped by a preceding backslash:
 </p>
 <pre>
-! " # $ % &amp; \ ' ( ) * + , - . / : ; &lt; = &gt; ? @ [ ] ^ _ ` { | } ~ •
+! &quot; # $ % &amp; \ &#x27; ( ) * + , - . / : ; &lt; = &gt; ? @ [ ] ^ _ ` { | } ~ •
 </pre>
 <p>
 Escaped characters lose any special significance they might otherwise have.
@@ -168,7 +171,7 @@ To create a new custom tag, register its handler function using the <code>@tags.
 See the <code>monk/tags.py</code> file for numerous examples to follow.
 </p>
 <p>
-By convention, custom tag names are prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>":foo"</code>. The tag can then be used with a double colon:
+By convention, custom tag names are prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>&quot;:foo&quot;</code>. The tag can then be used with a double colon:
 </p>
 <pre>
 ::foo
