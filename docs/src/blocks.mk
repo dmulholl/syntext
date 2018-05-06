@@ -109,13 +109,13 @@ Note that a list consisting of a single item will always be treated as a block l
 
 ### Definition Lists
 
-Monk supports definition lists with terms enclosed in double pipes:
+Monk supports definition lists with terms enclosed in double braces:
 
-    ||  Term 1  ||
+    [[  Term 1  ]]
 
         This is the definition of the first term.
 
-    ||  Term 2  ||
+    [[  Term 2  ]]
 
         This is the definition of the second term.
 

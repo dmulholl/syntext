@@ -3,6 +3,11 @@ title: Changelog
 ---
 
 
+### 1.2.0
+
+* New custom syntax for definition lists. Support for the older syntax is deprecated and will be removed in a future release.
+
+
 ### 1.1.0
 
 * Code blocks and backticks now escape quotes.

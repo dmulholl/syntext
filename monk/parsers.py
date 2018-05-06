@@ -312,6 +312,51 @@ class OLParser:
 
 # Consumes a definition list of the form:
 #
+#   [[  Term 1  ]]
+#
+#       This is the definition of the term.
+#
+#   [[  Term 2  ]]
+#
+#       This is the definition of the term.
+#
+class DefinitionListParser:
+
+    def __call__(self, stream, meta):
+        match = re.fullmatch(r'\[\[(.+)\]\]', stream.peek())
+        if not match:
+            return False, None
+
+        dl = nodes.Container('dl')
+        while stream.has_next():
+            match = re.fullmatch(r'\[\[(.+)\]\]', stream.peek())
+            if match:
+                stream.next()
+
+                term = match.group(1).lstrip('[').rstrip(']').strip()
+                dt = nodes.Leaf('dt').append(nodes.Text(term))
+                dl.append(dt)
+
+                definition = utils.LineStream()
+                while stream.has_next():
+                    if re.fullmatch(r'\[\[(.+)\]\]', stream.peek()):
+                        break
+                    elif stream.peek().startswith(' ') or stream.peek() == '':
+                        definition.append(stream.next())
+                    else:
+                        break
+
+                dd = nodes.Container('dd')
+                dd.children = ContainerParser().parse(definition.dedent(), meta)
+                dl.append(dd)
+            else:
+                break
+
+        return True, dl
+
+
+# Deprecated. Consumes a definition list of the form:
+#
 #   ||  Term 1  ||
 #
 #       This is the definition of the term.
@@ -320,7 +365,7 @@ class OLParser:
 #
 #       This is the definition of the term.
 #
-class DefinitionListParser:
+class DeprecatedDefinitionListParser:
 
     def __call__(self, stream, meta):
         match = re.fullmatch(r'\|\|(.+)', stream.peek())
@@ -460,7 +505,6 @@ class LinkRefParser:
         return True, None
 
 
-
 # Consumes a tagged block of the form:
 #
 #   :tag [keyword] [.class1 .class2] [#id] [attr=foo attr="bar"] [&attr]
@@ -531,7 +575,7 @@ class TaggedBlockParser:
             else:
                 pargs.append(match.group(7))
 
-        # Parse any .classes, #ids, or @attributes from the list of
+        # Parse any .classes, #ids, or &attributes from the list of
         # positional arguments.
         for arg in pargs[:]:
             if arg.startswith('.'):
@@ -609,6 +653,7 @@ class ContainerParser(Parser):
         ULParser(),
         OLParser(),
         DefinitionListParser(),
+        DeprecatedDefinitionListParser(),
         LinkRefParser(),
         HtmlParser(),
         ParagraphParser(),

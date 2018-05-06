@@ -1,4 +1,4 @@
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # This module makes the `monk` package directly executable.
 #
 # To run a `monk` package located on Python's import search path:
@@ -10,7 +10,7 @@
 #   $ python /path/to/monk/package
 #
 # This latter form can be used for running development versions of Monk.
-# -------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 import os
 import sys
