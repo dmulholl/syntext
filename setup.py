@@ -29,7 +29,7 @@ import io
 from setuptools import setup, find_packages
 
 
-filepath = os.path.join(os.path.dirname(__file__), 'monk', 'pkgmeta.py')
+filepath = os.path.join(os.path.dirname(__file__), 'monk', '__init__.py')
 with io.open(filepath, encoding='utf-8') as metafile:
     regex = r'''^__([a-z]+)__ = ["'](.*)["']'''
     meta = dict(re.findall(regex, metafile.read(), flags=re.MULTILINE))

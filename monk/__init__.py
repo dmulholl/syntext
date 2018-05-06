@@ -5,6 +5,9 @@
 # License: Public Domain
 # ------------------------------------------------------------------------------
 
+# Package version number.
+__version__ = "1.2.1"
+
 from .interface import render
 from .interface import main
 

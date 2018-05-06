@@ -6,11 +6,11 @@ import argparse
 import sys
 import os
 import pprint
+import monk
 
 from . import utils
 from . import parsers
 from . import nodes
-from . import pkgmeta
 from . import toc
 from . import escapes
 
@@ -79,7 +79,7 @@ def main():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('-v', '--version',
         action="version",
-        version=pkgmeta.__version__,
+        version=monk.__version__,
     )
     parser.add_argument('-h', '--help',
         action = HelpAction,
