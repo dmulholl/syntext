@@ -92,14 +92,14 @@ generates the following HTML:
 A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more arguments to be supplied (whether these are used depends on the tag). So the markup below:
 </p>
 <pre>
-:div #myid .myclass
+:div .foo .bar #baz
     This is a paragraph.
 </pre>
 <p>
 generates the following HTML:
 </p>
 <pre>
-&lt;div class=&quot;myclass&quot; id=&quot;myid&quot;&gt;
+&lt;div class=&quot;foo bar&quot; id=&quot;baz&quot;&gt;
     &lt;p&gt;This is a paragraph.&lt;/p&gt;
 &lt;/div&gt;
 </pre>

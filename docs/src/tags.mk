@@ -26,12 +26,12 @@ generates the following HTML:
 
 A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more arguments to be supplied (whether these are used depends on the tag). So the markup below:
 
-    :div #myid .myclass
+    :div .foo .bar #baz
         This is a paragraph.
 
 generates the following HTML:
 
-    <div class="myclass" id="myid">
+    <div class="foo bar" id="baz">
         <p>This is a paragraph.</p>
     </div>
 
