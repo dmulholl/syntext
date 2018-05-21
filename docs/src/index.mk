@@ -78,7 +78,7 @@ Only code blocks with a language attribute will have syntax highlighting applied
 
 * [Github Homepage](https://github.com/dmulholland/monk)
 * [Python Package Index](https://pypi.python.org/pypi/libmonk/)
-* [Online Documentation](http://mulholland.xyz/docs/monk/)
+* [Online Documentation](https://darrenmulholland.com/docs/monk/)
 
 
 
