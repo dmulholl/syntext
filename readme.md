@@ -27,4 +27,4 @@ Monk differs from Markdown in supporting an extensible, indentation-based syntax
 
 Monk also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
 
-See the [documentation](http://mulholland.xyz/docs/monk/) for details.
+See the [documentation](https://darrenmulholland.com/docs/monk/) for details.
