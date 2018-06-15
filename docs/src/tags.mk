@@ -192,7 +192,6 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 
 ::: python
 
-    >>> import monk
     >>> html = monk.render(text, pygmentize=True)
 
 
