@@ -131,15 +131,8 @@ A block of text indented by one tab or four spaces is treated as a code block an
 
         <p>Hello world!</p>
 
-The language can be specified using a `:pre` [tag][pre]:
+HTML in code blocks is automatically escaped. To specify the language, use an explicit [code tag](@root/tags//#pre).
 
-    ::: python
-
-        print("hello world")
-
-HTML in code blocks is automatically escaped.
-
-[pre]: @root/tags//#pre
 
 
 ### Horizontal Rules
