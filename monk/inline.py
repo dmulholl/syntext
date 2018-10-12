@@ -13,13 +13,13 @@ import re
 
 
 # *foo bar*
-re_emphasis = re.compile(r"\*(\S.*?\S)\*")
+re_emphasis = re.compile(r"\*(\S(.*?\S)?)\*")
 
 # **foo bar**
-re_strong = re.compile(r"\*{2}(\S.*?\S)\*{2}")
+re_strong = re.compile(r"\*{2}(\S(.*?\S)?)\*{2}")
 
 # ***foo bar***
-re_stremphasis = re.compile(r"\*{3}(\S.*?\S)\*{3}")
+re_stremphasis = re.compile(r"\*{3}(\S(.*?\S)?)\*{3}")
 
 # `foo bar`
 re_backticks = re.compile(r"`(.+?)`")
