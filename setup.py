@@ -16,7 +16,7 @@ As a library::
     >>> import monk
     >>> html = monk.render(text)
 
-See the `package documentation <http://mulholland.xyz/docs/monk/>`_ or the
+See the `package documentation <http://darrenmulholland/docs/monk/>`_ or the
 project's `Github homepage <https://github.com/dmulholland/monk>`_ for
 further details.
 
