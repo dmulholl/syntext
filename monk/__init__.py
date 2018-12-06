@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
 # Monk: a lightweight, markdownish markup language.
 #
-# Author: Darren Mulholland <darren@mulholland.xyz>
+# Author: Darren Mulholland <dmulholl@tcd.ie>
 # License: Public Domain
 # ------------------------------------------------------------------------------
 
 # Package version number.
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 from .interface import render
 from .interface import main
