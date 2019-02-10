@@ -1,16 +1,7 @@
 
 # Syntext
 
-Syntext is a lightweight, markdownish markup language for generating HTML. It's implemented in Python and can be used as both a command line utility and a Python library.
-
-On the command line:
-
-    $ syntext < input.txt > output.html
-
-As a library:
-
-    >>> import syntext
-    >>> html = syntext.render(text)
+Syntext is a lightweight, markdownish markup language for generating HTML. This implementation is written in Python and can be used as both a command line utility and an importable library.
 
 Syntext inherits much of its basic syntax from Markdown:
 
