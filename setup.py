@@ -4,8 +4,7 @@ Syntext
 =======
 
 Syntext is a lightweight, markdownish markup language for generating HTML from
-plain text. It's implemented in Python 3 and can be used as both a command line
-tool and a Python library.
+plain text. This package can be used as both a command line tool and an importable library.
 
 On the command line::
 
