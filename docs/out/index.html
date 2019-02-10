@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Monk &mdash; a markdownish markup language</title>
+    <title>Syntext &mdash; a markdownish markup language</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="theme.css">
@@ -14,9 +14,9 @@
   <body class="node homepage">
 
     <header class="masthead">
-      <h1><a href="index.html">Monk</a></h1>
+      <h1><a href="index.html">Syntext</a></h1>
       
-        <p class="tagline">A markdownish markup language for generating HTML.</p>
+        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
       
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
@@ -45,7 +45,10 @@
 <a href="changelog.html">Changelog</a>
 </li>
 <li>
-<a href="https://github.com/dmulholland/monk">Source</a>
+<a href="license.html">License</a>
+</li>
+<li>
+<a href="https://github.com/dmulholland/syntext">Source</a>
 </li>
 </ul>
 
@@ -59,26 +62,26 @@
         <hr>
       </header>
       <p>
-Monk is a lightweight, markdownish markup language for generating HTML. It's implemented in Python and can be used as both a command line utility and a Python library.
+Syntext is a lightweight, markdownish markup language for generating HTML. It's implemented in Python and can be used as both a command line utility and a Python library.
 </p>
 <p>
-When used on the command line Monk reads from <code>stdin</code> and prints to <code>stdout</code>:
+When used on the command line Syntext reads from <code>stdin</code> and prints to <code>stdout</code>:
 </p>
 <pre>
-$ monk &lt; input.txt &gt; output.html
+$ syntext &lt; input.txt &gt; output.html
 </pre>
 <p>
-To use Monk as a Python library call its <code>render()</code> function with a string of input:
+To use Syntext as a Python library call its <code>render()</code> function with a string of input:
 </p>
 <pre class="lang-python pygments" data-lang="python">
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">monk</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">monk</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">syntext</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">syntext</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </pre>
 <h3 id="overview">
 Overview
 </h3>
 <p>
-Monk shares much of its basic syntax with Markdown:
+Syntext shares much of its basic syntax with Markdown:
 </p>
 <pre>
 This paragraph contains *italic* and **bold** text.
@@ -87,7 +90,7 @@ It also contains a `code sample` in backticks.
 This paragraph contains a [link](http://example.com).
 </pre>
 <p>
-Monk differs from Markdown in supporting an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntext differs from Markdown in supporting an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
 :div .outer
@@ -95,7 +98,7 @@ Monk differs from Markdown in supporting an extensible, indentation-based syntax
         This is a paragraph.
 </pre>
 <p>
-Monk also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
+Syntext also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
 </p>
 <h3 id="installation">
 Installation
@@ -104,26 +107,26 @@ Installation
 Install directly from the Python Package Index using <code>pip</code>:
 </p>
 <pre>
-$ pip install libmonk
+$ pip install syntext
 </pre>
 <p>
-Monk requires Python 3.4 or later.
+Syntext requires Python 3.4 or later.
 </p>
 <h3 id="command-line-interface">
 Command Line Interface
 </h3>
 <p>
-Use the <code>monk --help</code> flag to view the utility's command line help:
+Use the <code>syntext --help</code> flag to view the utility's command line help:
 </p>
 <pre>
-Usage: monk [FLAGS]
+Usage: syntext [FLAGS]
 
-  Renders input text in Monk format into HTML. Reads
+  Renders input text in Syntext format into HTML. Reads
   from stdin and prints to stdout.
 
   Example:
 
-      $ monk &lt; input.txt &gt; output.html
+      $ syntext &lt; input.txt &gt; output.html
 
 Flags:
   -d, --debug       Run in debug mode.
@@ -132,7 +135,7 @@ Flags:
   -v, --version     Print the application&#x27;s version.
 </pre>
 <p>
-Monk can use the <a href="http://pygments.org/">Pygments</a> package to add syntax highlighting to code blocks; this feature can be enabled via the <code>--pygmentize</code> flag. (Pygments is installed automatically when you install Monk using <code>pip</code>).
+Syntext can use the <a href="http://pygments.org/">Pygments</a> package to add syntax highlighting to code blocks; this feature can be enabled via the <code>--pygmentize</code> flag. (Pygments is installed automatically when you install Syntext using <code>pip</code>).
 </p>
 <p>
 Only code blocks with a language attribute will have syntax highlighting applied.
@@ -142,13 +145,13 @@ Links
 </h3>
 <ul>
 <li>
-<a href="https://github.com/dmulholland/monk">Github Homepage</a>
+<a href="https://github.com/dmulholland/syntext">Github Homepage</a>
 </li>
 <li>
-<a href="https://pypi.python.org/pypi/libmonk/">Python Package Index</a>
+<a href="https://pypi.python.org/pypi/syntext/">Python Package Index</a>
 </li>
 <li>
-<a href="https://darrenmulholland.com/docs/monk/">Online Documentation</a>
+<a href="https://darrenmulholland.com/docs/syntext/">Online Documentation</a>
 </li>
 </ul>
 <h3 id="license">

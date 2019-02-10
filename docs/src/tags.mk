@@ -2,7 +2,7 @@
 title: Tags
 ---
 
-Monk supports an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntext supports an extensible, indentation-based syntax for generating arbitrary HTML:
 
     :tag [arguments] [.class] [#id] [&attr] [attr="value"]
         block content
@@ -57,7 +57,7 @@ By default, all unregistered tags are rendered like the `:div` tag above.
 
 A subset of HTML tags do not behave like the `:div` tag and require special processing. *Leaf* tags like paragraphs and headings and *inline* tags like `:a` and `:span` cannot contain nested block-level content; *void* tags like `:input` and `:hr` cannot contain any content at all. All tags with registered handlers are listed below.
 
-Monk also supports a set of custom tags with no HTML equivalents, e.g. the `:alert` tag for creating alert boxes. All custom tags are listed below.
+Syntext also supports a set of custom tags with no HTML equivalents, e.g. the `:alert` tag for creating alert boxes. All custom tags are listed below.
 
 Note that a tag can have one or more aliases which are treated identically, e.g. the tag `:blockquote` and the sigil `:>>` both create a `<blockquote>` element in the HTML output. Tags with registered aliases are listed below.
 
@@ -124,7 +124,7 @@ Creates a horizontal rule. A horizontal rule is a void element and cannot contai
 
     :ignore
 
-Instructs Monk to ignore the block's content. This tag can be used to add comments to a document that will not appear in the rendered output.
+Instructs Syntext to ignore the block's content. This tag can be used to add comments to a document that will not appear in the rendered output.
 
 
 #### `:img`
@@ -192,7 +192,7 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 
 ::: python
 
-    >>> html = monk.render(text, pygmentize=True)
+    >>> html = syntext.render(text, pygmentize=True)
 
 
 #### `:raw`

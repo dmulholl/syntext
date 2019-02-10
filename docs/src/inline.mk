@@ -2,7 +2,7 @@
 title: Inline Syntax
 ---
 
-Monk shares most of its inline markup syntax with Markdown.
+Syntext shares most of its inline markup syntax with Markdown.
 
 
 ### Formatting
@@ -27,7 +27,7 @@ Link syntax is borrowed directly from Markdown. Title text can optionally be spe
 
     [link text](http://example.com title text)
 
-Monk also supports Markdown-style reference links:
+Syntext also supports Markdown-style reference links:
 
     [link text][reference]
 
@@ -50,7 +50,7 @@ Image syntax is borrowed directly from Markdown. Title text can optionally be sp
 
     ![alt text](http://example.com/image.jpg title text)
 
-Monk also supports Markdown-style reference images:
+Syntext also supports Markdown-style reference images:
 
     ![alt text][reference]
 
@@ -60,7 +60,7 @@ Image references can be specified anywhere in the document. Their form is identi
 
 ### HTML
 
-Monk ignores inline HTML tags so it's fine to mix and match inline HTML and Monk markup.
+Syntext ignores inline HTML tags so it's fine to mix and match inline HTML and Syntext markup.
 
 The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or character entity.
 

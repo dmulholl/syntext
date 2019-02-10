@@ -15,7 +15,7 @@ Escaped characters lose any special significance they might otherwise have.
 
 ### Tables of Contents
 
-Monk can automatically generate a table of contents for a document. This table can be inserted using the `insert` tag:
+Syntext can automatically generate a table of contents for a document. This table can be inserted using the `insert` tag:
 
     :insert toc
 
@@ -29,7 +29,7 @@ The table of contents is generated as an unordered list of links.
 
 ### Footnotes
 
-Monk includes built-in support for footnotes:
+Syntext includes built-in support for footnotes:
 
     This sentence ends with a footnote reference.[^1]
 
@@ -80,20 +80,20 @@ Each footnote is backlinked to its reference in the document.
 
 ### Extensions
 
-Monk can easily be extended to support custom tags.
+Syntext can easily be extended to support custom tags.
 
 To create a new custom tag, register its handler function using the `@tags.register()` decorator:
 
 ::: python
 
-    import monk
+    import syntext
 
-    @monk.tags.register('tag')
+    @syntext.tags.register('tag')
     def handler(tag, pargs, kwargs, content, meta):
         ...
         return node
 
-See the `monk/tags.py` file for numerous examples to follow.
+See the `syntext/tags.py` file for numerous examples to follow.
 
 By convention, custom tag names are prefixed with a colon, i.e. the custom tag `foo` should be registered as `":foo"`. The tag can then be used with a double colon:
 

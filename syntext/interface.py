@@ -6,7 +6,7 @@ import argparse
 import sys
 import os
 import pprint
-import monk
+import syntext
 
 from . import utils
 from . import parsers
@@ -52,12 +52,12 @@ def render(text, **meta):
 helptext = """
 Usage: %s [FLAGS]
 
-  Renders input text in Monk format into HTML. Reads from stdin and
+  Renders input text in Syntext format into HTML. Reads from stdin and
   prints to stdout.
 
   Example:
 
-    $ monk < input.txt > output.html
+    $ syntext < input.txt > output.html
 
 Flags:
   -d, --debug       Run in debug mode.
@@ -79,7 +79,7 @@ def main():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('-v', '--version',
         action="version",
-        version=monk.__version__,
+        version=syntext.__version__,
     )
     parser.add_argument('-h', '--help',
         action = HelpAction,

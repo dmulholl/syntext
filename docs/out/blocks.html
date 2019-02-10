@@ -14,9 +14,9 @@
   <body class="node-blocks node">
 
     <header class="masthead">
-      <h1><a href="index.html">Monk</a></h1>
+      <h1><a href="index.html">Syntext</a></h1>
       
-        <p class="tagline">A markdownish markup language for generating HTML.</p>
+        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
       
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
@@ -45,7 +45,10 @@
 <a href="changelog.html">Changelog</a>
 </li>
 <li>
-<a href="https://github.com/dmulholland/monk">Source</a>
+<a href="license.html">License</a>
+</li>
+<li>
+<a href="https://github.com/dmulholland/syntext">Source</a>
 </li>
 </ul>
 
@@ -59,7 +62,7 @@
         <hr>
       </header>
       <p>
-Monk supports two kinds of block-level markup: custom syntax for common elements and generic syntax for generating arbitrary HTML. Syntax for common elements is described below.
+Syntext supports two kinds of block-level markup: custom syntax for common elements and generic syntax for generating arbitrary HTML. Syntax for common elements is described below.
 </p>
 <h3 id="paragraphs">
 Paragraphs
@@ -193,7 +196,7 @@ Note that a list consisting of a single item will always be treated as a block l
 Definition Lists
 </h3>
 <p>
-Monk supports definition lists with terms enclosed in double braces:
+Syntext supports definition lists with terms enclosed in double braces:
 </p>
 <pre>
 [[  Term 1  ]]
@@ -235,10 +238,10 @@ A line containing three or more <code>*</code> or <code>-</code> characters (opt
 Raw HTML
 </h3>
 <p>
-Monk can recognise and ignore block-level HTML in its input so you can freely mix and match Monk markup and raw HTML.
+Syntext can recognise and ignore block-level HTML in its input so you can freely mix and match Syntext markup and raw HTML.
 </p>
 <p>
-Monk uses two simple rules for identifying block-level HTML:
+Syntext uses two simple rules for identifying block-level HTML:
 </p>
 <ul>
 <li>
@@ -263,7 +266,7 @@ tag, e.g.
 </li>
 </ul>
 <p>
-The opening and closing tags should not be indented <em>relative to their context</em> but can be freely mixed with other block-level Monk elements, e.g.
+The opening and closing tags should not be indented <em>relative to their context</em> but can be freely mixed with other block-level Syntext elements, e.g.
 </p>
 <pre>
 :div .outer
@@ -276,7 +279,7 @@ The opening and closing tags should not be indented <em>relative to their contex
     This is another paragraph.
 </pre>
 <p>
-Note that inline Monk formatting will not be processed inside block-level HTML.
+Note that inline Syntext formatting will not be processed inside block-level HTML.
 </p>
 
     </article>

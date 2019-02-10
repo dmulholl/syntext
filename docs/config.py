@@ -1,3 +1,3 @@
-title = "Monk"
+title = "Syntext"
 
-tagline = "A markdownish markup language for generating HTML."
+tagline = "A lightweight, markdownish markup language for generating HTML."

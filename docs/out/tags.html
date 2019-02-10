@@ -14,9 +14,9 @@
   <body class="node-tags node">
 
     <header class="masthead">
-      <h1><a href="index.html">Monk</a></h1>
+      <h1><a href="index.html">Syntext</a></h1>
       
-        <p class="tagline">A markdownish markup language for generating HTML.</p>
+        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
       
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
@@ -45,7 +45,10 @@
 <a href="changelog.html">Changelog</a>
 </li>
 <li>
-<a href="https://github.com/dmulholland/monk">Source</a>
+<a href="license.html">License</a>
+</li>
+<li>
+<a href="https://github.com/dmulholland/syntext">Source</a>
 </li>
 </ul>
 
@@ -59,7 +62,7 @@
         <hr>
       </header>
       <p>
-Monk supports an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntext supports an extensible, indentation-based syntax for generating arbitrary HTML:
 </p>
 <pre>
 :tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
@@ -134,7 +137,7 @@ By default, all unregistered tags are rendered like the <code>:div</code> tag ab
 A subset of HTML tags do not behave like the <code>:div</code> tag and require special processing. <em>Leaf</em> tags like paragraphs and headings and <em>inline</em> tags like <code>:a</code> and <code>:span</code> cannot contain nested block-level content; <em>void</em> tags like <code>:input</code> and <code>:hr</code> cannot contain any content at all. All tags with registered handlers are listed below.
 </p>
 <p>
-Monk also supports a set of custom tags with no HTML equivalents, e.g. the <code>:alert</code> tag for creating alert boxes. All custom tags are listed below.
+Syntext also supports a set of custom tags with no HTML equivalents, e.g. the <code>:alert</code> tag for creating alert boxes. All custom tags are listed below.
 </p>
 <p>
 Note that a tag can have one or more aliases which are treated identically, e.g. the tag <code>:blockquote</code> and the sigil <code>:&gt;&gt;</code> both create a <code>&lt;blockquote&gt;</code> element in the HTML output. Tags with registered aliases are listed below.
@@ -218,7 +221,7 @@ Creates a horizontal rule. A horizontal rule is a void element and cannot contai
 :ignore
 </pre>
 <p>
-Instructs Monk to ignore the block's content. This tag can be used to add comments to a document that will not appear in the rendered output.
+Instructs Syntext to ignore the block's content. This tag can be used to add comments to a document that will not appear in the rendered output.
 </p>
 <h4 id="img">
 <code>:img</code>
@@ -304,7 +307,7 @@ If a language is specified then a <code>lang-&lt;language&gt;</code> class and a
 If a language is specified and the <a href="http://pygments.org">Pygments</a> package is installed then syntax highlighting can be applied to the code sample. This feature is turned off by default but can be enabled by supplying a <code>pygmentize=True</code> keyword argument to the <code>render()</code> function:
 </p>
 <pre class="lang-python pygments" data-lang="python">
-<span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">monk</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pygmentize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">syntext</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pygmentize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre>
 <h4 id="raw">
 <code>:raw</code>

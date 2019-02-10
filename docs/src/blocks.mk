@@ -2,7 +2,7 @@
 title: Block Syntax
 ---
 
-Monk supports two kinds of block-level markup: custom syntax for common elements and generic syntax for generating arbitrary HTML. Syntax for common elements is described below.
+Syntext supports two kinds of block-level markup: custom syntax for common elements and generic syntax for generating arbitrary HTML. Syntax for common elements is described below.
 
 
 
@@ -109,7 +109,7 @@ Note that a list consisting of a single item will always be treated as a block l
 
 ### Definition Lists
 
-Monk supports definition lists with terms enclosed in double braces:
+Syntext supports definition lists with terms enclosed in double braces:
 
     [[  Term 1  ]]
 
@@ -146,9 +146,9 @@ A line containing three or more `*` or `-` characters (optionally separated by s
 
 ### Raw HTML
 
-Monk can recognise and ignore block-level HTML in its input so you can freely mix and match Monk markup and raw HTML.
+Syntext can recognise and ignore block-level HTML in its input so you can freely mix and match Syntext markup and raw HTML.
 
-Monk uses two simple rules for identifying block-level HTML:
+Syntext uses two simple rules for identifying block-level HTML:
 
 * A single line beginning with an opening block-level tag and ending with
   its corresponding closing tag, e.g.
@@ -162,7 +162,7 @@ Monk uses two simple rules for identifying block-level HTML:
         <p>This is raw HTML and will be left untouched.</p>
       </div>
 
-The opening and closing tags should not be indented *relative to their context* but can be freely mixed with other block-level Monk elements, e.g.
+The opening and closing tags should not be indented *relative to their context* but can be freely mixed with other block-level Syntext elements, e.g.
 
     :div .outer
         This is a paragraph.
@@ -173,4 +173,4 @@ The opening and closing tags should not be indented *relative to their context* 
 
         This is another paragraph.
 
-Note that inline Monk formatting will not be processed inside block-level HTML.
+Note that inline Syntext formatting will not be processed inside block-level HTML.

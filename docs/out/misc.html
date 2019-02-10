@@ -14,9 +14,9 @@
   <body class="node-misc node">
 
     <header class="masthead">
-      <h1><a href="index.html">Monk</a></h1>
+      <h1><a href="index.html">Syntext</a></h1>
       
-        <p class="tagline">A markdownish markup language for generating HTML.</p>
+        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
       
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
@@ -45,7 +45,10 @@
 <a href="changelog.html">Changelog</a>
 </li>
 <li>
-<a href="https://github.com/dmulholland/monk">Source</a>
+<a href="license.html">License</a>
+</li>
+<li>
+<a href="https://github.com/dmulholland/syntext">Source</a>
 </li>
 </ul>
 
@@ -74,7 +77,7 @@ Escaped characters lose any special significance they might otherwise have.
 Tables of Contents
 </h3>
 <p>
-Monk can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:
+Syntext can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:
 </p>
 <pre>
 :insert toc
@@ -92,7 +95,7 @@ The table of contents is generated as an unordered list of links.
 Footnotes
 </h3>
 <p>
-Monk includes built-in support for footnotes:
+Syntext includes built-in support for footnotes:
 </p>
 <pre>
 This sentence ends with a footnote reference.[^1]
@@ -154,21 +157,21 @@ Each footnote is backlinked to its reference in the document.
 Extensions
 </h3>
 <p>
-Monk can easily be extended to support custom tags.
+Syntext can easily be extended to support custom tags.
 </p>
 <p>
 To create a new custom tag, register its handler function using the <code>@tags.register()</code> decorator:
 </p>
 <pre class="lang-python pygments" data-lang="python">
-<span class="kn">import</span> <span class="nn">monk</span>
+<span class="kn">import</span> <span class="nn">syntext</span>
 
-<span class="nd">@monk.tags.register</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span>
+<span class="nd">@syntext.tags.register</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">pargs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">meta</span><span class="p">):</span>
     <span class="o">...</span>
     <span class="k">return</span> <span class="n">node</span>
 </pre>
 <p>
-See the <code>monk/tags.py</code> file for numerous examples to follow.
+See the <code>syntext/tags.py</code> file for numerous examples to follow.
 </p>
 <p>
 By convention, custom tag names are prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>&quot;:foo&quot;</code>. The tag can then be used with a double colon:

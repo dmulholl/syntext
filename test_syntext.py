@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # ------------------------------------------------------------------------------
-# Unit tests for the monk package. This is a custom test harness; to run the
+# Unit tests for the syntext package. This is a custom test harness; to run the
 # tests just run this file directly.
 # ------------------------------------------------------------------------------
 
-import monk
+import syntext
 import os
 import sys
 
@@ -39,7 +39,7 @@ def main():
             if os.path.isfile(htmlfile):
                 text = load(textfile)
                 html = load(htmlfile)
-                if monk.render(text).strip() == html.strip():
+                if syntext.render(text).strip() == html.strip():
                     oks += 1
                     result = 'ok'
                 else:
