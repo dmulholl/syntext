@@ -1,5 +1,0 @@
-:alert warning
-    foo
-
-:!! warning
-    foo

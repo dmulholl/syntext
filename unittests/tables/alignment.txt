@@ -1,0 +1,9 @@
+::: table
+
+    foo | bar | baz
+    :-- | :-: | --:
+    aaa | bbb | ccc
+    ddd | eee | fff
+
+::: end
+

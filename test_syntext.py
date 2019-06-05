@@ -30,12 +30,13 @@ def main():
 '''.strip())
 
     directories = [dn for dn in os.listdir(testdir) if not dn.startswith('.')]
+    directories.sort()
     for directory in directories:
-        files = os.listdir(os.path.join(testdir, directory, 'text'))
-        files = [fn for fn in files if not fn.startswith('.')]
-        for filename in files:
-            textfile = os.path.join(testdir, directory, 'text', filename)
-            htmlfile = os.path.join(testdir, directory, 'html', filename)
+        files = os.listdir(os.path.join(testdir, directory))
+        files = [fn for fn in files if fn.endswith('.txt')]
+        for filename in sorted(files):
+            textfile = os.path.join(testdir, directory, filename)
+            htmlfile = textfile.replace('.txt', '.html')
             if os.path.isfile(htmlfile):
                 text = load(textfile)
                 html = load(htmlfile)
@@ -50,7 +51,7 @@ def main():
                 result = '??????'
             output  = '    '
             output += directory.ljust(18)
-            output += filename.ljust(48)
+            output += filename.replace('.txt', '').ljust(48)
             output += result.center(6)
             print(output)
 

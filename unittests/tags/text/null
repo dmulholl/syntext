@@ -1,5 +1,0 @@
-:null .someclass
-    foo
-
-:<< .someclass
-    foo

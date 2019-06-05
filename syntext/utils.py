@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Utiltiy functions and classes.
+# Utility functions and classes.
 # ------------------------------------------------------------------------------
 
 import re
@@ -24,6 +24,9 @@ class LineStream:
     def __str__(self):
         return '\n'.join(self.lines[self.index:])
 
+    def __len__(self):
+        return len(self.lines)
+    
     # Appends a line to the end of the stream.
     def append(self, line):
         self.lines.append(line)
@@ -93,6 +96,63 @@ class LineStream:
             if line == '':
                 return True
         return False
+
+
+# Utility class for parsing argument strings.
+class ArgParser:
+
+    args_regex = re.compile(r"""
+        (?:([^\s'"=]+)=)?           # an optional key, followed by...
+        (
+            "((?:[^\\"]|\\.)*)"     # a double-quoted value, or
+            |
+            '((?:[^\\']|\\.)*)'     # a single-quoted value
+        )
+        |
+        ([^\s'"=]+)=(\S+)           # a key followed by an unquoted value
+        |
+        (\S+)                       # an unkeyed, unquoted value
+    """, re.VERBOSE)
+
+    def parse(self, argstr):
+        pargs, kwargs, classes = [], {}, []
+
+        # Parse the argument string into a list of positional and dictionary
+        # of keyword arguments.
+        for match in self.args_regex.finditer(argstr):
+            if match.group(2) or match.group(5):
+                key = match.group(1) or match.group(5)
+                value = match.group(3) or match.group(4) or match.group(6)
+                if match.group(3) or match.group(4):
+                    value = bytes(value, 'utf-8').decode('unicode_escape')
+                if key:
+                    kwargs[key] = value
+                else:
+                    pargs.append(value)
+            else:
+                pargs.append(match.group(7))
+
+        # Parse any .classes, #ids, or &attributes from the list of
+        # positional arguments.
+        for arg in pargs[:]:
+            if arg.startswith('.'):
+                classes.append(arg[1:])
+                pargs.remove(arg)
+            if arg.startswith('#'):
+                kwargs['id'] = arg[1:]
+                pargs.remove(arg)
+            if arg.startswith('&'):
+                kwargs[arg.lstrip('&')] = None
+                pargs.remove(arg)
+
+        # Convert the classes list into a space-separated string.
+        # We need to keep an eye out for a named 'class' attribute.
+        if 'class' in kwargs:
+            classes.extend(kwargs['class'].split())
+        if classes:
+            kwargs['class'] = ' '.join(sorted(classes))
+
+        return pargs, kwargs
 
 
 # Formats title text for output on the command line.

@@ -1,0 +1,6 @@
+::: div .foo
+    ::: div .bar
+        foo bar
+    ::: end
+::: end
+

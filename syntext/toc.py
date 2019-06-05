@@ -41,8 +41,8 @@ class TOCBuilder:
         level = int(node.tag[1])
         html = node.render({})
         text = utils.strip_tags(html).strip()
-        if 'id' in node.atts:
-            id = node.atts['id']
+        if 'id' in node.attributes:
+            id = node.attributes['id']
         else:
             index = 2
             slug = utils.idify(text)
@@ -50,36 +50,36 @@ class TOCBuilder:
             while id in self.ids:
                 id = '%s-%s' % (slug, index)
                 index += 1
-            node.atts['id'] = id
+            node.attributes['id'] = id
         self.ids.append(id)
         return dict(level=level, text=text, id=id, subs=[])
 
     # Returns the table of contents as an unordered list. Skips over root-level
     # H1 headings.
     def toc(self):
-        ul = nodes.Container('ul', {'class': 'stx-toc'})
+        ul = nodes.Node('ul', {'class': 'stx-toc'})
         for node in self.root['subs']:
             if node['level'] == 1:
                 for subnode in node['subs']:
-                    ul.append(self._make_li_node(subnode))
+                    ul.append_child(self._make_li_node(subnode))
             else:
-                ul.append(self._make_li_node(node))
+                ul.append_child(self._make_li_node(node))
         return ul
 
     # Returns the table of contents as an unordered list. Includes root-level
     # H1 headings.
     def fulltoc(self):
-        ul = nodes.Container('ul', {'class': 'stx-toc'})
+        ul = nodes.Node('ul', {'class': 'stx-toc'})
         for node in self.root['subs']:
-            ul.append(self._make_li_node(node))
+            ul.append_child(self._make_li_node(node))
         return ul
 
     def _make_li_node(self, node):
-        li = nodes.Container('li')
-        li.append(nodes.Text('[%s](#%s)' % (node['text'], node['id'])))
+        li = nodes.Node('li')
+        li.append_child(nodes.TextNode('[%s](#%s)' % (node['text'], node['id'])))
         if node['subs']:
-            ul = nodes.Container('ul')
-            li.append(ul)
+            ul = nodes.Node('ul')
+            li.append_child(ul)
             for child in node['subs']:
-                ul.append(self._make_li_node(child))
+                ul.append_child(self._make_li_node(child))
         return li

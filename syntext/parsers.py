@@ -4,6 +4,7 @@
 
 import re
 import html
+import sys
 
 from . import nodes
 from . import utils
@@ -14,81 +15,11 @@ from . import utils
 # ------------------------------------------------------------------------------
 
 
-# Consumes a H1 heading of the form:
-#
-#   ======
-#    Some
-#    Text
-#   ======
-#
-# The upper line of '=' symbols is optional.
-class H1Parser:
-
-    def __call__(self, stream, meta):
-        lines, found = [], False
-
-        # Loop until we meet a blank line or a line of = symbols.
-        while stream.has_next():
-            nextline = stream.next()
-            lines.append(nextline)
-            if nextline:
-                if len(lines) > 1 and re.fullmatch(r'=+', nextline):
-                    found = True
-                    break
-            else:
-                break
-
-        # If we didn't find a line of = symbols, rewind the stream.
-        if found:
-            if re.fullmatch(r'=+', lines[0]):
-                lines.pop(0)
-            text = nodes.Text('\n'.join(lines[:-1]))
-            return True, nodes.Leaf('h1').append(text)
-        else:
-            stream.rewind(len(lines))
-            return False, None
-
-
-# Consumes a H2 heading of the form:
-#
-#   ------
-#    Some
-#    Text
-#   ------
-#
-# The upper line of '-' symbols is optional.
-class H2Parser:
-
-    def __call__(self, stream, meta):
-        lines, found = [], False
-
-        # Loop until we meet a blank line or a line of - symbols.
-        while stream.has_next():
-            nextline = stream.next()
-            lines.append(nextline)
-            if nextline:
-                if len(lines) > 1 and re.fullmatch(r'-+', nextline):
-                    found = True
-                    break
-            else:
-                break
-
-        # If we didn't find a line of - symbols, rewind the stream.
-        if found:
-            if re.fullmatch(r'-+', lines[0]):
-                lines.pop(0)
-            text = nodes.Text('\n'.join(lines[:-1]))
-            return True, nodes.Leaf('h2').append(text)
-        else:
-            stream.rewind(len(lines))
-            return False, None
-
-
-# Consumes an arbitrary level heading of the form:
+# Consumes an arbitrary-level heading of the form:
 #
 #   ### Heading Text ###
 #
-# The number of leading '#' symbols specifies the heading level. The trailing
+# The number of leading '#' symbols specifies the heading level; trailing
 # symbols are optional.
 class HeadingParser:
 
@@ -96,11 +27,38 @@ class HeadingParser:
         match = re.match(r'([#]{1,6})[ ]+', stream.peek())
         if match:
             line = stream.next()
-            text = line.strip('#').strip()
+            text = nodes.TextNode(line.strip('#').strip())
             tag = 'h' + str(len(match.group(1)))
-            return True, nodes.Leaf(tag).append(nodes.Text(text))
+            return True, nodes.Node(tag).append_child(text)
         else:
             return False, None
+
+
+# Consumes an outlined, arbitrary-level heading of the form:
+#
+#   ------------------
+#   #  Heading Text  #
+#   ------------------
+#
+class FancyHeadingParser:
+
+    def __call__(self, stream, meta):
+        if len(stream.lines) < 3 or not re.fullmatch(r'-+', stream.peek()):
+            return False, None
+
+        line1 = stream.next()
+        line2 = stream.next()
+        line3 = stream.next()
+
+        if re.fullmatch(r'-+', line3):
+            match = re.match(r'([#]{1,6})[ ]+', line2)
+            if match:
+                text = nodes.TextNode(line2.strip('#').strip())
+                tag = 'h' + str(len(match.group(1)))
+                return True, nodes.Node(tag).append_child(text)
+
+        stream.rewind(3)
+        return False, None
 
 
 # Consumes a sequence of indented lines. The lines must be indented by at
@@ -118,28 +76,15 @@ class IndentedCodeParser:
                     break
             text = str(lines.dedent().trim())
             text = html.escape(text)
-            return True, nodes.Raw('pre').append(nodes.Text(text))
+            return True, nodes.Node('pre', text=text)
         return False, None
-
-
-# Consumes a line consisting of three or more '-' or '*' symbols. The symbols
-# may optionally be separated by any number of spaces.
-class HorizontalRuleParser:
-
-    def __call__(self, stream, meta):
-        match = re.fullmatch(r'[ ]{0,3}([-*])[ ]*\1[ ]*\1+', stream.peek())
-        if match:
-            stream.next()
-            return True, nodes.Void('hr')
-        else:
-            return False, None
 
 
 # Consumes a single line of text, returning it as a Text node.
 class TextParser:
 
     def __call__(self, stream, meta):
-        return True, nodes.Text(stream.next())
+        return True, nodes.TextNode(stream.next())
 
 
 # Consumes an unordered list. The list item marker is one of (*, •, -, or +).
@@ -160,7 +105,7 @@ class TextParser:
 #     * baz
 #
 # Switching to a different item marker starts a new list.
-class ULParser:
+class UnorderedListParser:
 
     def __call__(self, stream, meta):
         match = re.fullmatch(r'[ ]{0,3}([*•+-])([ ].+)?', stream.peek())
@@ -208,17 +153,17 @@ class ULParser:
             listtype = 'block'
 
         # Assemble the node tree representing the list.
-        ul = nodes.Container('ul')
+        ul = nodes.Node('ul')
         for item in items:
             item = item.trim()
-            li = nodes.Container('li')
+            li = nodes.Node('li')
             if listtype == 'block':
-                children = ContainerParser().parse(item, meta)
+                children = BlockParser().parse(item, meta)
             else:
-                parsers = (ULParser(), OLParser(), TextParser())
+                parsers = (UnorderedListParser(), OrderedListParser(), TextParser())
                 children = Parser(parsers).parse(item, meta)
             li.children = children
-            ul.append(li)
+            ul.append_child(li)
 
         return True, ul
 
@@ -241,7 +186,7 @@ class ULParser:
 #     3. baz
 #
 # Switching to a different item marker starts a new list.
-class OLParser:
+class OrderedListParser:
 
     def __call__(self, stream, meta):
         match = re.fullmatch(r'[ ]{0,3}([#]|\d+)[.]([ ].+)?', stream.peek())
@@ -295,17 +240,17 @@ class OLParser:
             listtype = 'block'
 
         # Assemble the node tree representing the list.
-        ol = nodes.Container('ol', atts)
+        ol = nodes.Node('ol', atts)
         for item in items:
             item = item.trim()
-            li = nodes.Container('li')
+            li = nodes.Node('li')
             if listtype == 'block':
-                children = ContainerParser().parse(item, meta)
+                children = BlockParser().parse(item, meta)
             else:
-                parsers = (ULParser(), OLParser(), TextParser())
+                parsers = (UnorderedListParser(), OrderedListParser(), TextParser())
                 children = Parser(parsers).parse(item, meta)
             li.children = children
-            ol.append(li)
+            ol.append_child(li)
 
         return True, ol
 
@@ -327,15 +272,15 @@ class DefinitionListParser:
         if not match:
             return False, None
 
-        dl = nodes.Container('dl')
+        dl = nodes.Node('dl')
         while stream.has_next():
             match = re.fullmatch(r'\[\[(.+)\]\]', stream.peek())
             if match:
                 stream.next()
 
                 term = match.group(1).lstrip('[').rstrip(']').strip()
-                dt = nodes.Leaf('dt').append(nodes.Text(term))
-                dl.append(dt)
+                dt = nodes.Node('dt').append_child(nodes.TextNode(term))
+                dl.append_child(dt)
 
                 definition = utils.LineStream()
                 while stream.has_next():
@@ -346,54 +291,9 @@ class DefinitionListParser:
                     else:
                         break
 
-                dd = nodes.Container('dd')
-                dd.children = ContainerParser().parse(definition.dedent(), meta)
-                dl.append(dd)
-            else:
-                break
-
-        return True, dl
-
-
-# Deprecated. Consumes a definition list of the form:
-#
-#   ||  Term 1  ||
-#
-#       This is the definition of the term.
-#
-#   ||  Term 2  ||
-#
-#       This is the definition of the term.
-#
-class DeprecatedDefinitionListParser:
-
-    def __call__(self, stream, meta):
-        match = re.fullmatch(r'\|\|(.+)', stream.peek())
-        if not match:
-            return False, None
-
-        dl = nodes.Container('dl')
-        while stream.has_next():
-            match = re.fullmatch(r'\|\|(.+)', stream.peek())
-            if match:
-                stream.next()
-
-                term = match.group(1).strip('|').strip()
-                dt = nodes.Leaf('dt').append(nodes.Text(term))
-                dl.append(dt)
-
-                definition = utils.LineStream()
-                while stream.has_next():
-                    if re.fullmatch(r'\|\|(.+)', stream.peek()):
-                        break
-                    elif stream.peek().startswith(' ') or stream.peek() == '':
-                        definition.append(stream.next())
-                    else:
-                        break
-
-                dd = nodes.Container('dd')
-                dd.children = ContainerParser().parse(definition.dedent(), meta)
-                dl.append(dd)
+                dd = nodes.Node('dd')
+                dd.children = BlockParser().parse(definition.dedent(), meta)
+                dl.append_child(dd)
             else:
                 break
 
@@ -409,7 +309,8 @@ class ParagraphParser:
             if stream.peek() == '':
                 break
             lines.append(stream.next())
-        return True, nodes.Leaf('p').append(nodes.Text('\n'.join(lines)))
+        text = nodes.TextNode('\n'.join(lines))
+        return True, nodes.Node('p').append_child(text)
 
 
 # Consumes and discards a single blank line.
@@ -425,17 +326,16 @@ class BlankLineParser:
 # Consumes one or more lines of raw block-level HTML.
 class HtmlParser:
 
-    blocks = [
-        'address', 'article', 'aside', 'blockquote', 'body,' 'canvas', 'dd',
-        'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form',
-        'head', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'li',
-        'main', 'nav', 'noscript', 'ol', 'output', 'p', 'pre', 'script',
-        'section', 'style', 'table', 'tfoot', 'title', 'ul', 'video',
-    ]
+    html_block_tags = """
+        address article aside blockquote body canvas dd div dl fieldset 
+        figcaption figure footer form head h1 h2 h3 h4 h5 h6 header hgroup
+        li main noscript ol output p pre script section style table tfoot
+        title ul video html 
+    """.split()
 
     def __call__(self, stream, meta):
         match = re.match(r'<([a-zA-Z][^>]*?)>', stream.peek())
-        if match and match.group(1) in self.blocks:
+        if match and match.group(1) in self.html_block_tags:
             tag = match.group(1)
             lines = [stream.next()]
         else:
@@ -444,9 +344,7 @@ class HtmlParser:
         # Do we have a one-liner?
         match = re.fullmatch(r'<([a-zA-Z][^>]*?)>.*</\1>', lines[0])
         if match:
-            node = nodes.Raw()
-            node.append(nodes.Text(lines[0]))
-            return True, node
+            return True, nodes.Node(text=lines[0])
 
         # Look for the corresponding closing tag.
         found, endtag = False, '</%s>' % tag
@@ -457,9 +355,7 @@ class HtmlParser:
                 break
 
         if found:
-            node = nodes.Raw()
-            node.append(nodes.Text('\n'.join(lines)))
-            return True, node
+            return True, nodes.Node(text='\n'.join(lines))
         else:
             sys.stderr.write("Error: missing closing tag '%s'.\n" % endtag)
             return True, None
@@ -505,12 +401,9 @@ class LinkRefParser:
         return True, None
 
 
-# Consumes a tagged block of the form:
+# Consumes a shorthand html block of the form:
 #
-#   :tag [keyword] [.class1 .class2] [#id] [attr=foo attr="bar"] [&attr]
-#       block content
-#       block content
-#
+#   :tag [keyword] [.class] [#id] [attr=foo attr="bar"] [&attr]
 #       block content
 #       ...
 #
@@ -518,21 +411,9 @@ class LinkRefParser:
 # following the block header. How this content is processed depends on
 # the tag; in the general case content is processed recursively and can
 # contain nested block-level structures.
-class TaggedBlockParser:
+class ShorthandParser:
 
-    # Regex for parsing the block's arguments.
-    args_regex = re.compile(r"""
-        (?:([^\s'"=]+)=)?           # an optional key, followed by...
-        (
-            "((?:[^\\"]|\\.)*)"     # a double-quoted value, or
-            |
-            '((?:[^\\']|\\.)*)'     # a single-quoted value
-        )
-        |
-        ([^\s'"=]+)=(\S+)           # a key followed by an unquoted value
-        |
-        (\S+)                       # an unkeyed, unquoted value
-    """, re.VERBOSE)
+    argparser = utils.ArgParser()
 
     def __call__(self, stream, meta):
         match = re.fullmatch(r':([^ ]+)([ ].+)?', stream.peek())
@@ -542,8 +423,8 @@ class TaggedBlockParser:
             return False, None
 
         tag = match.group(1)
-        argstr = match.group(2) or ''
-        pargs, kwargs = self.parse_args(argstr)
+        argstring = match.group(2) or ''
+        pargs, kwargs = self.argparser.parse(argstring)
 
         content = utils.LineStream()
         while stream.has_next():
@@ -553,50 +434,63 @@ class TaggedBlockParser:
                 break
         content = content.trim().dedent()
 
-        # Hand off responsibility to the registered tag handler.
-        from . import tags
-        return True, tags.process(tag, pargs, kwargs, content, meta)
+        from . import shorthand
+        return True, shorthand.process(tag, pargs, kwargs, content, meta)
 
-    def parse_args(self, argstr):
-        pargs, kwargs, classes = [], {}, []
 
-        # Parse the argument string into a list of positional and dictionary
-        # of keyword arguments.
-        for match in self.args_regex.finditer(argstr):
-            if match.group(2) or match.group(5):
-                key = match.group(1) or match.group(5)
-                value = match.group(3) or match.group(4) or match.group(6)
-                if match.group(3) or match.group(4):
-                    value = bytes(value, 'utf-8').decode('unicode_escape')
-                if key:
-                    kwargs[key] = value
+
+class TagParser:
+
+    argparser = utils.ArgParser()
+
+    def __call__(self, stream, meta):
+        if not stream.peek().startswith('::: '):
+            return False, None
+
+        header = stream.next()
+        if header.endswith(' :::'):
+            is_empty = True
+        else:
+            is_empty = False
+            
+        header = header.strip(':')
+        elements = header.split(maxsplit=1)
+        if len(elements) == 2:
+            tag, argstring = elements[0], elements[1]
+        elif len(elements) == 1:
+            tag, argstring = elements[0], ''
+        else:
+            tag, argstring = '', ''
+        pargs, kwargs = self.argparser.parse(argstring)
+
+        content = utils.LineStream()
+        if is_empty:
+            from . import tags
+            return True, tags.process(tag, pargs, kwargs, content, meta)
+
+        open_tags = 1
+        found_end = False
+        while stream.has_next():
+            next = stream.peek().strip()
+            if next == '::: end':
+                if open_tags == 1:
+                    found_end = True
+                    stream.next()
+                    break
                 else:
-                    pargs.append(value)
-            else:
-                pargs.append(match.group(7))
+                    open_tags -= 1
+            elif next.startswith('::: ') and not next.endswith(' :::'):
+                open_tags += 1
+            content.append(stream.next())
+        content = content.trim().dedent()
 
-        # Parse any .classes, #ids, or &attributes from the list of
-        # positional arguments.
-        for arg in pargs[:]:
-            if arg.startswith('.'):
-                classes.append(arg[1:])
-                pargs.remove(arg)
-            if arg.startswith('#'):
-                kwargs['id'] = arg[1:]
-                pargs.remove(arg)
-            if arg.startswith('&'):
-                kwargs[arg.lstrip('&')] = None
-                pargs.remove(arg)
-
-        # Convert the classes list into a space-separated string.
-        # We need to keep an eye out for a named 'class' attribute.
-        if 'class' in kwargs:
-            classes.extend(kwargs['class'].split())
-        if classes:
-            kwargs['class'] = ' '.join(sorted(classes))
-
-        return pargs, kwargs
-
+        if found_end:
+            from . import tags
+            return True, tags.process(tag, pargs, kwargs, content, meta)
+        else:
+            sys.stderr.write("Error: missing end tag for '%s' block.\n" % tag)
+            return True, None
+            
 
 # ------------------------------------------------------------------------------
 # Top-level parsers for block structures.
@@ -615,63 +509,71 @@ class Parser:
 
             # Give each parser an opportunity to parse the stream.
             for parser in self.parsers:
-                parsed, result = parser(stream, meta)
-                if parsed:
+                match, result = parser(stream, meta)
+                if match:
                     if isinstance(result, nodes.Node):
                         nodelist.append(result)
                     break
 
             # If we have an unparsable line, print an error and skip it.
-            if not parsed:
-                sys.stderr.write("UNPARSED: %s\n" % stream.next())
+            if not match:
+                sys.stderr.write("UNPARSEABLE: %s\n" % stream.next())
 
         # Merge adjacent text nodes.
         mergedlist = []
         for node in nodelist:
-            if mergedlist and isinstance(mergedlist[-1], nodes.Text):
-                if isinstance(node, nodes.Text):
-                    mergedlist[-1].content += '\n' + node.content
+            if mergedlist and isinstance(mergedlist[-1], nodes.TextNode):
+                if isinstance(node, nodes.TextNode):
+                    mergedlist[-1].text += '\n' + node.text
                     continue
             mergedlist.append(node)
 
         return mergedlist
 
 
-# Default parser for parsing the content of container elements.
-class ContainerParser(Parser):
+# Default parser for parsing the content of block-level elements.
+class BlockParser(Parser):
 
-    # List of structure parsers for parsing the content of container elements,
-    # i.e. elements that can contain nested block-level content.
-    container_parsers = [
+    parser_list = [
         BlankLineParser(),
-        TaggedBlockParser(),
+        TagParser(),
+        ShorthandParser(),
         IndentedCodeParser(),
-        H1Parser(),
-        H2Parser(),
         HeadingParser(),
-        HorizontalRuleParser(),
-        ULParser(),
-        OLParser(),
+        FancyHeadingParser(),
+        UnorderedListParser(),
+        OrderedListParser(),
         DefinitionListParser(),
-        DeprecatedDefinitionListParser(),
         LinkRefParser(),
         HtmlParser(),
         ParagraphParser(),
     ]
 
     def __init__(self):
-        self.parsers = self.container_parsers
+        self.parsers = self.parser_list
 
 
-# Default parser for parsing the content of leaf elements.
-class LeafParser(Parser):
+# Default parser for parsing the content of leaf and inline elements.
+class InlineParser(Parser):
 
-    # List of structure parsers for parsing the content of leaf elements,
-    # i.e. elements that cannot contain nested block-level content.
-    leaf_parsers = [
-        TaggedBlockParser(),
+    parser_list = [
+        TagParser(),
+        ShorthandParser(),
         TextParser(),
     ]
 
     def __init__(self):
-        self.parsers = self.leaf_parsers
+        self.parsers = self.parser_list
+
+
+# Default parser for parsing the content of compact list items.
+class ListItemParser(Parser):
+
+    parser_list = [
+        UnorderedListParser(), 
+        OrderedListParser(), 
+        TextParser()
+    ]
+
+    def __init__(self):
+        self.parsers = self.parser_list

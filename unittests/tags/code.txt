@@ -1,0 +1,4 @@
+::: code foo
+    <escaped text>
+::: end
+

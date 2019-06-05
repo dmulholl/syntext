@@ -1,0 +1,2 @@
+::: image http://example.com/image.png :::
+

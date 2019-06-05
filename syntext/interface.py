@@ -24,7 +24,7 @@ def parse(text, meta):
     escaped = escapes.escapechars(text)
     stream = utils.LineStream(escaped)
     root = nodes.Node()
-    root.children = parsers.ContainerParser().parse(stream, meta)
+    root.children = parsers.BlockParser().parse(stream, meta)
     tocbuilder = toc.TOCBuilder(root)
     meta['toc'] = tocbuilder.toc()
     meta['fulltoc'] = tocbuilder.fulltoc()

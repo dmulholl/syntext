@@ -1,0 +1,4 @@
+::: image http://example.com/image.png 
+    alt text
+::: end
+

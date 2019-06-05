@@ -98,7 +98,7 @@ def render(text, meta):
     for key, value in hashes.items():
         text = text.replace(key, value)
 
-    return text + '\n'
+    return text
 
 
 # Hashes a string, stores it as a {digest: string} pair in 'hashes', and

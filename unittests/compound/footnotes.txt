@@ -1,0 +1,17 @@
+This line contains a footnote.[^1]
+
+This line contains a footnote.[fn:2]
+
+::: insert footnotes :::
+
+::: footnote 1
+    This is footnote 1.
+::: end
+
+::: footnote 2
+    This footnote has two paragraphs.
+    This is the first.
+
+    And this is the second.
+::: end
+
