@@ -47,7 +47,6 @@ re_entity = re.compile(r"&[#a-zA-Z0-9]+;")
 
 # html tags: <span>, </span>, <!-- comment -->, etc.
 re_html = re.compile(r"<([a-zA-Z/][^>]*?|!--.*?--)>")
-
 # <http://example.com>
 re_bracketed_url = re.compile(r"<((?:https?|ftp)://[^>]+)>")
 
@@ -64,6 +63,12 @@ re_ndash = re.compile(r"((?<=\s)|\b|^)--(?=[ ]|\b|$)")
 
 # m-dash
 re_mdash = re.compile(r"((?<=\s)|\b|^)---(?=[ ]|\b|$)")
+
+# x^{2}
+re_superscript = re.compile(r"\^\{(.+?)\}")
+
+# H_{2}O
+re_subscript = re.compile(r"_\{(.+?)\}")
 
 
 # ------------------------------------------------------------------------------
@@ -91,6 +96,8 @@ def render(text, meta):
     text = render_links(text)
     text = render_ref_links(text, meta)
     text = render_footnotes(text, meta)
+    text = render_superscripts(text)
+    text = render_subscripts(text)
 
     if 'nl2br' in meta.get('context', []):
         text = text.replace('\n', '<br>\n')
@@ -147,6 +154,14 @@ def render_emphasis(text):
 
 def render_stremphasis(text):
     return re_stremphasis.sub(r"<strong><em>\1</em></strong>", text)
+
+
+def render_superscripts(text):
+    return re_superscript.sub(r"<sup>\1</sup>", text)
+
+
+def render_subscripts(text):
+    return re_subscript.sub(r"<sub>\1</sub>", text)
 
 
 def render_images(text):
