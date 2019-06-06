@@ -3,9 +3,12 @@
 # ------------------------------------------------------------------------------
 
 import html
+import re
 
 from . import nodes
 from . import parsers
+from . import utils
+
 
 
 # Void elements have no content or closing tag.
@@ -25,7 +28,12 @@ html_raw_tags = "script style".split()
 
 
 # Process a tagged block.
-def process(tag, pargs, kwargs, content, meta):
+def process(header, content, meta):
+    match = re.fullmatch(r':([^ ]+)([ ].+)?', header)
+    tag = match.group(1)
+    argstring = match.group(2) or ''
+    pargs, kwargs = utils.ArgParser().parse(argstring)
+
     if tag == 'pre':
         text = html.escape(str(content))
         node = nodes.Node('pre', kwargs, text=text)
@@ -40,9 +48,6 @@ def process(tag, pargs, kwargs, content, meta):
             node.attributes['src'] = pargs[0] if pargs else ''
         if not 'alt' in kwargs:
             node.attributes['alt'] = html.escape(str(content).replace('\n', ' '))
-    elif tag == 'nl2lb' or tag == 'nl2br':
-        node = nodes.LinebreakNode()
-        node.children = parsers.BlockParser().parse(content, meta)
     elif tag in html_void_tags:
         node = nodes.Node(tag, kwargs, is_void=True)
     elif tag in html_leaf_tags:
@@ -53,5 +58,8 @@ def process(tag, pargs, kwargs, content, meta):
     else:
         node = nodes.Node(tag, kwargs)
         node.children = parsers.BlockParser().parse(content, meta)
+
+    if 'nl2lb' in pargs or 'nl2br' in pargs:
+        node = nodes.LinebreakNode().append_child(node)
     return node
 

@@ -1,15 +1,15 @@
-:nl2br
+:p nl2br
     foo
     bar
 
     baz
 
-:nl2br
+:div nl2br
     :p
         foo
         bar
 
-:nl2br
+:div nl2br
     :p
         foo
 

@@ -8,6 +8,11 @@ import unicodedata
 from . import escapes
 
 
+# Exception class for reporting errors.
+class Error(Exception):
+    pass
+
+
 # Makes input text available as a stream of lines. Strips newlines.
 class LineStream:
 

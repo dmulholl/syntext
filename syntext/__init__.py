@@ -10,6 +10,7 @@ __version__ = "2.0.0.dev"
 
 from .interface import render
 from .interface import main
+from .utils import Error
 
 from . import tags
 from . import nodes

@@ -480,18 +480,12 @@ class LinkRefParser:
 # contain nested block-level structures.
 class ShorthandParser:
 
-    argparser = utils.ArgParser()
-
     def __call__(self, stream, meta):
         match = re.fullmatch(r':([^ ]+)([ ].+)?', stream.peek())
         if match:
-            stream.next()
+            header = stream.next()
         else:
             return False, None
-
-        tag = match.group(1)
-        argstring = match.group(2) or ''
-        pargs, kwargs = self.argparser.parse(argstring)
 
         content = utils.LineStream()
         while stream.has_next():
@@ -502,13 +496,17 @@ class ShorthandParser:
         content = content.trim().dedent()
 
         from . import shorthand
-        return True, shorthand.process(tag, pargs, kwargs, content, meta)
+        return True, shorthand.process(header, content, meta)
 
 
-
+# Consumes a tagged block of the form:
+#
+#   ::: tag [keyword] [.class] [#id] [attr=foo attr="bar"] [&attr]
+#       block content
+#       ...
+#   ::: end
+#
 class TagParser:
-
-    argparser = utils.ArgParser()
 
     def __call__(self, stream, meta):
         if not stream.peek().startswith('::: '):
@@ -528,7 +526,7 @@ class TagParser:
             tag, argstring = elements[0], ''
         else:
             tag, argstring = '', ''
-        pargs, kwargs = self.argparser.parse(argstring)
+        pargs, kwargs = utils.ArgParser().parse(argstring)
 
         content = utils.LineStream()
         if is_empty:
@@ -555,8 +553,7 @@ class TagParser:
             from . import tags
             return True, tags.process(tag, pargs, kwargs, content, meta)
         else:
-            sys.stderr.write("Error: missing end tag for '%s' block.\n" % tag)
-            return True, None
+            raise utils.Error("missing end tag for '%s' block" % tag)
             
 
 # ------------------------------------------------------------------------------

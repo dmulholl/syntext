@@ -7,6 +7,7 @@ import re
 
 from . import nodes
 from . import parsers
+from . import utils
 
 
 # Use the Pygments module for syntax highlighting, if it's available.
@@ -36,12 +37,15 @@ def register(*tags):
 # Process a tag.
 def process(tag, pargs, kwargs, content, meta):
     if tag in tagmap:
-        return tagmap[tag](tag, pargs, kwargs, content, meta)
+        node = tagmap[tag](tag, pargs, kwargs, content, meta)
     elif tag == 'hr' or re.fullmatch(r'-+', tag):
-        return nodes.Node('hr', kwargs, is_void=True)
+        node = nodes.Node('hr', kwargs, is_void=True)
     else:
-        sys.exit("Error: unrecognized tag '%s'." % tag)
+        raise utils.Error("unrecognized tag '%s'" % tag)
 
+    if 'nl2lb' in pargs or 'nl2br' in pargs:
+        node = nodes.LinebreakNode().append_child(node)
+    return node
 
 # Handler for the 'div' tag. (Works as a simple test case.)
 @register('div')
