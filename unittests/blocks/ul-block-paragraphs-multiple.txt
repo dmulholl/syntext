@@ -1,7 +1,7 @@
-* foo
+(*) foo
 
-* bar
+(*) bar
+    
+    bam
 
-  bam
-
-* baz
+(*) baz

@@ -87,8 +87,7 @@ class TextParser:
         return True, nodes.TextNode(stream.next())
 
 
-# Consumes an unordered list. The list item marker is one of (*, •, -, or +).
-# List item markers can be indented by up to three spaces.
+# Consumes a compact unordered list.
 #
 # Each list item consists of its opening line plus all subsequent blank
 # or indented lines. The list item is ended by:
@@ -105,7 +104,7 @@ class TextParser:
 #     * baz
 #
 # Switching to a different item marker starts a new list.
-class UnorderedListParser:
+class CompactUListParser:
 
     def __call__(self, stream, meta):
         match = re.fullmatch(r'[ ]{0,3}([*•+-])([ ].+)?', stream.peek())
@@ -134,74 +133,35 @@ class UnorderedListParser:
                     else:
                         break
 
-                # We need to dedent the content before prepending the header.
-                item.dedent()
-
                 # Prepend the content of the header line.
+                item.dedent()
                 if match.group(1):
                     item.prepend(match.group(1).strip())
             else:
                 break
 
-        # Determine if we're dealing with a block or compact-style list.
-        if len(items) > 1:
-            if items[0].has_trailing_blank():
-                listtype = 'block'
-            else:
-                listtype = 'compact'
-        else:
-            listtype = 'block'
-
         # Assemble the node tree representing the list.
+        parsers = (CompactUListParser(), CompactOListParser(), TextParser())
         ul = nodes.Node('ul')
         for item in items:
-            item = item.trim()
             li = nodes.Node('li')
-            if listtype == 'block':
-                children = BlockParser().parse(item, meta)
-            else:
-                parsers = (UnorderedListParser(), OrderedListParser(), TextParser())
-                children = Parser(parsers).parse(item, meta)
-            li.children = children
+            li.children = Parser(parsers).parse(item.trim(), meta)
             ul.append_child(li)
 
         return True, ul
 
 
-# Consumes an ordered list. The list item marker is '#.' or '<int>.'.
-# List item markers can be indented by up to three spaces.
-#
-# Each list item consists of its opening line plus all subsequent blank
-# or indented lines. The list item is ended by:
-#
-#   1. the end of the stream
-#   2. a non-indented line
-#   3. a line beginning with the same item marker, possibly indented by up
-#      three spaces
-#
-# Example:
-#
-#     1. foo
-#     2. bar
-#     3. baz
-#
-# Switching to a different item marker starts a new list.
-class OrderedListParser:
+# Consumes a block-level unordered list.
+class BlockUListParser:
 
     def __call__(self, stream, meta):
-        match = re.fullmatch(r'[ ]{0,3}([#]|\d+)[.]([ ].+)?', stream.peek())
+        match = re.match(r'^[(]([*•+-])[)]', stream.peek())
         if not match:
             return False, None
 
         # A new marker means a new list.
         marker = match.group(1)
-        if marker == '#':
-            re_header = r'[ ]{0,3}[#][.]([ ].+)?'
-        else:
-            re_header = r'[ ]{0,3}\d+[.]([ ].+)?'
-
-        # Do we have a custom start value?
-        atts = None if marker in ('#', '1') else {'start': marker}
+        re_header = r'[(][%s][)]([ ].+)?' % marker
 
         # Read in each individual list item as a new LineStream instance.
         items = []
@@ -221,35 +181,142 @@ class OrderedListParser:
                     else:
                         break
 
-                # We need to dedent the content before prepending the header.
-                item.dedent()
-
                 # Prepend the content of the header line.
+                item.dedent()
                 if match.group(1):
                     item.prepend(match.group(1).strip())
             else:
                 break
 
-        # Determine if we're dealing with a block or compact-style list.
-        if len(items) > 1:
-            if items[0].has_trailing_blank():
-                listtype = 'block'
-            else:
-                listtype = 'compact'
+        # Assemble the node tree representing the list.
+        ul = nodes.Node('ul')
+        for item in items:
+            li = nodes.Node('li')
+            li.children = BlockParser().parse(item.trim(), meta) 
+            ul.append_child(li)
+
+        return True, ul
+
+
+# Consumes a compact ordered list. The list item marker is '#.' or '<int>.'.
+# List item markers can be indented by up to three spaces.
+#
+# Each list item consists of its opening line plus all subsequent blank
+# or indented lines. The list item is ended by:
+#
+#   1. the end of the stream
+#   2. a non-indented line
+#   3. a line beginning with the same item marker, possibly indented by up
+#      three spaces
+#
+# Example:
+#
+#     1. foo
+#     2. bar
+#     3. baz
+#
+# Switching to a different item marker starts a new list.
+class CompactOListParser:
+
+    def __call__(self, stream, meta):
+        match = re.fullmatch(r'[ ]{0,3}([#]|\d+)[.]([ ].+)?', stream.peek())
+        if not match:
+            return False, None
+
+        # A new marker means a new list.
+        marker = match.group(1)
+        if marker == '#':
+            re_header = r'[ ]{0,3}[#][.]([ ].+)?'
         else:
-            listtype = 'block'
+            re_header = r'[ ]{0,3}\d+[.]([ ].+)?'
+
+        # Do we have a custom start value?
+        attributes = None if marker in ('#', '1') else {'start': marker}
+
+        # Read in each individual list item as a new LineStream instance.
+        items = []
+        while stream.has_next():
+            match = re.fullmatch(re_header, stream.peek())
+            if match:
+                stream.next()
+                item = utils.LineStream()
+                items.append(item)
+
+                # Read in any indented content.
+                while stream.has_next():
+                    if re.fullmatch(re_header, stream.peek()):
+                        break
+                    elif stream.peek().startswith(' ') or stream.peek() == '':
+                        item.append(stream.next())
+                    else:
+                        break
+
+                # Prepend the content of the header line.
+                item.dedent()
+                if match.group(1):
+                    item.prepend(match.group(1).strip())
+            else:
+                break
 
         # Assemble the node tree representing the list.
-        ol = nodes.Node('ol', atts)
+        parsers = (CompactUListParser(), CompactOListParser(), TextParser())
+        ol = nodes.Node('ol', attributes)
         for item in items:
-            item = item.trim()
             li = nodes.Node('li')
-            if listtype == 'block':
-                children = BlockParser().parse(item, meta)
+            li.children = Parser(parsers).parse(item.trim(), meta)
+            ol.append_child(li)
+
+        return True, ol
+
+
+# Consumes a block-level ordered list.
+class BlockOListParser:
+
+    def __call__(self, stream, meta):
+        match = re.match(r'^[(]([#]|\d+)[)]', stream.peek())
+        if not match:
+            return False, None
+
+        # A new marker means a new list.
+        marker = match.group(1)
+        if marker == '#':
+            re_header = r'[(][#][)]([ ].+)?'
+        else:
+            re_header = r'[(]\d+[)]([ ].+)?'
+
+        # Do we have a custom start value?
+        attributes = None if marker in ('#', '1') else {'start': marker}
+
+        # Read in each individual list item as a new LineStream instance.
+        items = []
+        while stream.has_next():
+            match = re.fullmatch(re_header, stream.peek())
+            if match:
+                stream.next()
+                item = utils.LineStream()
+                items.append(item)
+
+                # Read in any indented content.
+                while stream.has_next():
+                    if re.fullmatch(re_header, stream.peek()):
+                        break
+                    elif stream.peek().startswith(' ') or stream.peek() == '':
+                        item.append(stream.next())
+                    else:
+                        break
+
+                # Prepend the content of the header line.
+                item.dedent()
+                if match.group(1):
+                    item.prepend(match.group(1).strip())
             else:
-                parsers = (UnorderedListParser(), OrderedListParser(), TextParser())
-                children = Parser(parsers).parse(item, meta)
-            li.children = children
+                break
+
+        # Assemble the node tree representing the list.
+        ol = nodes.Node('ol', attributes)
+        for item in items:
+            li = nodes.Node('li')
+            li.children = BlockParser().parse(item.trim(), meta)
             ol.append_child(li)
 
         return True, ol
@@ -541,8 +608,10 @@ class BlockParser(Parser):
         IndentedCodeParser(),
         HeadingParser(),
         FancyHeadingParser(),
-        UnorderedListParser(),
-        OrderedListParser(),
+        CompactUListParser(),
+        BlockUListParser(),
+        CompactOListParser(),
+        BlockOListParser(),
         DefinitionListParser(),
         LinkRefParser(),
         HtmlParser(),
@@ -565,15 +634,3 @@ class InlineParser(Parser):
     def __init__(self):
         self.parsers = self.parser_list
 
-
-# Default parser for parsing the content of compact list items.
-class ListItemParser(Parser):
-
-    parser_list = [
-        UnorderedListParser(), 
-        OrderedListParser(), 
-        TextParser()
-    ]
-
-    def __init__(self):
-        self.parsers = self.parser_list

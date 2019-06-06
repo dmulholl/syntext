@@ -1,6 +1,6 @@
-#. foo
+(#) foo
 
     #. baz
     #. bam
 
-#. bar
+(#) bar
