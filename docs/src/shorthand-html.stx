@@ -1,0 +1,63 @@
+---
+title: Shorthand HTML 
+---
+
+Syntext supports an indentation-based shorthand syntax for generating arbitrary HTML:
+
+    :tag [arguments] [.class] [#id] [&attr] [attr="value"]
+        block content
+        ...
+    :end
+
+A shorthand block opens with a header line containing a colon, a HTML tag, and, optionally, a set of attributes. The block's content consists of all subsequent blank or indented lines following the header.
+
+The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also trimmed from the content.
+
+Note that the block's content is determined soley by its indentation; the `:end` tag is optional and can be used to enable syntax highlighting in editors which may otherwise struggle with indentation-based syntax.
+
+To take a simple example, the markup below:
+
+    :div
+        This is a paragraph.
+
+generates the following HTML:
+
+    <div>
+        <p>This is a paragraph.</p>
+    </div>
+
+A block header can contain a single ID, any number of classes, and any number of named attributes, e.g: 
+
+    :div .foo .bar #baz
+        This is a paragraph.
+
+generates the following HTML:
+
+    <div class="foo bar" id="baz">
+        <p>This is a paragraph.</p>
+    </div>
+
+Boolean attributes can be specified using an `&` symbol, e.g. `&checked`. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
+
+    :div attr1=foo attr2="bar baz"
+
+Blocks can be nested to any depth, e.g:
+
+    :div .outer
+        :div .inner
+            This is a paragraph.
+
+will generate the following HTML:
+
+    <div class="outer">
+        <div class="inner">
+            <p>This is a paragraph.</p>
+        </div>
+    </div>
+
+A `nl2lb` or `nl2br` argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
+
+    :div nl2lb
+        Linebreaks in this paragraph
+        will be preserved.
+

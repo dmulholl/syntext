@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Shorthand HTML</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="pygments.css">
+    
+    
+  </head>
+
+  <body class="node-shorthand-html node">
+
+    <header class="masthead">
+      <h1><a href="index.html">Syntext</a></h1>
+      
+        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
+      
+      <nav class="menu">
+        <input id="menu-check" type="checkbox"/>
+        <label id="menu-label" for="menu-check" class="unselectable">
+          <span class="icon close-icon">✕</span>
+          <span class="icon open-icon">☰</span>
+          <span class="text">Menu</span>
+        </label>
+        <ul>
+<li>
+<a href="index.html">Home</a>
+</li>
+<li>
+<a href="block-syntax.html">Block Syntax</a>
+</li>
+<li>
+<a href="inline-syntax.html">Inline Syntax</a>
+</li>
+<li>
+<a href="shorthand-html.html">Shorthand HTML</a>
+</li>
+<li>
+<a href="tagged-blocks.html">Tagged Blocks</a>
+</li>
+<li>
+<a href="raw-html.html">Raw HTML</a>
+</li>
+<li>
+<a href="miscellanea.html">Miscellanea</a>
+</li>
+<li>
+<a href="changelog.html">Changelog</a>
+</li>
+<li>
+<a href="license.html">License</a>
+</li>
+<li>
+<a href="https://github.com/dmulholland/syntext">Source</a>
+</li>
+</ul>
+
+      </nav>
+    </header>
+
+    <article class="main">
+      <header class="title">
+        <h1>Shorthand HTML</h1>
+        
+        <hr>
+      </header>
+      <p>
+Syntext supports an indentation-based shorthand syntax for generating arbitrary HTML:
+</p>
+<pre>
+:tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
+    block content
+    ...
+:end
+</pre>
+<p>
+A shorthand block opens with a header line containing a colon, a HTML tag, and, optionally, a set of attributes. The block's content consists of all subsequent blank or indented lines following the header.
+</p>
+<p>
+The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also trimmed from the content.
+</p>
+<p>
+Note that the block's content is determined soley by its indentation; the <code>:end</code> tag is optional and can be used to enable syntax highlighting in editors which may otherwise struggle with indentation-based syntax.
+</p>
+<p>
+To take a simple example, the markup below:
+</p>
+<pre>
+:div
+    This is a paragraph.
+</pre>
+<p>
+generates the following HTML:
+</p>
+<pre>
+&lt;div&gt;
+    &lt;p&gt;This is a paragraph.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+<p>
+A block header can contain a single ID, any number of classes, and any number of named attributes, e.g:
+</p>
+<pre>
+:div .foo .bar #baz
+    This is a paragraph.
+</pre>
+<p>
+generates the following HTML:
+</p>
+<pre>
+&lt;div class=&quot;foo bar&quot; id=&quot;baz&quot;&gt;
+    &lt;p&gt;This is a paragraph.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+<p>
+Boolean attributes can be specified using an <code>&amp;</code> symbol, e.g. <code>&amp;checked</code>. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
+</p>
+<pre>
+:div attr1=foo attr2=&quot;bar baz&quot;
+</pre>
+<p>
+Blocks can be nested to any depth, e.g:
+</p>
+<pre>
+:div .outer
+    :div .inner
+        This is a paragraph.
+</pre>
+<p>
+will generate the following HTML:
+</p>
+<pre>
+&lt;div class=&quot;outer&quot;&gt;
+    &lt;div class=&quot;inner&quot;&gt;
+        &lt;p&gt;This is a paragraph.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+<p>
+A <code>nl2lb</code> or <code>nl2br</code> argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
+</p>
+<pre>
+:div nl2lb
+    Linebreaks in this paragraph
+    will be preserved.
+</pre>
+
+    </article>
+
+    
+
+  </body>
+</html>

@@ -11,7 +11,7 @@ When used on the command line Syntext reads from `stdin` and prints to `stdout`:
 
 To use Syntext as a Python library call its `render()` function with a string of input:
 
-::: python
+::: code python
 
     >>> import syntext
     >>> html = syntext.render(text)
@@ -27,7 +27,7 @@ Syntext shares much of its basic syntax with Markdown:
 
     This paragraph contains a [link](http://example.com).
 
-Syntext differs from Markdown in supporting an extensible, indentation-based syntax for generating arbitrary HTML:
+Syntext differs from Markdown in supporting an indentation-based shorthand syntax for generating arbitrary HTML:
 
     :div .outer
         :div .inner

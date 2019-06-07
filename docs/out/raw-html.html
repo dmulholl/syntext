@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>License</title>
+    <title>Raw HTML</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="theme.css">
@@ -11,7 +11,7 @@
     
   </head>
 
-  <body class="node-license node">
+  <body class="node-raw-html node">
 
     <header class="masthead">
       <h1><a href="index.html">Syntext</a></h1>
@@ -63,42 +63,65 @@
 
     <article class="main">
       <header class="title">
-        <h1>License</h1>
+        <h1>Raw HTML</h1>
         
         <hr>
       </header>
-      <p>
-All code has been placed in the public domain and is free for personal and commercial use. No attribution is required.
+      <h3 id="block-html">
+Block HTML
+</h3>
+<p>
+Syntext can recognise and ignore block-level HTML in its input so you can freely mix and match Syntext markup and raw HTML.
+</p>
+<p>
+Syntext uses two simple rules for identifying block-level HTML:
+</p>
+<ul>
+<li>
+<p>
+A single line beginning with an opening block-level tag and ending with
+its corresponding closing tag, e.g.
 </p>
 <pre>
-This is free and unencumbered software released into the
-public domain.
+&lt;div&gt;&lt;p&gt;This is raw HTML.&lt;/p&gt;&lt;/div&gt;
+</pre>
+</li>
+<li>
+<p>
+An opening block-level tag followed <em>vertically below</em> by its corresponding closing
+tag, e.g.
+</p>
+<pre>
+&lt;div&gt;
+  &lt;p&gt;This is raw HTML.&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+</li>
+</ul>
+<p>
+The opening and closing tags should not be indented <em>relative to their context</em> but can be freely mixed with other block-level Syntext elements, e.g.
+</p>
+<pre>
+:div .outer
+    This is a paragraph.
 
-Anyone is free to copy, modify, publish, use, compile,
-sell, or distribute this software, either in source code
-form or as a compiled binary, for any purpose, commercial
-or non-commercial, and by any means.
+    &lt;div class=&quot;inner&quot;&gt;
+        &lt;p&gt;This is raw HTML.&lt;/p&gt;
+    &lt;/div&gt;
 
-In jurisdictions that recognize copyright laws, the author
-or authors of this software dedicate any and all copyright
-interest in the software to the public domain. We make this
-dedication for the benefit of the public at large and to
-the detriment of our heirs and successors. We intend this
-dedication to be an overt act of relinquishment in
-perpetuity of all present and future rights to this
-software under copyright law.
-
-THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY
-KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
-THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    This is another paragraph.
 </pre>
 <p>
-For more information, please refer to <a href="http://unlicense.org/">http://unlicense.org/</a>.
+Note that inline Syntext formatting will not be processed inside block-level HTML.
+</p>
+<h3 id="inline-html">
+Inline HTML
+</h3>
+<p>
+Syntext ignores inline HTML tags so it's fine to mix and match inline HTML and Syntext markup.
+</p>
+<p>
+The HTML syntax characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code> are automatically escaped unless they form part of a HTML tag or character entity.
 </p>
 
     </article>

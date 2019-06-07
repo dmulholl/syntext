@@ -3,6 +3,12 @@ title: Changelog
 ---
 
 
+### 2.0.0.dev
+
+* Full rewrite, incorporating numerous breaking changes. See the Version 2 documentation for details.
+
+
+
 ### 1.4.0
 
 * Rename the package to Syntext.

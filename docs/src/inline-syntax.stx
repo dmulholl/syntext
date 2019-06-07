@@ -2,7 +2,7 @@
 title: Inline Syntax
 ---
 
-Syntext shares most of its inline markup syntax with Markdown.
+Syntext shares most of its inline syntax with Markdown.
 
 
 ### Formatting
@@ -58,14 +58,20 @@ Image references can be specified anywhere in the document. Their form is identi
 
 
 
-### HTML
-
-Syntext ignores inline HTML tags so it's fine to mix and match inline HTML and Syntext markup.
-
-The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or character entity.
-
-
-
 ### Dashes
 
 Double hyphens `--` are converted into en-dashes `&ndash;`; triple hyphens are converted into em-dashes `&mdash;`.
+
+
+
+### Superscripts and Subscripts
+
+Superscripts are indicated using a caret:
+
+    X^{2}
+
+Subscripts are indicated using an underscore:
+
+    H_{2}O
+
+Text to be super or subscripted should be wrapped in curly braces.

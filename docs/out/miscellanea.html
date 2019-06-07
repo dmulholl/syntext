@@ -11,7 +11,7 @@
     
   </head>
 
-  <body class="node-misc node">
+  <body class="node-miscellanea node">
 
     <header class="masthead">
       <h1><a href="index.html">Syntext</a></h1>
@@ -30,16 +30,22 @@
 <a href="index.html">Home</a>
 </li>
 <li>
-<a href="blocks.html">Blocks</a>
+<a href="block-syntax.html">Block Syntax</a>
 </li>
 <li>
-<a href="tags.html">Tags</a>
+<a href="inline-syntax.html">Inline Syntax</a>
 </li>
 <li>
-<a href="inline.html">Inline Syntax</a>
+<a href="shorthand-html.html">Shorthand HTML</a>
 </li>
 <li>
-<a href="misc.html">Miscellanea</a>
+<a href="tagged-blocks.html">Tagged Blocks</a>
+</li>
+<li>
+<a href="raw-html.html">Raw HTML</a>
+</li>
+<li>
+<a href="miscellanea.html">Miscellanea</a>
 </li>
 <li>
 <a href="changelog.html">Changelog</a>
@@ -80,13 +86,13 @@ Tables of Contents
 Syntext can automatically generate a table of contents for a document. This table can be inserted using the <code>insert</code> tag:
 </p>
 <pre>
-:insert toc
+::: insert toc
 </pre>
 <p>
 The default listing skips H1 headings to avoid including the document title itself. A full listing of all the document's headings can be inserted using the <code>fulltoc</code> keyword:
 </p>
 <pre>
-:insert fulltoc
+::: insert fulltoc
 </pre>
 <p>
 The table of contents is generated as an unordered list of links.
@@ -111,7 +117,7 @@ reference.[^]
 Footnotes themselves can be specified anywhere in the document using the <code>footnote</code> tag:
 </p>
 <pre>
-:footnote 1
+::: footnote 1
     This is a footnote. It can contain any kind of
     block-level markup.
 </pre>
@@ -119,7 +125,7 @@ Footnotes themselves can be specified anywhere in the document using the <code>f
 Footnotes can also omit their index to take advantage of automatic numbering:
 </p>
 <pre>
-:footnote
+::: footnote
     This is an automatically-numbered footnote.
 </pre>
 <p>
@@ -129,7 +135,7 @@ Note that footnote indices do not have to be numeric. Any sequence of non-whites
 You can specify the insertion point for your footnotes using the <code>:insert</code> tag:
 </p>
 <pre>
-:insert footnotes
+::: insert footnotes
 </pre>
 <p>
 Footnote references are wrapped in the following markup:
@@ -152,37 +158,6 @@ Footnotes are wrapped in the following markup:
 </pre>
 <p>
 Each footnote is backlinked to its reference in the document.
-</p>
-<h3 id="extensions">
-Extensions
-</h3>
-<p>
-Syntext can easily be extended to support custom tags.
-</p>
-<p>
-To create a new custom tag, register its handler function using the <code>@tags.register()</code> decorator:
-</p>
-<pre class="lang-python pygments" data-lang="python">
-<span class="kn">import</span> <span class="nn">syntext</span>
-
-<span class="nd">@syntext.tags.register</span><span class="p">(</span><span class="s1">&#39;tag&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">pargs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">meta</span><span class="p">):</span>
-    <span class="o">...</span>
-    <span class="k">return</span> <span class="n">node</span>
-</pre>
-<p>
-See the <code>syntext/tags.py</code> file for numerous examples to follow.
-</p>
-<p>
-By convention, custom tag names are prefixed with a colon, i.e. the custom tag <code>foo</code> should be registered as <code>&quot;:foo&quot;</code>. The tag can then be used with a double colon:
-</p>
-<pre>
-::foo
-    block content
-    ...
-</pre>
-<p>
-This convention makes custom tags easy to identify and prevents potential name clashes as new builtin tags are added over time.
 </p>
 
     </article>

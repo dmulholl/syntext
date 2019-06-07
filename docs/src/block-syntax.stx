@@ -1,0 +1,129 @@
+---
+title: Block Syntax
+---
+
+Syntext supports Markdown-style syntax for common block-level elements.
+
+
+### Paragraphs
+
+A paragraph is a group of adjacent lines separated by one or more blank lines:
+
+    This is a paragraph. Note that it includes
+    all adjacent lines of text.
+
+    This is a second paragraph.
+
+
+
+### Headings
+
+Headings are indicated by hash symbols. The number of hash symbols indicates the level of the heading.
+
+    # H1 Heading
+
+    ## H2 Heading
+
+Trailing symbols are optional:
+
+    ### H3 Heading ###
+
+Dashed lines are optional:
+
+    ----------------
+    #  H1 Heading  #
+    ----------------
+
+
+
+### Lists
+
+An unordered list can use an asterisk `*`, dash `-`, plus-symbol `+`, or unicode bullet-symbol `\u2022` as its list-item marker:
+
+    * foo           - foo           + foo           • foo
+    * bar           - bar           + bar           • bar
+    * baz           - baz           + baz           • baz
+
+An ordered list uses either integer-period `<int>.` or hash-period `#.` as its list-item marker:
+
+    1. foo         #. foo
+    2. bar         #. bar
+    3. baz         #. baz
+
+Ordered lists are numbered according to their opening integer:
+
+    5. This list starts.
+    6. With list item 5.
+
+List-item markers can be indented by up to three spaces. A list-item consists of its opening line plus all subsequent blank or indented lines:
+
+    * This list item is split
+      over two lines.
+
+List items can contain nested lists:
+
+    * foo
+      1. bar
+      2. baz
+    * bam
+
+Note that switching to a different list-item marker will begin a new list, i.e. the following markup will create two separate lists each containing a single item:
+
+    - foo
+    + bar
+
+
+
+### Block Lists
+
+Block lists use bracketed list-item markers:
+
+    (*) Unordered block list item.
+
+    (#) Ordered block list item.
+
+Each list-item in a block list is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.
+
+    (*) This list item contains a paragraph 
+        and a compact list.
+
+        1. foo
+        2. bar
+
+    (*) This list item contains two paragraphs. 
+        This is the first.
+
+        And this is the second.
+
+A list-item consists of its opening line plus all subsequent blank or indented lines.
+
+
+
+### Definition Lists
+
+Syntext supports definition lists with terms enclosed in double braces:
+
+    [[  Term 1  ]]
+
+        This is the definition of the first term.
+
+    [[  Term 2  ]]
+
+        This is the definition of the second term.
+
+A term's definition consists of all subsequent blank or indented lines and can contain any number of block-level elements.
+
+
+
+### Code Blocks
+
+A block of text indented by one tab or four spaces is treated as a code block and wrapped in `<pre>` tags in the HTML output. The code block can contain blank lines and is ended by the first non-indented line.
+
+    This paragraph is followed by a code block.
+
+        <p>Hello world!</p>
+
+HTML in code blocks is automatically escaped. To specify the language, use an explicit [code tag](@root/tagged-blocks//#code).
+
+
+

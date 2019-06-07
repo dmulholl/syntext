@@ -470,9 +470,10 @@ class LinkRefParser:
 
 # Consumes a shorthand html block of the form:
 #
-#   :tag [keyword] [.class] [#id] [attr=foo attr="bar"] [&attr]
+#   :tag [arguments] [.class] [#id] [attr=foo attr="bar"] [&attr]
 #       block content
 #       ...
+#   :end
 #
 # The block's content consists of all consecutive blank or indented lines
 # following the block header. How this content is processed depends on
@@ -494,6 +495,9 @@ class ShorthandParser:
             else:
                 break
         content = content.trim().dedent()
+        
+        if stream.has_next() and stream.peek() == ':end':
+            stream.next()
 
         from . import shorthand
         return True, shorthand.process(header, content, meta)
@@ -501,7 +505,7 @@ class ShorthandParser:
 
 # Consumes a tagged block of the form:
 #
-#   ::: tag [keyword] [.class] [#id] [attr=foo attr="bar"] [&attr]
+#   ::: tag [arguments] [.class] [#id] [attr=foo attr="bar"] [&attr]
 #       block content
 #       ...
 #   ::: end
@@ -512,13 +516,7 @@ class TagParser:
         if not stream.peek().startswith('::: '):
             return False, None
 
-        header = stream.next()
-        if header.endswith(' :::'):
-            is_empty = True
-        else:
-            is_empty = False
-            
-        header = header.strip(':')
+        header = stream.next().strip(':::')
         elements = header.split(maxsplit=1)
         if len(elements) == 2:
             tag, argstring = elements[0], elements[1]
@@ -529,31 +527,18 @@ class TagParser:
         pargs, kwargs = utils.ArgParser().parse(argstring)
 
         content = utils.LineStream()
-        if is_empty:
-            from . import tags
-            return True, tags.process(tag, pargs, kwargs, content, meta)
-
-        open_tags = 1
-        found_end = False
         while stream.has_next():
-            next = stream.peek().strip()
-            if next == '::: end':
-                if open_tags == 1:
-                    found_end = True
-                    stream.next()
-                    break
-                else:
-                    open_tags -= 1
-            elif next.startswith('::: ') and not next.endswith(' :::'):
-                open_tags += 1
-            content.append(stream.next())
+            if stream.peek().startswith(' ') or stream.peek() == '':
+                content.append(stream.next())
+            else:
+                break
         content = content.trim().dedent()
-
-        if found_end:
-            from . import tags
-            return True, tags.process(tag, pargs, kwargs, content, meta)
-        else:
-            raise utils.Error("missing end tag for '%s' block" % tag)
+        
+        if stream.has_next() and stream.peek() == '::: end':
+            stream.next()
+        
+        from . import tags
+        return True, tags.process(tag, pargs, kwargs, content, meta)
             
 
 # ------------------------------------------------------------------------------
