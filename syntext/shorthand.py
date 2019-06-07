@@ -19,7 +19,11 @@ html_void_tags = """
 
 # Leaf elements cannot contain nested block-level content.
 html_leaf_tags = """
-    a button dt h1 h2 h3 h4 h5 h6 label option p select span textarea time title
+    dt h1 h2 h3 h4 h5 h6 p title
+    a abbr acronyn audio b bdi bdo big button canvas cite code data datalist
+    del dfn em i iframe ins kbd label map mark meter noscript 
+    object output picture progress q ruby s samp select slot small span 
+    strong sub sup svg template textarea time u tt var video 
 """.split()
 
 

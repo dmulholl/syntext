@@ -516,7 +516,7 @@ class TagParser:
         if not stream.peek().startswith('::: '):
             return False, None
 
-        header = stream.next().strip(':::')
+        header = stream.next().strip(':')
         elements = header.split(maxsplit=1)
         if len(elements) == 2:
             tag, argstring = elements[0], elements[1]
@@ -534,7 +534,7 @@ class TagParser:
                 break
         content = content.trim().dedent()
         
-        if stream.has_next() and stream.peek() == '::: end':
+        if stream.has_next() and stream.peek().rstrip(': ') == '::: end':
             stream.next()
         
         from . import tags

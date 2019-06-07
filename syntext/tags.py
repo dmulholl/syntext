@@ -47,10 +47,19 @@ def process(tag, pargs, kwargs, content, meta):
         node = nodes.LinebreakNode().append_child(node)
     return node
 
+
 # Handler for the 'div' tag. (Works as a simple test case.)
 @register('div')
 def div_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Node('div', kwargs)
+    node.children = parsers.BlockParser().parse(content, meta)
+    return node
+
+
+# Handler for blockquotes.
+@register('quote')
+def quote_tag_handler(tag, pargs, kwargs, content, meta):
+    node = nodes.Node('blockquote', kwargs)
     node.children = parsers.BlockParser().parse(content, meta)
     return node
 
