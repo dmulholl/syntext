@@ -68,7 +68,7 @@
         <hr>
       </header>
       <p>
-Syntext supports an indentation-based tagged-block syntax for custom elements:
+Syntext supports indentation-based tagged-block syntax for custom elements:
 </p>
 <pre>
 ::: tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
@@ -88,6 +88,18 @@ A block's tag determines how its content is processed. In  general blocks can be
 <p>
 Note that a block's content is determined soley by its indentation; the <code>::: end</code> tag is optional and can be used to enable syntax highlighting in editors which may otherwise struggle with indentation-based syntax.
 </p>
+<p>
+Trailing colons in the header line are optional:
+</p>
+<pre>
+::: hr
+</pre>
+<p>
+is equivalent to:
+</p>
+<pre>
+::: hr :::
+</pre>
 <h2 id="tag-reference">
 Tag Reference
 </h2>
@@ -102,9 +114,9 @@ Tag Reference
 <p>
 Creates an alert box &mdash; a <code>&lt;div&gt;</code> element with the class <code>alertbox</code> which can be styled appropriately using CSS. Standard type-classes are <code>info</code>, <code>warning</code>, and <code>error</code>.
 </p>
-<h4 id="code">
+<h3 id="code">
 <code>code</code>
-</h4>
+</h3>
 <pre>
 ::: code python
     def hello():
@@ -123,9 +135,21 @@ If a language is specified and the <a href="http://pygments.org">Pygments</a> pa
 <pre class="lang-python pygments" data-lang="python">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">syntext</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pygmentize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre>
-<h4 id="comment">
+<h3 id="hr">
+<code>hr</code>
+</h3>
+<pre>
+::: hr :::
+</pre>
+<p>
+Inserts a horizontal rule. Any number of dashes can be used in place of the <code>hr</code> tag:
+</p>
+<pre>
+::: ------ :::
+</pre>
+<h3 id="comment">
 <code>comment</code>
-</h4>
+</h3>
 <pre>
 ::: comment
     Comment text.
@@ -134,9 +158,9 @@ If a language is specified and the <a href="http://pygments.org">Pygments</a> pa
 <p>
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 </p>
-<h4 id="image">
+<h3 id="image">
 <code>image</code>
-</h4>
+</h3>
 <pre>
 ::: image http://example.com/image.jpg
     Alt text for the image.
@@ -145,9 +169,20 @@ Creates a HTML comment. The block's content is not processed any further but is 
 <p>
 Inserts an image element. The block's content is used as the image's alt text.
 </p>
-<h4 id="table">
+<h3 id="quote">
+<code>quote</code>
+</h3>
+<pre>
+::: quote
+    Work is the curse of the drinking classes.
+::: end
+</pre>
+<p>
+Inserts a blockquote element.
+</p>
+<h3 id="table">
 <code>table</code>
-</h4>
+</h3>
 <p>
 Indicates that the block contains a simple table literal in one of the following formats:
 </p>

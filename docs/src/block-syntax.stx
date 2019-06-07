@@ -2,7 +2,11 @@
 title: Block Syntax
 ---
 
+
 Syntext supports Markdown-style syntax for common block-level elements.
+
+::: insert toc :::
+
 
 
 ### Paragraphs
@@ -84,13 +88,13 @@ Block lists use bracketed list-item markers:
 
 Each list-item in a block list is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.
 
-    (*) This list item contains a paragraph 
+    (1) This list item contains a paragraph 
         and a compact list.
 
         1. foo
         2. bar
 
-    (*) This list item contains two paragraphs. 
+    (2) This list item contains two paragraphs. 
         This is the first.
 
         And this is the second.

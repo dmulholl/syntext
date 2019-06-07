@@ -70,6 +70,26 @@
       <p>
 Syntext supports Markdown-style syntax for common block-level elements.
 </p>
+<ul class="stx-toc">
+<li>
+<a href="#paragraphs">Paragraphs</a>
+</li>
+<li>
+<a href="#headings">Headings</a>
+</li>
+<li>
+<a href="#lists">Lists</a>
+</li>
+<li>
+<a href="#block-lists">Block Lists</a>
+</li>
+<li>
+<a href="#definition-lists">Definition Lists</a>
+</li>
+<li>
+<a href="#code-blocks">Code Blocks</a>
+</li>
+</ul>
 <h3 id="paragraphs">
 Paragraphs
 </h3>
@@ -171,13 +191,13 @@ Block lists use bracketed list-item markers:
 Each list-item in a block list is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.
 </p>
 <pre>
-(*) This list item contains a paragraph
+(1) This list item contains a paragraph
     and a compact list.
 
     1. foo
     2. bar
 
-(*) This list item contains two paragraphs.
+(2) This list item contains two paragraphs.
     This is the first.
 
     And this is the second.

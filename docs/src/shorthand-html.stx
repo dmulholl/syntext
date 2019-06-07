@@ -2,7 +2,7 @@
 title: Shorthand HTML 
 ---
 
-Syntext supports an indentation-based shorthand syntax for generating arbitrary HTML:
+Syntext supports indentation-based shorthand syntax for generating arbitrary HTML:
 
     :tag [arguments] [.class] [#id] [&attr] [attr="value"]
         block content
@@ -55,9 +55,10 @@ will generate the following HTML:
         </div>
     </div>
 
-A `nl2lb` or `nl2br` argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
+A `nl2lb` argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
 
     :div nl2lb
         Linebreaks in this paragraph
         will be preserved.
 
+This argument has an alias, `nl2br`, which is exactly equivalent.

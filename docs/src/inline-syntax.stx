@@ -4,6 +4,9 @@ title: Inline Syntax
 
 Syntext shares most of its inline syntax with Markdown.
 
+::: insert toc :::
+
+
 
 ### Formatting
 
@@ -64,7 +67,7 @@ Double hyphens `--` are converted into en-dashes `&ndash;`; triple hyphens are c
 
 
 
-### Superscripts and Subscripts
+### Superscripts & Subscripts
 
 Superscripts are indicated using a caret:
 

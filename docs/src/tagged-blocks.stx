@@ -2,7 +2,7 @@
 title: Tagged Blocks
 ---
 
-Syntext supports an indentation-based tagged-block syntax for custom elements:
+Syntext supports indentation-based tagged-block syntax for custom elements:
 
     ::: tag [arguments] [.class] [#id] [&attr] [attr="value"]
         block content
@@ -16,6 +16,14 @@ Boolean attributes can be specified using an `&` symbol, e.g. `&checked`. Attrib
 A block's tag determines how its content is processed. In  general blocks can be nested to any depth and can contain any block-level content.
 
 Note that a block's content is determined soley by its indentation; the `::: end` tag is optional and can be used to enable syntax highlighting in editors which may otherwise struggle with indentation-based syntax.
+
+Trailing colons in the header line are optional:
+
+    ::: hr
+
+is equivalent to:
+
+    ::: hr :::
 
 
 
@@ -31,7 +39,7 @@ Note that a block's content is determined soley by its indentation; the `::: end
 Creates an alert box --- a `<div>` element with the class `alertbox` which can be styled appropriately using CSS. Standard type-classes are `info`, `warning`, and `error`.
 
 
-#### `code`
+### `code`
 
     ::: code python
         def hello():
@@ -49,7 +57,16 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 ::: end
 
 
-#### `comment`
+### `hr`
+
+    ::: hr :::
+
+Inserts a horizontal rule. Any number of dashes can be used in place of the `hr` tag:
+
+    ::: ------ :::
+
+    
+### `comment`
 
     ::: comment
         Comment text.
@@ -58,7 +75,7 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 
 
-#### `image`
+### `image`
 
     ::: image http://example.com/image.jpg
         Alt text for the image.
@@ -67,7 +84,16 @@ Creates a HTML comment. The block's content is not processed any further but is 
 Inserts an image element. The block's content is used as the image's alt text.
 
 
-#### `table`
+### `quote`
+
+    ::: quote
+        Work is the curse of the drinking classes.
+    ::: end
+
+Inserts a blockquote element.
+
+
+### `table`
 
 Indicates that the block contains a simple table literal in one of the following formats:
 

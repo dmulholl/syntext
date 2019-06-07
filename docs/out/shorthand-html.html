@@ -68,7 +68,7 @@
         <hr>
       </header>
       <p>
-Syntext supports an indentation-based shorthand syntax for generating arbitrary HTML:
+Syntext supports indentation-based shorthand syntax for generating arbitrary HTML:
 </p>
 <pre>
 :tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
@@ -140,13 +140,16 @@ will generate the following HTML:
 &lt;/div&gt;
 </pre>
 <p>
-A <code>nl2lb</code> or <code>nl2br</code> argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
+A <code>nl2lb</code> argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
 </p>
 <pre>
 :div nl2lb
     Linebreaks in this paragraph
     will be preserved.
 </pre>
+<p>
+This argument has an alias, <code>nl2br</code>, which is exactly equivalent.
+</p>
 
     </article>
 
