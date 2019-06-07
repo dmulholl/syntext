@@ -4,6 +4,7 @@
 
 import re
 import unicodedata
+import shutil
 
 from . import escapes
 
@@ -161,8 +162,9 @@ class ArgParser:
 
 
 # Formats title text for output on the command line.
-def title(text, w=80):
-    return '=' * w + '\n' + text.center(w, '-') + '\n' +  '=' * w + '\n'
+def title(text):
+    cols, _ = shutil.get_terminal_size()
+    return '=' * cols + '\n' + text.center(cols, '-') + '\n' +  '=' * cols + '\n'
 
 
 # Strips all angle-bracket-enclosed substrings.
