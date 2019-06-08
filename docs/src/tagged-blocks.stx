@@ -25,6 +25,8 @@ is equivalent to:
 
     ::: hr :::
 
+A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-linebreak mode for all nested content.
+
 
 
 ## Tag Reference
