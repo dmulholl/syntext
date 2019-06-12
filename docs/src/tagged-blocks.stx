@@ -32,7 +32,7 @@ A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-lin
 ## Tag Reference
 
 
-#### `alertbox`
+### • &nbsp; `alertbox`
 
     ::: alertbox .warning
         Careful now!
@@ -41,7 +41,7 @@ A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-lin
 Creates an alert box --- a `<div>` element with the class `alertbox` which can be styled appropriately using CSS. Standard type-classes are `info`, `warning`, and `error`.
 
 
-### `code`
+### • &nbsp; `code`
 
     ::: code python
         def hello():
@@ -59,7 +59,7 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 ::: end
 
 
-### `hr`
+### • &nbsp; `hr`
 
     ::: hr :::
 
@@ -68,7 +68,7 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
     ::: ------ :::
 
     
-### `comment`
+### • &nbsp; `comment`
 
     ::: comment
         Comment text.
@@ -77,7 +77,7 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 
 
-### `image`
+### • &nbsp; `image`
 
     ::: image http://example.com/image.jpg
         Alt text for the image.
@@ -86,7 +86,7 @@ Creates a HTML comment. The block's content is not processed any further but is 
 Inserts an image element. The block's content is used as the image's alt text.
 
 
-### `quote`
+### • &nbsp; `quote`
 
     ::: quote
         Work is the curse of the drinking classes.
@@ -95,7 +95,7 @@ Inserts an image element. The block's content is used as the image's alt text.
 Inserts a blockquote element.
 
 
-### `table`
+### • &nbsp; `table`
 
 Indicates that the block contains a simple table literal in one of the following formats:
 
