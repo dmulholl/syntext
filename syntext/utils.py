@@ -178,6 +178,7 @@ def idify(s):
     s = s.encode('ascii', 'ignore').decode('ascii')
     s = s.lower()
     s = s.replace("'", '')
+    s = re.sub(r'&[#a-zA-Z0-9]+;', '-', s)
     s = re.sub(r'[^a-z0-9-]+', '-', s)
     s = re.sub(r'--+', '-', s).strip('-')
     s = re.sub(r'^(\d)', r'id-\1', s)
