@@ -59,15 +59,6 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 ::: end
 
 
-### • &nbsp; `hr`
-
-    ::: hr :::
-
-Inserts a horizontal rule. Any number of dashes can be used in place of the `hr` tag:
-
-    ::: ------ :::
-
-    
 ### • &nbsp; `comment`
 
     ::: comment
@@ -77,6 +68,15 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 
 
+### • &nbsp; `hr`
+
+    ::: hr :::
+
+Inserts a horizontal rule. Any number of dashes can be used in place of the `hr` tag, e.g.
+
+    ::: ------ :::
+
+    
 ### • &nbsp; `image`
 
     ::: image http://example.com/image.jpg
@@ -97,16 +97,29 @@ Inserts a blockquote element.
 
 ### • &nbsp; `table`
 
-Indicates that the block contains a simple table literal in one of the following formats:
+Indicates that the block contains a simple table literal:
 
-    foo | bar | baz      foo | bar | baz
-    ---------------      ---------------
-    aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc
-    ddd | eee | fff      ddd | eee | fff      ddd | eee | fff      ddd | eee | fff
-    ---------------                           ---------------
-    foo | bar | baz                           foo | bar | baz
+    ::: table
+    
+        foo | bar | baz  
+        --------------- 
+        aaa | bbb | ccc
+        ddd | eee | fff
+        ---------------
+        foo | bar | baz
 
-Header and footer lines are optional. Note that all the tables above can be 'boxed' with decorative outer lines of pipes and dashes, e.g.:
+    ::: end
+
+Header and footer lines are optional. All three tables below are valid: 
+
+    foo | bar | baz
+    ---------------
+    aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc
+    ddd | eee | fff      ddd | eee | fff      ddd | eee | fff
+                         ---------------
+                         foo | bar | baz
+
+Note that all the tables above can be 'boxed' with decorative outer lines of pipes and dashes, e.g.:
 
     ---------------      -------------------
     foo | bar | baz      | foo | bar | baz |

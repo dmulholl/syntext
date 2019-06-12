@@ -138,18 +138,6 @@ If a language is specified and the <a href="http://pygments.org">Pygments</a> pa
 <pre class="lang-python pygments" data-lang="python">
 <span class="o">&gt;&gt;&gt;</span> <span class="n">html</span> <span class="o">=</span> <span class="n">syntext</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pygmentize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre>
-<h3 id="hr">
-• &nbsp; <code>hr</code>
-</h3>
-<pre>
-::: hr :::
-</pre>
-<p>
-Inserts a horizontal rule. Any number of dashes can be used in place of the <code>hr</code> tag:
-</p>
-<pre>
-::: ------ :::
-</pre>
 <h3 id="comment">
 • &nbsp; <code>comment</code>
 </h3>
@@ -161,6 +149,18 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the <cod
 <p>
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 </p>
+<h3 id="hr">
+• &nbsp; <code>hr</code>
+</h3>
+<pre>
+::: hr :::
+</pre>
+<p>
+Inserts a horizontal rule. Any number of dashes can be used in place of the <code>hr</code> tag, e.g.
+</p>
+<pre>
+::: ------ :::
+</pre>
 <h3 id="image">
 • &nbsp; <code>image</code>
 </h3>
@@ -187,18 +187,33 @@ Inserts a blockquote element.
 • &nbsp; <code>table</code>
 </h3>
 <p>
-Indicates that the block contains a simple table literal in one of the following formats:
+Indicates that the block contains a simple table literal:
 </p>
 <pre>
-foo | bar | baz      foo | bar | baz
----------------      ---------------
-aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc
-ddd | eee | fff      ddd | eee | fff      ddd | eee | fff      ddd | eee | fff
----------------                           ---------------
-foo | bar | baz                           foo | bar | baz
+::: table
+
+    foo | bar | baz
+    ---------------
+    aaa | bbb | ccc
+    ddd | eee | fff
+    ---------------
+    foo | bar | baz
+
+::: end
 </pre>
 <p>
-Header and footer lines are optional. Note that all the tables above can be 'boxed' with decorative outer lines of pipes and dashes, e.g.:
+Header and footer lines are optional. All three tables below are valid:
+</p>
+<pre>
+foo | bar | baz
+---------------
+aaa | bbb | ccc      aaa | bbb | ccc      aaa | bbb | ccc
+ddd | eee | fff      ddd | eee | fff      ddd | eee | fff
+                     ---------------
+                     foo | bar | baz
+</pre>
+<p>
+Note that all the tables above can be 'boxed' with decorative outer lines of pipes and dashes, e.g.:
 </p>
 <pre>
 ---------------      -------------------
