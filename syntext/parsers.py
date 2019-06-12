@@ -43,12 +43,21 @@ class HeadingParser:
 class FancyHeadingParser:
 
     def __call__(self, stream, meta):
-        if len(stream.lines) < 3 or not re.fullmatch(r'-+', stream.peek()):
+        if not re.fullmatch(r'-+', stream.peek()):
+            return False, None
+        line1 = stream.next()
+
+        if stream.has_next():
+            line2 = stream.next()
+        else:
+            stream.rewind(1)
             return False, None
 
-        line1 = stream.next()
-        line2 = stream.next()
-        line3 = stream.next()
+        if stream.has_next():
+            line3 = stream.next()
+        else:
+            stream.rewind(2)
+            return False, None
 
         if re.fullmatch(r'-+', line3):
             match = re.match(r'([#]{1,6})[ ]+', line2)
@@ -56,9 +65,9 @@ class FancyHeadingParser:
                 text = nodes.TextNode(line2.strip('#').strip())
                 tag = 'h' + str(len(match.group(1)))
                 return True, nodes.Node(tag).append_child(text)
-
-        stream.rewind(3)
-        return False, None
+        else:
+            stream.rewind(3)
+            return False, None
 
 
 # Consumes a sequence of indented lines. The lines must be indented by at
