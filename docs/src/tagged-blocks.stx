@@ -19,11 +19,11 @@ Note that a block's content is determined soley by its indentation; the `::: end
 
 Trailing colons in the header line are optional:
 
-    ::: hr
+    ::: hr :::
 
 is equivalent to:
 
-    ::: hr :::
+    ::: hr 
 
 A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-linebreak mode for all nested content.
 
