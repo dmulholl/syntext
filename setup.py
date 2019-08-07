@@ -15,7 +15,7 @@ As a library::
     >>> import syntext
     >>> html = syntext.render(text)
 
-See the `package documentation <http://darrenmulholland/docs/syntext/>`_ or the
+See the `package documentation <http://darrenmulholland.com/docs/syntext/>`_ or the
 project's `Github homepage <https://github.com/dmulholland/syntext>`_ for
 further details.
 
