@@ -53,7 +53,7 @@ Footnotes can also omit their index to take advantage of automatic numbering:
 
 Note that footnote indices do not have to be numeric. Any sequence of non-whitespace characters can be used.
 
-You can specify the insertion point for your footnotes using the `:insert` tag:
+You can specify the insertion point for your footnotes using the `insert` tag:
 
     ::: insert footnotes
 

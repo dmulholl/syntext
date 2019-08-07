@@ -63,7 +63,7 @@ Image references can be specified anywhere in the document. Their form is identi
 
 ### Dashes
 
-Double hyphens `--` are converted into en-dashes `&ndash;`; triple hyphens are converted into em-dashes `&mdash;`.
+Double hyphens `--` are converted into en-dashes, `&ndash;`; triple hyphens `---` are converted into em-dashes, `&mdash;`.
 
 
 
@@ -71,7 +71,7 @@ Double hyphens `--` are converted into en-dashes `&ndash;`; triple hyphens are c
 
 Superscripts are indicated using a caret:
 
-    X^{2}
+    X^{2}  
 
 Subscripts are indicated using an underscore:
 
