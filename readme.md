@@ -18,4 +18,4 @@ Syntext differs from Markdown in supporting an extensible, indentation-based syn
 
 Syntext also includes out-of-the-box support for tables, tables-of-contents, definition lists, syntax highlighting, and footnotes.
 
-See the [documentation](https://darrenmulholland.com/docs/syntext/) for details.
+See the [documentation](http://www.dmulholl.com/docs/syntext/) for details.
