@@ -3,6 +3,12 @@ title: Changelog
 ---
 
 
+### 2.1.0
+
+* Use `<b>` and `<i>` tags for bold and italic text instead of `<strong>` and `<em>`.
+
+
+
 ### 2.0.0
 
 * Full revision incorporating multiple breaking changes. See the V2 documentation for details.

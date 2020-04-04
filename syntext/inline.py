@@ -13,13 +13,13 @@ import re
 
 
 # *foo bar*
-re_emphasis = re.compile(r"\*(\S(.*?\S)?)\*")
+re_italic = re.compile(r"\*(\S(.*?\S)?)\*")
 
 # **foo bar**
-re_strong = re.compile(r"\*{2}(\S(.*?\S)?)\*{2}")
+re_bold = re.compile(r"\*{2}(\S(.*?\S)?)\*{2}")
 
 # ***foo bar***
-re_stremphasis = re.compile(r"\*{3}(\S(.*?\S)?)\*{3}")
+re_bolditalic = re.compile(r"\*{3}(\S(.*?\S)?)\*{3}")
 
 # `foo bar`
 re_backticks = re.compile(r"`(.+?)`")
@@ -88,9 +88,9 @@ def render(text, meta):
 
     text = html.escape(text, False)
 
-    text = render_stremphasis(text)
-    text = render_strong(text)
-    text = render_emphasis(text)
+    text = render_bolditalic(text)
+    text = render_bold(text)
+    text = render_italic(text)
     text = render_images(text)
     text = render_ref_images(text, meta)
     text = render_links(text)
@@ -144,16 +144,16 @@ def render_dashes(text, hashes):
     return text
 
 
-def render_strong(text):
-    return re_strong.sub(r"<strong>\1</strong>", text)
+def render_bold(text):
+    return re_bold.sub(r"<b>\1</b>", text)
 
 
-def render_emphasis(text):
-    return re_emphasis.sub(r"<em>\1</em>", text)
+def render_italic(text):
+    return re_italic.sub(r"<i>\1</i>", text)
 
 
-def render_stremphasis(text):
-    return re_stremphasis.sub(r"<strong><em>\1</em></strong>", text)
+def render_bolditalic(text):
+    return re_bolditalic.sub(r"<b><i>\1</i></b>", text)
 
 
 def render_superscripts(text):
