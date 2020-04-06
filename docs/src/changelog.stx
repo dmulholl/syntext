@@ -7,6 +7,8 @@ title: Changelog
 
 * Revised markup for footnotes and footnote references.
 
+* Add wrapper divs to definition list items.
+
 
 
 ### 2.1.0

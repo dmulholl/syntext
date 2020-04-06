@@ -201,7 +201,7 @@ class BlockUListParser:
         ul = nodes.Node('ul')
         for item in items:
             li = nodes.Node('li')
-            li.children = BlockParser().parse(item.trim(), meta) 
+            li.children = BlockParser().parse(item.trim(), meta)
             ul.append_child(li)
 
         return True, ul
@@ -354,9 +354,12 @@ class DefinitionListParser:
             if match:
                 stream.next()
 
-                term = match.group(1).lstrip('[').rstrip(']').strip()
-                dt = nodes.Node('dt').append_child(nodes.TextNode(term))
-                dl.append_child(dt)
+                div = nodes.Node('div')
+                dl.append_child(div)
+
+                termtext = match.group(1).lstrip('[').rstrip(']').strip()
+                dt = nodes.Node('dt').append_child(nodes.TextNode(termtext))
+                div.append_child(dt)
 
                 definition = utils.LineStream()
                 while stream.has_next():
@@ -369,7 +372,7 @@ class DefinitionListParser:
 
                 dd = nodes.Node('dd')
                 dd.children = BlockParser().parse(definition.dedent(), meta)
-                dl.append_child(dd)
+                div.append_child(dd)
             else:
                 break
 
@@ -403,10 +406,10 @@ class BlankLineParser:
 class HtmlParser:
 
     html_block_tags = """
-        address article aside blockquote body canvas dd div dl fieldset 
+        address article aside blockquote body canvas dd div dl fieldset
         figcaption figure footer form head h1 h2 h3 h4 h5 h6 header hgroup
         li main noscript ol output p pre script section style table tfoot
-        title ul video html 
+        title ul video html
     """.split()
 
     def __call__(self, stream, meta):
@@ -504,7 +507,7 @@ class ShorthandParser:
             else:
                 break
         content = content.trim().dedent()
-        
+
         if stream.has_next() and stream.peek() == ':end':
             stream.next()
 
@@ -542,13 +545,13 @@ class TagParser:
             else:
                 break
         content = content.trim().dedent()
-        
+
         if stream.has_next() and stream.peek().rstrip(': ') == '::: end':
             stream.next()
-        
+
         from . import tags
         return True, tags.process(tag, pargs, kwargs, content, meta)
-            
+
 
 # ------------------------------------------------------------------------------
 # Top-level parsers for block structures.
@@ -624,4 +627,3 @@ class InlineParser(Parser):
 
     def __init__(self):
         self.parsers = self.parser_list
-
