@@ -27,7 +27,7 @@ tagmap = {}
 def register(*tags):
 
     def register_tag_handler(func):
-        for tag in tags: 
+        for tag in tags:
             tagmap[tag] = func
         return func
 
@@ -76,7 +76,7 @@ def alertbox_tag_handler(tag, pargs, kwargs, content, meta):
 
 
 # Handler for image tags. The first keyword is used as the src attribute;
-# the block's content is used as the alt text. 
+# the block's content is used as the alt text.
 @register('image')
 def imgage_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Node('img', kwargs, is_void=True)
@@ -219,29 +219,26 @@ def footnote_tag_handler(tag, pargs, kwargs, content, meta):
         ref = str(meta.setdefault('footnote-index', 1))
         meta['footnote-index'] += 1
 
-    # Wrap each footnote in a div.
-    footnote = nodes.Node(
-        'div',
-        {'class': 'footnote', 'id': 'footnote-%s' % ref}
-    )
+    # Wrap each footnote in a <div>.
+    footnote = nodes.Node('div', {'id': 'fn:%s' % ref})
 
     # Generate a backlink node.
-    link = nodes.Node('a', {'href': '#footnote-ref-%s' % ref})
+    link = nodes.Node('a', {'href': '#fnref:%s' % ref})
     link.append_child(nodes.TextNode(ref))
 
-    # Generate a div node for the footnote index.
-    index = nodes.Node('div', {'class': 'footnote-index'})
+    # Generate a <dt> node for the footnote index.
+    index = nodes.Node('dt')
     index.append_child(link)
     footnote.append_child(index)
 
-    # Generate a div node containing the parsed footnote body.
-    body = nodes.Node('div', {'class': 'footnote-body'})
+    # Generate a <dd> node containing the parsed footnote body.
+    body = nodes.Node('dd')
     body.children = parsers.BlockParser().parse(content, meta)
     footnote.append_child(body)
 
-    # Generate a footnotes div node if we haven't done so already.
+    # Generate a footnotes <dl> node if we haven't done so already.
     if not 'footnotes' in meta:
-        meta['footnotes'] = nodes.Node('div', {'class': 'footnotes'})
+        meta['footnotes'] = nodes.Node('dl', {'class': 'footnotes'})
 
     meta['footnotes'].append_child(footnote)
     return None

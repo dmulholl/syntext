@@ -51,7 +51,7 @@ Footnotes can also omit their index to take advantage of automatic numbering:
     ::: footnote
         This is an automatically-numbered footnote.
 
-Note that footnote indices do not have to be numeric. Any sequence of non-whitespace characters can be used.
+Note that footnote indices do not have to be numeric --- any sequence of non-whitespace characters can be used.
 
 You can specify the insertion point for your footnotes using the `insert` tag:
 
@@ -61,21 +61,20 @@ Footnote references are wrapped in the following markup:
 
 ::: code html
 
-    <sup class="footnote-ref" id="footnote-ref-123">
-        <a href="#footnote-123">123</a>
+    <sup class="footnote" id="fnref:1">
+        <a href="#fn:1">1</a>
     </sup>
 
-Footnotes are wrapped in the following markup:
+Footnotes are output as items in a description list:
 
 ::: code html
 
-    <div class="footnote" id="footnote-123">
-        <div class="footnote-index">
-            <a href="#footnote-ref-123">123</a>
+    <dl class="footnotes">
+        <div id="fn:1">
+            <dt><a href="#fnref:1">1</a></dt>
+            <dd> ... </dd>
         </div>
-        <div class="footnote-body"> ... </div>
-    </div>
+        ...
+    </dl>
 
-Each footnote is backlinked to its reference in the document.
-
-
+Each footnote index is backlinked to its reference in the document.
