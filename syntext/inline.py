@@ -37,10 +37,10 @@ re_img = re.compile(r"!\[([^\]]*)\]\(([^\)]+)\)")
 re_ref_img = re.compile(r"!\[([^\]]*)\]\[([^\]]*)\]")
 
 # [^ref] or [^]
-re_footnote_1 = re.compile(r"\[\^([^\]]*)\]")
+re_footnote_super = re.compile(r"\[\^([^\]]*)\]")
 
 # [fn:ref] or [fn]
-re_footnote_2 = re.compile(r"\[fn:?([^\]]*)\]")
+re_footnote_span = re.compile(r"\[fn:?([^\]]*)\]")
 
 # &amp; &#x27;
 re_entity = re.compile(r"&[#a-zA-Z0-9]+;")
@@ -223,10 +223,11 @@ def render_footnotes(text, meta):
         else:
             ref = meta.setdefault('footnote-ref-index', 1)
             meta['footnote-ref-index'] += 1
-        link = '<a href="#fn:%s">%s</a>' % (ref, ref)
-        wrap = '<sup class="footnote" id="fnref:%s">%s</sup>'
-        return wrap % (ref, link)
+        link = f'<a href="#fn:{ref}">{ref}</a>'
+        return f'<{tag} class="footnote" id="fnref:{ref}">{link}</{tag}>'
 
-    text = re_footnote_1.sub(callback, text)
-    text = re_footnote_2.sub(callback, text)
+    tag = "sup"
+    text = re_footnote_super.sub(callback, text)
+    tag = "span"
+    text = re_footnote_span.sub(callback, text)
     return text

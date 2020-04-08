@@ -3,6 +3,12 @@ title: Changelog
 ---
 
 
+### 2.3.0.dev
+
+* Add support for inline as well as superscripted footnotes.
+
+
+
 ### 2.2.0
 
 * Revised markup for footnotes and footnote references.

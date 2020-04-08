@@ -1,6 +1,6 @@
 This line contains a footnote.[^1]
 
-This line contains a footnote.[fn:2]
+This line contains a footnote [fn:2].
 
 ::: insert footnotes :::
 
@@ -14,4 +14,3 @@ This line contains a footnote.[fn:2]
 
     And this is the second.
 ::: end
-
