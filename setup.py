@@ -15,8 +15,8 @@ As a library::
     >>> import syntext
     >>> html = syntext.render(text)
 
-See the `package documentation <http://darrenmulholland.com/docs/syntext/>`_ or the
-project's `Github homepage <https://github.com/dmulholland/syntext>`_ for
+See the `package documentation <http://www.dmulholl.com/docs/syntext/>`_ or the
+project's `Github homepage <https://github.com/dmulholl/syntext>`_ for
 further details.
 
 """
@@ -47,7 +47,7 @@ setup(
         'pygments',
     ],
     author = 'Darren Mulholland',
-    url = 'http://darrenmulholland.com/docs/syntext/',
+    url = 'http://www.dmulholl.com/docs/syntext/',
     license = 'Public Domain',
     description = ('A markdownish markup language.'),
     long_description = __doc__,
