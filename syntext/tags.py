@@ -64,13 +64,11 @@ def quote_tag_handler(tag, pargs, kwargs, content, meta):
     return node
 
 
-# Handler for alertbox tags.
-@register('alertbox', 'info', 'warning', 'error')
-def alertbox_tag_handler(tag, pargs, kwargs, content, meta):
+# Handler for infobox tags. Supports alertbox as deprecated alias.
+@register('infobox', 'alertbox')
+def infobox_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Node('div', kwargs)
-    node.add_class('alertbox')
-    if tag in ('info', 'warning', 'error'):
-        node.add_class(tag)
+    node.add_class(tag)
     node.children = parsers.BlockParser().parse(content, meta)
     return node
 

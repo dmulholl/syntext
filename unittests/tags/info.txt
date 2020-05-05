@@ -1,4 +1,0 @@
-::: info .blah
-    foo bar
-::: end
-

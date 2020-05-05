@@ -1,0 +1,4 @@
+::: infobox .someclass
+    foo bar
+::: end
+
