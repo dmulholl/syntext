@@ -3,9 +3,11 @@ title: Changelog
 ---
 
 
-### 2.3.0.dev
+### 2.3.0
 
 * Add support for inline footnote references.
+
+* Add `infobox` tag.
 
 
 

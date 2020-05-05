@@ -32,15 +32,6 @@ A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-lin
 ## Tag Reference
 
 
-### • &nbsp; `alertbox`
-
-    ::: alertbox .warning
-        Careful now!
-    ::: end
-
-Creates an alert box --- a `<div>` element with the class `alertbox` which can be styled appropriately using CSS. Standard type-classes are `info`, `warning`, and `error`.
-
-
 ### • &nbsp; `code`
 
     ::: code python
@@ -84,6 +75,15 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
     ::: end
 
 Inserts an image element. The block's content is used as the image's alt text.
+
+
+### • &nbsp; `infobox`
+
+    ::: infobox .warning
+        Careful now!
+    ::: end
+
+Creates an info box --- a `<div>` element with the class `infobox` which can be styled appropriately using CSS.
 
 
 ### • &nbsp; `quote`
