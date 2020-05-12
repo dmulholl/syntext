@@ -3,6 +3,12 @@ title: Changelog
 ---
 
 
+### 2.4.0
+
+* Prune the list of escapable characters.
+
+
+
 ### 2.3.0
 
 * Add support for inline footnote references.
