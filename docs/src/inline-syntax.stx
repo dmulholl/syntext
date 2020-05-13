@@ -2,8 +2,6 @@
 title: Inline Syntax
 ---
 
-Syntext shares much of its inline syntax with Markdown.
-
 ::: insert toc :::
 
 
@@ -78,3 +76,13 @@ Subscripts are indicated using an underscore:
     H_{2}O
 
 Text to be super or subscripted should be wrapped in curly braces.
+
+
+
+### Verbatim
+
+Double backticks create a verbatim environment:
+
+    ``verbatim``
+
+The content of a verbatim environment is passed through in its raw state without any further processing.

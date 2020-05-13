@@ -70,10 +70,7 @@
         
         <hr>
       </header>
-      <p>
-Syntext shares much of its inline syntax with Markdown.
-</p>
-<ul class="stx-toc">
+      <ul class="stx-toc">
 <li>
 <a href="#formatting">Formatting</a>
 </li>
@@ -88,6 +85,9 @@ Syntext shares much of its inline syntax with Markdown.
 </li>
 <li>
 <a href="#superscripts-subscripts">Superscripts &amp; Subscripts</a>
+</li>
+<li>
+<a href="#verbatim">Verbatim</a>
 </li>
 </ul>
 <h3 id="formatting">
@@ -129,10 +129,10 @@ Syntext also supports Markdown-style reference links:
 Link references can be specified anywhere in the document. They take one of the following forms:
 </p>
 <pre>
-[reference]: http://example.com
+\[reference]: http://example.com
     optional title text
 
-[reference]:
+\[reference]:
     http://example.com
     optional title text
 </pre>
@@ -180,6 +180,18 @@ H_{2}O
 </pre>
 <p>
 Text to be super or subscripted should be wrapped in curly braces.
+</p>
+<h3 id="verbatim">
+Verbatim
+</h3>
+<p>
+Double backticks create a verbatim environment:
+</p>
+<pre>
+``verbatim``
+</pre>
+<p>
+The content of a verbatim environment is passed through in its raw state without any further processing.
 </p>
 
     </article>

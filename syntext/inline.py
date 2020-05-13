@@ -47,6 +47,7 @@ re_entity = re.compile(r"&[#a-zA-Z0-9]+;")
 
 # html tags: <span>, </span>, <!-- comment -->, etc.
 re_html = re.compile(r"<([a-zA-Z/][^>]*?|!--.*?--)>")
+
 # <http://example.com>
 re_bracketed_url = re.compile(r"<((?:https?|ftp)://[^>]+)>")
 
@@ -70,6 +71,9 @@ re_superscript = re.compile(r"\^\{(.+?)\}")
 # H_{2}O
 re_subscript = re.compile(r"_\{(.+?)\}")
 
+# ``foo bar``
+re_verbatim = re.compile(r"``(.+?)``")
+
 
 # ------------------------------------------------------------------------------
 # Renderers.
@@ -80,6 +84,7 @@ re_subscript = re.compile(r"_\{(.+?)\}")
 def render(text, meta):
     hashes = {}
 
+    text = render_verbatim(text, hashes)
     text = render_backticks(text, hashes)
     text = render_bracketed_urls(text, hashes)
     text = render_inline_html(text, hashes)
@@ -132,6 +137,10 @@ def render_bracketed_urls(text, hashes):
 
 def render_inline_html(text, hashes):
     return re_html.sub(lambda match: hashstr(match.group(), hashes), text)
+
+
+def render_verbatim(text, hashes):
+    return re_verbatim.sub(lambda match: hashstr(match.group(1), hashes), text)
 
 
 def render_html_entities(text, hashes):
