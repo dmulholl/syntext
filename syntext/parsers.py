@@ -413,7 +413,7 @@ class HtmlParser:
     """.split()
 
     def __call__(self, stream, meta):
-        match = re.match(r'<([a-zA-Z][^>]*?)>', stream.peek())
+        match = re.match(r'<(\w+)[^>]*?>', stream.peek())
         if match and match.group(1) in self.html_block_tags:
             tag = match.group(1)
             lines = [stream.next()]
@@ -421,7 +421,7 @@ class HtmlParser:
             return False, None
 
         # Do we have a one-liner?
-        match = re.fullmatch(r'<([a-zA-Z][^>]*?)>.*</\1>', lines[0])
+        match = re.fullmatch(r'<(\w+)[^>]*?>.*</\1>', lines[0])
         if match:
             return True, nodes.Node(text=lines[0])
 
