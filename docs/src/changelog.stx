@@ -11,6 +11,8 @@ title: Changelog
 
 * Fix bug recognising raw block-level HTML with attributes.
 
+* Fix bold/italic bug for consecutive single character blocks.
+
 
 
 ### 2.3.0
