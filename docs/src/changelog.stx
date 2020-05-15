@@ -9,6 +9,8 @@ title: Changelog
 
 * Add support for inline verbatim environments.
 
+* Fix bug recognising raw block-level HTML with attributes.
+
 
 
 ### 2.3.0
