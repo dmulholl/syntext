@@ -11,15 +11,23 @@ import re
 # Regular expressions for identifying inline markup.
 # ------------------------------------------------------------------------------
 
+# *x*
+re_italic_sc = re.compile(r"\*(\S)\*")
 
 # *foo bar*
-re_italic = re.compile(r"\*(\S(.*?\S)?)\*")
+re_italic_mc = re.compile(r"\*(\S.*?\S)\*")
+
+# **x**
+re_bold_sc = re.compile(r"\*{2}(\S)\*{2}")
 
 # **foo bar**
-re_bold = re.compile(r"\*{2}(\S(.*?\S)?)\*{2}")
+re_bold_mc = re.compile(r"\*{2}(\S.*?\S)\*{2}")
+
+# ***x***
+re_bolditalic_sc = re.compile(r"\*{3}(\S)\*{3}")
 
 # ***foo bar***
-re_bolditalic = re.compile(r"\*{3}(\S(.*?\S)?)\*{3}")
+re_bolditalic_mc = re.compile(r"\*{3}(\S.*?\S)\*{3}")
 
 # `foo bar`
 re_backticks = re.compile(r"`(.+?)`")
@@ -154,15 +162,21 @@ def render_dashes(text, hashes):
 
 
 def render_bold(text):
-    return re_bold.sub(r"<b>\1</b>", text)
+    text = re_bold_sc.sub(r"<b>\1</b>", text)
+    text = re_bold_mc.sub(r"<b>\1</b>", text)
+    return text
 
 
 def render_italic(text):
-    return re_italic.sub(r"<i>\1</i>", text)
+    text = re_italic_sc.sub(r"<i>\1</i>", text)
+    text = re_italic_mc.sub(r"<i>\1</i>", text)
+    return text
 
 
 def render_bolditalic(text):
-    return re_bolditalic.sub(r"<b><i>\1</i></b>", text)
+    text = re_bolditalic_sc.sub(r"<b><i>\1</i></b>", text)
+    text = re_bolditalic_mc.sub(r"<b><i>\1</i></b>", text)
+    return text
 
 
 def render_superscripts(text):
