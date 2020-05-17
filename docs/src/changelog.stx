@@ -3,7 +3,7 @@ title: Changelog
 ---
 
 
-### 2.4.0.dev
+### 2.4.0
 
 * Prune the list of escapable characters.
 
