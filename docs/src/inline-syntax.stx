@@ -34,10 +34,10 @@ Syntext also supports Markdown-style reference links:
 
 Link references can be specified anywhere in the document. They take one of the following forms:
 
-    \[reference]: http://example.com
+    [reference]: http://example.com
         optional title text
 
-    \[reference]:
+    [reference]:
         http://example.com
         optional title text
 
@@ -69,7 +69,7 @@ Double hyphens `--` are converted into en-dashes, `&ndash;`; triple hyphens `---
 
 Superscripts are indicated using a caret:
 
-    X^{2}  
+    X^{2}
 
 Subscripts are indicated using an underscore:
 
