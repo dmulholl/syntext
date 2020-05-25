@@ -3,6 +3,12 @@ title: Changelog
 ---
 
 
+### 2.5.0.dev
+
+* Add support for blockquote captions.
+
+
+
 ### 2.4.0
 
 * Prune the list of escapable characters.

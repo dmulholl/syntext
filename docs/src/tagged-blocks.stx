@@ -88,11 +88,11 @@ Creates an info box --- a `<div>` element with the class `infobox` which can be 
 
 ### • &nbsp; `quote`
 
-    ::: quote
+    ::: quote "Oscar Wilde"
         Work is the curse of the drinking classes.
     ::: end
 
-Inserts a blockquote element.
+Inserts a blockquote element, optionally followed by a caption.
 
 
 ### • &nbsp; `table`

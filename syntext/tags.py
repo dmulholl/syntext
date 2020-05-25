@@ -48,7 +48,7 @@ def process(tag, pargs, kwargs, content, meta):
     return node
 
 
-# Handler for the 'div' tag. (Works as a simple test case.)
+# Handler for the 'div' tag.
 @register('div')
 def div_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Node('div', kwargs)
@@ -59,9 +59,17 @@ def div_tag_handler(tag, pargs, kwargs, content, meta):
 # Handler for blockquotes.
 @register('quote')
 def quote_tag_handler(tag, pargs, kwargs, content, meta):
-    node = nodes.Node('blockquote', kwargs)
-    node.children = parsers.BlockParser().parse(content, meta)
-    return node
+    quote = nodes.Node('blockquote', kwargs)
+    quote.children = parsers.BlockParser().parse(content, meta)
+    if pargs:
+        caption = nodes.Node('div')
+        caption.add_class('caption')
+        caption.append_child(nodes.TextNode(pargs[0]))
+        wrapper = nodes.Node()
+        wrapper.append_child(quote)
+        wrapper.append_child(caption)
+        return wrapper
+    return quote
 
 
 # Handler for infobox tags. Supports alertbox as deprecated alias.
