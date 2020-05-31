@@ -61,7 +61,7 @@ Usage: %s [FLAGS] [OPTIONS]
     $ syntext < input.txt > output.html
 
 Options:
-  -t, --tabsize <n>     Set tabsize (default: 4).
+  -t, --tabsize <n>     Set tab translation size (default: 4).
 
 Flags:
   -d, --debug           Run in debug mode.
