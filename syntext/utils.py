@@ -30,7 +30,7 @@ class LineStream:
 
     def __len__(self):
         return len(self.lines)
-    
+
     # Appends a line to the end of the stream.
     def append(self, line):
         self.lines.append(line)
@@ -162,7 +162,8 @@ class ArgParser:
 # Formats title text for output on the command line.
 def title(text):
     cols, _ = shutil.get_terminal_size()
-    return '=' * cols + '\n' + text.center(cols, '-') + '\n' +  '=' * cols + '\n'
+    line = '\u001B[90m' + '─' * cols + '\u001B[0m'
+    return line + '\n' + text.center(cols) + '\n' + line
 
 
 # Strips all angle-bracket-enclosed substrings.

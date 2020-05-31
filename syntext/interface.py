@@ -111,17 +111,13 @@ def main():
     }
     html, root, meta = parse(text, meta)
 
-    output = []
     if args.debug:
-        output.append(utils.title(' AST '))
-        output.append(str(root))
-        output.append('\n')
-        output.append(utils.title(' META '))
-        output.append(pprint.pformat(meta))
-        output.append('\n\n')
-        output.append(utils.title(' HTML '))
-        output.append(html)
+        print(utils.title('AST'))
+        print(root)
+        print(utils.title('META'))
+        print(pprint.pformat(meta) + '\n')
+        print(utils.title('HTML'))
+        print(html.strip())
     else:
-        output.append(html)
+        print(html)
 
-    sys.stdout.write(''.join(output))
