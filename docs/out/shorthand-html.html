@@ -77,16 +77,12 @@ Syntext supports indentation-based shorthand syntax for generating arbitrary HTM
 :tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
     block content
     ...
-:end
 </pre>
 <p>
 A shorthand block opens with a header line containing a colon, a HTML tag, and, optionally, a set of attributes. The block's content consists of all subsequent blank or indented lines following the header.
 </p>
 <p>
 The block's content can be indented by any number of spaces; the common indent is stripped and the first non-indented line ends the block. Leading and trailing blank lines are also trimmed from the content.
-</p>
-<p>
-Note that a block's content is determined solely by its indentation; the <code>:end</code> tag is optional and can be used to enable syntax highlighting in editors which may otherwise struggle with indentation-based syntax.
 </p>
 <p>
 To take a simple example, the markup below:

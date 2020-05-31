@@ -7,7 +7,6 @@ Syntext supports indentation-based tagged-block syntax for custom elements:
     ::: tag [arguments] [.class] [#id] [&attr] [attr="value"]
         block content
         ...
-    ::: end
 
 A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more arguments to be supplied (how these are interpreted depends on the tag).
 
@@ -15,7 +14,12 @@ Boolean attributes can be specified using an `&` symbol, e.g. `&checked`. Attrib
 
 A block's tag determines how its content is processed. In  general blocks can be nested to any depth and can contain any block-level content.
 
-Note that a block's content is determined solely by its indentation; the `::: end` tag is optional and can be used to enable syntax highlighting in editors which may otherwise struggle with indentation-based syntax.
+Although a block's content is determined solely by its indentation an optional end marker can be added to support syntax highlighting in editors which struggle with indentation-based syntax:
+
+    ::: tag 
+        block content
+        ...
+    ::$
 
 Trailing colons in the header line are optional:
 
@@ -23,7 +27,7 @@ Trailing colons in the header line are optional:
 
 is equivalent to:
 
-    ::: hr 
+    ::: hr
 
 A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-linebreak mode for all nested content.
 
@@ -37,7 +41,6 @@ A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-lin
     ::: code python
         def hello():
             print('hello world')
-    ::: end
 
 Wraps a code sample in `<pre>` tags. Accepts an optional argument specifying the language of the code.
 
@@ -47,14 +50,12 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 
 ::: code python
     >>> html = syntext.render(text, pygmentize=True)
-::: end
 
 
 ### • &nbsp; `comment`
 
     ::: comment
-        Comment text.
-    ::: end
+        This is a comment.
 
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 
@@ -67,12 +68,11 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
 
     ::: ------ :::
 
-    
+
 ### • &nbsp; `image`
 
     ::: image http://example.com/image.jpg
         Alt text for the image.
-    ::: end
 
 Inserts an image element. The block's content is used as the image's alt text.
 
@@ -81,7 +81,6 @@ Inserts an image element. The block's content is used as the image's alt text.
 
     ::: infobox .warning
         Careful now!
-    ::: end
 
 Creates an info box --- a `<div>` element with the class `infobox` which can be styled appropriately using CSS.
 
@@ -90,7 +89,6 @@ Creates an info box --- a `<div>` element with the class `infobox` which can be 
 
     ::: quote "Oscar Wilde"
         Work is the curse of the drinking classes.
-    ::: end
 
 Inserts a blockquote element, optionally followed by a caption.
 
@@ -100,17 +98,15 @@ Inserts a blockquote element, optionally followed by a caption.
 Indicates that the block contains a simple table literal:
 
     ::: table
-    
-        foo | bar | baz  
-        --------------- 
+
+        foo | bar | baz
+        ---------------
         aaa | bbb | ccc
         ddd | eee | fff
         ---------------
         foo | bar | baz
 
-    ::: end
-
-Header and footer lines are optional. All three tables below are valid: 
+Header and footer lines are optional. All three tables below are valid:
 
     foo | bar | baz
     ---------------

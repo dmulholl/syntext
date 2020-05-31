@@ -32,14 +32,9 @@ Syntext also supports Markdown-style reference links:
 
     [link text][reference]
 
-Link references can be specified anywhere in the document. They take one of the following forms:
+Link references can be specified anywhere in the document:
 
     [reference]: http://example.com
-        optional title text
-
-    [reference]:
-        http://example.com
-        optional title text
 
 If the reference text is omitted from the link, the link text will be used instead when searching for link references.
 

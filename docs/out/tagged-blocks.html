@@ -77,7 +77,6 @@ Syntext supports indentation-based tagged-block syntax for custom elements:
 ::: tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
     block content
     ...
-::: end
 </pre>
 <p>
 A block header can contain a single ID, any number of classes, and any number of named attributes. Block syntax also allows for one or more arguments to be supplied (how these are interpreted depends on the tag).
@@ -89,8 +88,14 @@ Boolean attributes can be specified using an <code>&amp;</code> symbol, e.g. <co
 A block's tag determines how its content is processed. In  general blocks can be nested to any depth and can contain any block-level content.
 </p>
 <p>
-Note that a block's content is determined solely by its indentation; the <code>::: end</code> tag is optional and can be used to enable syntax highlighting in editors which may otherwise struggle with indentation-based syntax.
+Although a block's content is determined solely by its indentation an optional end marker can be added to support syntax highlighting in editors which struggle with indentation-based syntax:
 </p>
+<pre>
+::: tag
+    block content
+    ...
+::$
+</pre>
 <p>
 Trailing colons in the header line are optional:
 </p>
@@ -116,7 +121,6 @@ Tag Reference
 ::: code python
     def hello():
         print(&#x27;hello world&#x27;)
-::: end
 </pre>
 <p>
 Wraps a code sample in <code>&lt;pre&gt;</code> tags. Accepts an optional argument specifying the language of the code.
@@ -135,8 +139,7 @@ If a language is specified and the <a href="http://pygments.org">Pygments</a> pa
 </h3>
 <pre>
 ::: comment
-    Comment text.
-::: end
+    This is a comment.
 </pre>
 <p>
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
@@ -159,7 +162,6 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the <cod
 <pre>
 ::: image http://example.com/image.jpg
     Alt text for the image.
-::: end
 </pre>
 <p>
 Inserts an image element. The block's content is used as the image's alt text.
@@ -170,7 +172,6 @@ Inserts an image element. The block's content is used as the image's alt text.
 <pre>
 ::: infobox .warning
     Careful now!
-::: end
 </pre>
 <p>
 Creates an info box &mdash; a <code>&lt;div&gt;</code> element with the class <code>infobox</code> which can be styled appropriately using CSS.
@@ -179,12 +180,11 @@ Creates an info box &mdash; a <code>&lt;div&gt;</code> element with the class <c
 • &nbsp; <code>quote</code>
 </h3>
 <pre>
-::: quote
+::: quote &quot;Oscar Wilde&quot;
     Work is the curse of the drinking classes.
-::: end
 </pre>
 <p>
-Inserts a blockquote element.
+Inserts a blockquote element, optionally followed by a caption.
 </p>
 <h3 id="table">
 • &nbsp; <code>table</code>
@@ -201,8 +201,6 @@ Indicates that the block contains a simple table literal:
     ddd | eee | fff
     ---------------
     foo | bar | baz
-
-::: end
 </pre>
 <p>
 Header and footer lines are optional. All three tables below are valid:

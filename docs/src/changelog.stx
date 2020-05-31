@@ -3,9 +3,19 @@ title: Changelog
 ---
 
 
-### 2.5.0.dev
+### 2.5.0
 
 * Add support for blockquote captions.
+
+* Add `link`, `div`, and `span` tags.
+
+* Remove deprecated support for inline link and image titles.
+
+* Deprecate support for reference link titles.
+
+* Add `::$` as an alias for `::: end`.
+
+* Add `:$` as an alias for `:end`.
 
 
 
