@@ -19,7 +19,7 @@
         <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
       
       
-        <p class="version">Version 2.4.0</p>
+        <p class="version">Version 2.5.0</p>
       
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
@@ -144,6 +144,16 @@ If a language is specified and the <a href="http://pygments.org">Pygments</a> pa
 <p>
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 </p>
+<h3 id="div">
+• &nbsp; <code>div</code>
+</h3>
+<pre>
+::: div
+    This is a paragraph inside a div.
+</pre>
+<p>
+Inserts a <code>&lt;div&gt;</code> element. Can contain any kind of block-level content.
+</p>
 <h3 id="hr">
 • &nbsp; <code>hr</code>
 </h3>
@@ -164,7 +174,7 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the <cod
     Alt text for the image.
 </pre>
 <p>
-Inserts an image element. The block's content is used as the image's alt text.
+Inserts an image element. The first argument is used as the source url.
 </p>
 <h3 id="infobox">
 • &nbsp; <code>infobox</code>
@@ -176,6 +186,16 @@ Inserts an image element. The block's content is used as the image's alt text.
 <p>
 Creates an info box &mdash; a <code>&lt;div&gt;</code> element with the class <code>infobox</code> which can be styled appropriately using CSS.
 </p>
+<h3 id="link">
+• &nbsp; <code>link</code>
+</h3>
+<pre>
+::: link http://example.com/
+    Link text or any other inline content.
+</pre>
+<p>
+Inserts a link. The first argument is used as the url.
+</p>
 <h3 id="quote">
 • &nbsp; <code>quote</code>
 </h3>
@@ -185,6 +205,16 @@ Creates an info box &mdash; a <code>&lt;div&gt;</code> element with the class <c
 </pre>
 <p>
 Inserts a blockquote element, optionally followed by a caption.
+</p>
+<h3 id="span">
+• &nbsp; <code>span</code>
+</h3>
+<pre>
+::: span
+    Spans can only contain inline content.
+</pre>
+<p>
+Inserts a <code>&lt;span&gt;</code> element. Can only contain inline content.
 </p>
 <h3 id="table">
 • &nbsp; <code>table</code>

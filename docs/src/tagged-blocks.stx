@@ -60,6 +60,14 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 
 
+### • &nbsp; `div`
+
+    ::: div
+        This is a paragraph inside a div.
+
+Inserts a `<div>` element. Can contain any kind of block-level content.
+
+
 ### • &nbsp; `hr`
 
     ::: hr :::
@@ -74,7 +82,7 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
     ::: image http://example.com/image.jpg
         Alt text for the image.
 
-Inserts an image element. The block's content is used as the image's alt text.
+Inserts an image element. The first argument is used as the source url.
 
 
 ### • &nbsp; `infobox`
@@ -85,12 +93,28 @@ Inserts an image element. The block's content is used as the image's alt text.
 Creates an info box --- a `<div>` element with the class `infobox` which can be styled appropriately using CSS.
 
 
+### • &nbsp; `link`
+
+    ::: link http://example.com/
+        Link text or any other inline content.
+
+Inserts a link. The first argument is used as the url.
+
+
 ### • &nbsp; `quote`
 
     ::: quote "Oscar Wilde"
         Work is the curse of the drinking classes.
 
 Inserts a blockquote element, optionally followed by a caption.
+
+
+### • &nbsp; `span`
+
+    ::: span
+        Spans can only contain inline content.
+
+Inserts a `<span>` element. Can only contain inline content.
 
 
 ### • &nbsp; `table`

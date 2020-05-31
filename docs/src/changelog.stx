@@ -7,7 +7,7 @@ title: Changelog
 
 * Add support for blockquote captions.
 
-* Add `link`, `div`, and `span` tags.
+* Add `::: link`, `::: div`, and `::: span` tags.
 
 * Remove deprecated support for inline link and image titles.
 
@@ -16,6 +16,8 @@ title: Changelog
 * Add `::$` as an alias for `::: end`.
 
 * Add `:$` as an alias for `:end`.
+
+* Customizable tab size.
 
 
 

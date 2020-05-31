@@ -19,7 +19,7 @@
         <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
       
       
-        <p class="version">Version 2.4.0</p>
+        <p class="version">Version 2.5.0</p>
       
       <nav class="menu">
         <input id="menu-check" type="checkbox"/>
@@ -123,13 +123,13 @@ Link syntax is borrowed directly from Markdown:
 Syntext also supports Markdown-style reference links:
 </p>
 <pre>
-[link text][reference]
+[link text][ref]
 </pre>
 <p>
 Link references can be specified anywhere in the document:
 </p>
 <pre>
-[reference]: http://example.com
+[ref]: http://example.com
 </pre>
 <p>
 If the reference text is omitted from the link, the link text will be used instead when searching for link references.
@@ -147,7 +147,7 @@ Image syntax is borrowed directly from Markdown:
 Syntext also supports Markdown-style reference images:
 </p>
 <pre>
-![alt text][reference]
+![alt text][ref]
 </pre>
 <p>
 Image references can be specified anywhere in the document. Their form is identical to that of link references. If the reference text is omitted from the image, the alt text will be used instead when searching for references.

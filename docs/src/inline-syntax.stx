@@ -30,11 +30,11 @@ Link syntax is borrowed directly from Markdown:
 
 Syntext also supports Markdown-style reference links:
 
-    [link text][reference]
+    [link text][ref]
 
 Link references can be specified anywhere in the document:
 
-    [reference]: http://example.com
+    [ref]: http://example.com
 
 If the reference text is omitted from the link, the link text will be used instead when searching for link references.
 
@@ -48,7 +48,7 @@ Image syntax is borrowed directly from Markdown:
 
 Syntext also supports Markdown-style reference images:
 
-    ![alt text][reference]
+    ![alt text][ref]
 
 Image references can be specified anywhere in the document. Their form is identical to that of link references. If the reference text is omitted from the image, the alt text will be used instead when searching for references.
 
