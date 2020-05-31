@@ -440,7 +440,8 @@ class HtmlParser:
             return True, None
 
 
-# Consumes a link reference.
+# Consumes a link reference. Title support is deprecated and will be removed in
+# a future release.
 #
 #   [ref]: http://example.com
 #     optional title text indented on following line
@@ -508,8 +509,10 @@ class ShorthandParser:
                 break
         content = content.trim().dedent()
 
-        if stream.has_next() and stream.peek() == ':end':
-            stream.next()
+        if stream.has_next():
+            nextline = stream.peek()
+            if nextline.startswith(':end') or nextline.startswith(':$'):
+                stream.next()
 
         from . import shorthand
         return True, shorthand.process(header, content, meta)
@@ -546,8 +549,10 @@ class TagParser:
                 break
         content = content.trim().dedent()
 
-        if stream.has_next() and stream.peek().rstrip(': ') == '::: end':
-            stream.next()
+        if stream.has_next():
+            nextline = stream.peek()
+            if nextline.startswith('::: end') or nextline.startswith('::$'):
+                stream.next()
 
         from . import tags
         return True, tags.process(tag, pargs, kwargs, content, meta)
