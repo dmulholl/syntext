@@ -3,11 +3,11 @@
 # ---------------------------------------------------------
 
 # Package version number.
-__version__ = "2.5.1"
+__version__ = "2.5.2"
 
 from .interface import render
 from .interface import main
-from .utils import Error
+from .utils import SyntextError
 
 from . import tags
 from . import nodes

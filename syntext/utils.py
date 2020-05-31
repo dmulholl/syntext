@@ -9,8 +9,13 @@ import shutil
 from . import escapes
 
 
-# Exception class for reporting errors.
+# Deprecated error class.
 class Error(Exception):
+    pass
+
+
+# Exception class for reporting errors.
+class SyntextError(Error):
     pass
 
 
