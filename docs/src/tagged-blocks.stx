@@ -80,7 +80,6 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
 ### • &nbsp; `image`
 
     ::: image http://example.com/image.jpg
-        Alt text for the image.
 
 Inserts an image element. The first argument is used as the source url.
 
