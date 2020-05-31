@@ -9,7 +9,7 @@ title: Miscellanea
 
 The following characters can be escaped by a preceding backslash:
 
-    # * + - . : ` •
+    . # * + - : ` •
 
 Escaped characters lose any special significance they might otherwise have.
 
@@ -78,3 +78,18 @@ Footnotes are output as items in a description list:
     </dl>
 
 Each footnote index is backlinked to its reference in the document.
+
+
+
+### Tab Translation Size
+
+Tab characters in input text are translated into spaces --- by default, 4 spaces per tab. This value can be customized via the `tabsize` argument:
+
+::: code python
+
+    html = syntext.render(text, tabsize=8)
+
+This argument is also available on the command line:
+
+    $ syntext --tabsize 8 < input.txt > output.html
+

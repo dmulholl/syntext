@@ -17,7 +17,7 @@ title: Changelog
 
 * Add `:$` as an alias for `:end`.
 
-* Customizable tab size.
+* Make the tab translation size customizable.
 
 
 

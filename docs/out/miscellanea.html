@@ -80,6 +80,9 @@
 <li>
 <a href="#footnotes">Footnotes</a>
 </li>
+<li>
+<a href="#tab-translation-size">Tab Translation Size</a>
+</li>
 </ul>
 <h3 id="escapes">
 Escapes
@@ -88,7 +91,7 @@ Escapes
 The following characters can be escaped by a preceding backslash:
 </p>
 <pre>
-# * + - . : ` •
+. # * + - : ` •
 </pre>
 <p>
 Escaped characters lose any special significance they might otherwise have.
@@ -174,6 +177,21 @@ Footnotes are output as items in a description list:
 <p>
 Each footnote index is backlinked to its reference in the document.
 </p>
+<h3 id="tab-translation-size">
+Tab Translation Size
+</h3>
+<p>
+Tab characters in input text are translated into spaces &mdash; by default, 4 spaces per tab. This value can be customized via the <code>tabsize</code> argument:
+</p>
+<pre class="lang-python pygments" data-lang="python">
+<span class="n">html</span> <span class="o">=</span> <span class="n">syntext</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tabsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre>
+<p>
+This argument is also available on the command line:
+</p>
+<pre>
+$ syntext --tabsize 8 &lt; input.txt &gt; output.html
+</pre>
 
     </article>
 
