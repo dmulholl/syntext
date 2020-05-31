@@ -1,6 +1,6 @@
 This paragraph contains a [link](http://example.com).
 
-This link has [a title](http://example.com link title).
+This link has [a title](http://example.com).
 
 Here's a reference [link][1].
 

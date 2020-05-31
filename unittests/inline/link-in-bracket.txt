@@ -1,1 +1,1 @@
-foo (bar [link text](http://example.com title text) baz) bam
+foo (bar [link text](http://example.com) baz) bam

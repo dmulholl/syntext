@@ -32,13 +32,13 @@ re_bolditalic_mc = re.compile(r"\*{3}(\S.*?\S)\*{3}")
 # `foo bar`
 re_backticks = re.compile(r"`(.+?)`")
 
-# [link text](http://example.com optional title text)
+# [link text](http://example.com)
 re_link = re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
 
 # [link text][ref]
 re_ref_link = re.compile(r"\[([^\]]+)\]\[([^\]]*)\]")
 
-# ![alt text](http://example.com optional title text)
+# ![alt text](http://example.com)
 re_img = re.compile(r"!\[([^\]]*)\]\(([^\)]+)\)")
 
 # ![alt text][ref]
@@ -190,13 +190,8 @@ def render_subscripts(text):
 def render_images(text):
     def callback(match):
         alt = html.escape(match.group(1))
-        atts = match.group(2).strip().split(' ', maxsplit=1)
-        url = atts[0]
-        title = html.escape(atts[1] if len(atts) > 1 else '').strip()
-        if title:
-            return '<img alt="%s" src="%s" title="%s">' % (alt, url, title)
-        else:
-            return '<img alt="%s" src="%s">' % (alt, url)
+        url = match.group(2)
+        return f'<img alt="{alt}" src="{url}">'
     return re_img.sub(callback, text)
 
 
@@ -216,13 +211,8 @@ def render_ref_images(text, meta):
 def render_links(text):
     def callback(match):
         text = match.group(1)
-        atts = match.group(2).strip().split(' ', maxsplit=1)
-        url = atts[0]
-        title = html.escape(atts[1] if len(atts) > 1 else '').strip()
-        if title:
-            return '<a href="%s" title="%s">%s</a>' % (url, title, text)
-        else:
-            return '<a href="%s">%s</a>' % (url, text)
+        url = match.group(2)
+        return f'<a href="{url}">{text}</a>'
     return re_link.sub(callback, text)
 
 
