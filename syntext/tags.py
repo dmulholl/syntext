@@ -48,11 +48,29 @@ def process(tag, pargs, kwargs, content, meta):
     return node
 
 
-# Handler for the 'div' tag.
+# Handler for the 'div' tag - useful as a test for tags with block-level content.
 @register('div')
 def div_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Node('div', kwargs)
     node.children = parsers.BlockParser().parse(content, meta)
+    return node
+
+
+# Handler for the 'span' tag - useful as a test for tags with inline-level content.
+@register('span')
+def span_tag_handler(tag, pargs, kwargs, content, meta):
+    node = nodes.Node('span', kwargs)
+    node.children = parsers.InlineParser().parse(content, meta)
+    return node
+
+
+# Handler for the 'link' tag. Uses the first keyword as the url.
+@register('link')
+def link_tag_handler(tag, pargs, kwargs, content, meta):
+    node = nodes.Node('a', kwargs)
+    node.children = parsers.InlineParser().parse(content, meta)
+    if not 'href' in kwargs:
+        node.attributes['href'] = pargs[0] if pargs else ''
     return node
 
 
