@@ -18,13 +18,11 @@ class Error(Exception):
 class LineStream:
 
     # A stream can be initialized with a string or a list of lines.
-    def __init__(self, arg=None):
-        if isinstance(arg, str):
-            text = escapes.escapechars(arg)
-            text = text.expandtabs(4)
+    def __init__(self, text=None):
+        if isinstance(text, str):
             self.lines = [line.rstrip() for line in text.splitlines()]
         else:
-            self.lines = arg or []
+            self.lines = text or []
         self.index = 0
 
     def __str__(self):

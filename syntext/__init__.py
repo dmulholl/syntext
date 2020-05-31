@@ -1,12 +1,9 @@
 # ---------------------------------------------------------
 # Syntext: a lightweight, markdownish markup language.
-#
-# Author: Darren Mulholland <dmulholl@tcd.ie>
-# License: Public Domain
 # ---------------------------------------------------------
 
 # Package version number.
-__version__ = "2.5.0.dev"
+__version__ = "2.5.0"
 
 from .interface import render
 from .interface import main

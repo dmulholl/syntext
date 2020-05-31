@@ -21,10 +21,11 @@ from . import escapes
 
 
 def parse(text, meta):
-    escaped = escapes.escapechars(text)
-    stream = utils.LineStream(escaped)
+    expanded_text = text.expandtabs(meta.get('tabsize', 4))
+    escaped_text = escapes.escapechars(expanded_text)
+    line_stream = utils.LineStream(escaped_text)
     root = nodes.Node()
-    root.children = parsers.BlockParser().parse(stream, meta)
+    root.children = parsers.BlockParser().parse(line_stream, meta)
     tocbuilder = toc.TOCBuilder(root)
     meta['toc'] = tocbuilder.toc()
     meta['fulltoc'] = tocbuilder.fulltoc()
@@ -50,7 +51,7 @@ def render(text, **meta):
 
 # Command line helptext.
 helptext = """
-Usage: %s [FLAGS]
+Usage: %s [FLAGS] [OPTIONS]
 
   Renders input text in Syntext format into HTML. Reads from stdin and
   prints to stdout.
@@ -59,11 +60,14 @@ Usage: %s [FLAGS]
 
     $ syntext < input.txt > output.html
 
+Options:
+  -t, --tabsize <n>     Set tabsize (default: 4).
+
 Flags:
-  -d, --debug       Run in debug mode.
-  -h, --help        Print the application's help text and exit.
-  -p, --pygmentize  Add syntax highlighting to code samples.
-  -v, --version     Print the application's version number and exit.
+  -d, --debug           Run in debug mode.
+  -h, --help            Print the application's help text and exit.
+  -p, --pygmentize      Add syntax highlighting to code samples.
+  -v, --version         Print the application's version number and exit.
 """ % os.path.basename(sys.argv[0])
 
 
@@ -93,10 +97,19 @@ def main():
         action="store_true",
         help="add syntax highlighting to code samples",
     )
+    parser.add_argument('-t', '--tabsize',
+        type=int,
+        default=4,
+        help="set tabsize",
+    )
     args = parser.parse_args()
 
     text = sys.stdin.read()
-    html, root, meta = parse(text, {'pygmentize': args.pygmentize})
+    meta = {
+        'pygmentize': args.pygmentize,
+        'tabsize': args.tabsize,
+    }
+    html, root, meta = parse(text, meta)
 
     output = []
     if args.debug:
