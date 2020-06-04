@@ -31,7 +31,7 @@ def parse(text, meta):
     meta['fulltoc'] = tocbuilder.fulltoc()
     html = root.render(meta)
     html = escapes.unescapechars(html)
-    return html, root, meta
+    return html.strip(), root, meta
 
 
 # ------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ def main():
         print(utils.title('META'))
         print(pprint.pformat(meta) + '\n')
         print(utils.title('HTML'))
-        print(html.strip())
+        print(html)
     else:
         print(html)
 
