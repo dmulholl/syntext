@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Miscellanea</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="fonts.css">
-    <link rel="stylesheet" href="graphite.css">
-    <link rel="stylesheet" href="pygments.css">
-    
-    
-  </head>
-
-  <body class="node-miscellanea node">
-
-    <header class="masthead">
-      <h1><a href="index.html">Syntext</a></h1>
-      
-        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
-      
-      
-        <p class="version">Version 2.5.0</p>
-      
-      <nav class="menu">
-        <input id="menu-check" type="checkbox"/>
-        <label id="menu-label" for="menu-check" class="unselectable">
-          <span class="icon close-icon">✕</span>
-          <span class="icon open-icon">☰</span>
-          <span class="text">Menu</span>
-        </label>
-        <ul>
+    <head>
+        <meta charset="utf-8">
+        <title>Miscellanea</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="fonts.css">
+        <link rel="stylesheet" href="graphite.css">
+        <link rel="stylesheet" href="pygments.css">
+        
+        
+    </head>
+    <body class="node-miscellanea node">
+        <header class="masthead">
+            <h1><a href="index.html">Syntext</a></h1>
+            
+            <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
+            
+            
+            <p class="version">Version 2.6.0</p>
+            
+            <nav class="menu">
+                <input id="menu-check" type="checkbox"/>
+                <label id="menu-label" for="menu-check" class="unselectable">
+                    <span class="icon close-icon">✕</span>
+                    <span class="icon open-icon">☰</span>
+                    <span class="text">Menu</span>
+                </label>
+                <ul>
 <li>
 <a href="index.html">Home</a>
 </li>
@@ -60,17 +58,15 @@
 <a href="https://github.com/dmulholl/syntext">Source</a>
 </li>
 </ul>
-
-      </nav>
-    </header>
-
-    <article class="main">
-      <header class="title">
-        <h1>Miscellanea</h1>
-        
-        <hr>
-      </header>
-      <ul class="stx-toc">
+            </nav>
+        </header>
+        <article class="main">
+            <header class="title">
+                <h1>Miscellanea</h1>
+                
+                <hr>
+            </header>
+            <ul class="stx-toc">
 <li>
 <a href="#escapes">Escapes</a>
 </li>
@@ -81,7 +77,13 @@
 <a href="#footnotes">Footnotes</a>
 </li>
 <li>
+<a href="#alternate-footnote-styles">Alternate Footnote Styles</a>
+</li>
+<li>
 <a href="#tab-translation-size">Tab Translation Size</a>
+</li>
+<li>
+<a href="#notes">Notes</a>
 </li>
 </ul>
 <h3 id="escapes">
@@ -177,6 +179,15 @@ Footnotes are output as items in a description list:
 <p>
 Each footnote index is backlinked to its reference in the document.
 </p>
+<h3 id="alternate-footnote-styles">
+Alternate Footnote Styles
+</h3>
+<p>
+Syntext supports two alternate styles for footnote references: superscripted<sup class="footnote" id="fnref:1"><a href="#fn:1">1</a></sup> and inline <span class="footnote" id="fnref:2"><a href="#fn:2">2</a></span>.
+</p>
+<p>
+Superscripted references look like this <code>[^1]</code> while inline references look like this <code>[fn:2]</code>. The only difference in markup is that superscripted references are wrapped in a <code>&lt;sup&gt;</code> tag while inline references are wrapped in a <code>&lt;span&gt;</code>.
+</p>
 <h3 id="tab-translation-size">
 Tab Translation Size
 </h3>
@@ -192,10 +203,36 @@ This argument is also available on the command line:
 <pre>
 $ syntext --tabsize 8 &lt; input.txt &gt; output.html
 </pre>
-
-    </article>
-
-    
-
-  </body>
+<h3 id="notes">
+Notes
+</h3>
+<dl class="footnotes">
+<div id="fn:1">
+<dt>
+<a href="#fnref:1">
+1
+</a>
+</dt>
+<dd>
+<p>
+This is a sample footnote. Footnotes can contain any kind of block-level markup including multiple paragraphs.
+</p>
+</dd>
+</div>
+<div id="fn:2">
+<dt>
+<a href="#fnref:2">
+2
+</a>
+</dt>
+<dd>
+<p>
+And this is another sample footnote.
+</p>
+</dd>
+</div>
+</dl>
+        </article>
+        
+    </body>
 </html>

@@ -64,7 +64,7 @@ def span_tag_handler(tag, pargs, kwargs, content, meta):
     return node
 
 
-# Handler for the 'link' tag. Uses the first keyword as the url.
+# Handler for the 'link' tag. Uses the first keyword argument as the url.
 @register('link')
 def link_tag_handler(tag, pargs, kwargs, content, meta):
     node = nodes.Node('a', kwargs)
@@ -81,7 +81,7 @@ def quote_tag_handler(tag, pargs, kwargs, content, meta):
     quote.children = parsers.BlockParser().parse(content, meta)
     if pargs:
         caption = nodes.Node('div')
-        caption.add_class('caption')
+        caption.add_class('blockquote-caption')
         caption.append_child(nodes.TextNode(pargs[0]))
         wrapper = nodes.Node()
         wrapper.append_child(quote)
@@ -99,16 +99,32 @@ def infobox_tag_handler(tag, pargs, kwargs, content, meta):
     return node
 
 
-# Handler for image tags. The first keyword is used as the src attribute;
-# the block's content is used as the alt text.
-@register('image')
-def imgage_tag_handler(tag, pargs, kwargs, content, meta):
-    node = nodes.Node('img', kwargs, is_void=True)
-    if not 'src' in kwargs:
-        node.attributes['src'] = pargs[0] if pargs else ''
-    if not 'alt' in kwargs:
-        node.attributes['alt'] = html.escape(str(content).replace('\n', ' '))
-    return node
+# Handler for image tags. Uses the first keyword argument as the src.
+@register('image', '!image')
+def image_tag_handler(tag, pargs, kwargs, content, meta):
+    image = nodes.Node('img', is_void=True)
+    image.attributes['src'] = pargs[0] if pargs else ''
+    outernode = image
+
+    if content.has_next() and content.peek().startswith('[') and content.peek().endswith(']'):
+        image.attributes['alt'] = html.escape(content.next()[1:-1])
+
+    if tag == '!image':
+        link = nodes.Node('a')
+        link.attributes['href'] = pargs[0] if pargs else ''
+        link.append_child(image)
+        outernode = link
+
+    if content.has_next():
+        figcaption = nodes.Node('figcaption')
+        figcaption.append_child(nodes.TextNode(str(content).strip()))
+        figure = nodes.Node('figure')
+        figure.append_child(outernode)
+        figure.append_child(figcaption)
+        outernode = figure
+
+    outernode.attributes.update(kwargs)
+    return outernode
 
 
 # Handler for the 'comment' tag; creates a HTML comment.

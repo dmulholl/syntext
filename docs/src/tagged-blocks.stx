@@ -16,7 +16,7 @@ A block's tag determines how its content is processed. In  general blocks can be
 
 Although a block's content is determined solely by its indentation an optional end marker can be added to support syntax highlighting in editors which struggle with indentation-based syntax:
 
-    ::: tag 
+    ::: tag
         block content
         ...
     ::$
@@ -77,11 +77,19 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the `hr`
     ::: ------ :::
 
 
-### • &nbsp; `image`
+### • &nbsp; `image`, `!image`
 
     ::: image http://example.com/image.jpg
+        [Optional alt text.]
+        Optional image caption.
 
-Inserts an image element. The first argument is used as the source url.
+Inserts an `<img>` element. The first argument is used as the source url.
+
+* If the first line of the block's content is wrapped in square brackets it will be treated as the image's alt text.
+* If a caption is provided, it will be wrapped in a `<figcaption>` element and the image and caption together will be wrapped in a `<figure>` element.
+* If the `!image` tag is used, the image will be wrapped in a link to itself.
+
+Classes, attributes, etc. are attached to the outermost element.
 
 
 ### • &nbsp; `infobox`
@@ -105,7 +113,7 @@ Inserts a link. The first argument is used as the url.
     ::: quote "Oscar Wilde"
         Work is the curse of the drinking classes.
 
-Inserts a blockquote element, optionally followed by a caption.
+Inserts a `<blockquote>` element. If a caption argument is provided it will follow the blockquote element wrapped in a div with the class `.blockquote-caption`.
 
 
 ### • &nbsp; `span`

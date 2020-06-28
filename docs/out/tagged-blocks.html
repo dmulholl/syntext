@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Tagged Blocks</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="fonts.css">
-    <link rel="stylesheet" href="graphite.css">
-    <link rel="stylesheet" href="pygments.css">
-    
-    
-  </head>
-
-  <body class="node-tagged-blocks node">
-
-    <header class="masthead">
-      <h1><a href="index.html">Syntext</a></h1>
-      
-        <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
-      
-      
-        <p class="version">Version 2.5.0</p>
-      
-      <nav class="menu">
-        <input id="menu-check" type="checkbox"/>
-        <label id="menu-label" for="menu-check" class="unselectable">
-          <span class="icon close-icon">✕</span>
-          <span class="icon open-icon">☰</span>
-          <span class="text">Menu</span>
-        </label>
-        <ul>
+    <head>
+        <meta charset="utf-8">
+        <title>Tagged Blocks</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="fonts.css">
+        <link rel="stylesheet" href="graphite.css">
+        <link rel="stylesheet" href="pygments.css">
+        
+        
+    </head>
+    <body class="node-tagged-blocks node">
+        <header class="masthead">
+            <h1><a href="index.html">Syntext</a></h1>
+            
+            <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
+            
+            
+            <p class="version">Version 2.6.0</p>
+            
+            <nav class="menu">
+                <input id="menu-check" type="checkbox"/>
+                <label id="menu-label" for="menu-check" class="unselectable">
+                    <span class="icon close-icon">✕</span>
+                    <span class="icon open-icon">☰</span>
+                    <span class="text">Menu</span>
+                </label>
+                <ul>
 <li>
 <a href="index.html">Home</a>
 </li>
@@ -60,17 +58,15 @@
 <a href="https://github.com/dmulholl/syntext">Source</a>
 </li>
 </ul>
-
-      </nav>
-    </header>
-
-    <article class="main">
-      <header class="title">
-        <h1>Tagged Blocks</h1>
-        
-        <hr>
-      </header>
-      <p>
+            </nav>
+        </header>
+        <article class="main">
+            <header class="title">
+                <h1>Tagged Blocks</h1>
+                
+                <hr>
+            </header>
+            <p>
 Syntext supports indentation-based tagged-block syntax for custom elements:
 </p>
 <pre>
@@ -166,14 +162,30 @@ Inserts a horizontal rule. Any number of dashes can be used in place of the <cod
 <pre>
 ::: ------ :::
 </pre>
-<h3 id="image">
-• &nbsp; <code>image</code>
+<h3 id="image-image">
+• &nbsp; <code>image</code>, <code>!image</code>
 </h3>
 <pre>
 ::: image http://example.com/image.jpg
+    [Optional alt text.]
+    Optional image caption.
 </pre>
 <p>
-Inserts an image element. The first argument is used as the source url.
+Inserts an <code>&lt;img&gt;</code> element. The first argument is used as the source url.
+</p>
+<ul>
+<li>
+If the first line of the block's content is wrapped in square brackets it will be treated as the image's alt text.
+</li>
+<li>
+If a caption is provided, it will be wrapped in a <code>&lt;figcaption&gt;</code> element and the image and caption together will be wrapped in a <code>&lt;figure&gt;</code> element.
+</li>
+<li>
+If the <code>!image</code> tag is used, the image will be wrapped in a link to itself.
+</li>
+</ul>
+<p>
+Classes, attributes, etc. are attached to the outermost element.
 </p>
 <h3 id="infobox">
 • &nbsp; <code>infobox</code>
@@ -203,7 +215,7 @@ Inserts a link. The first argument is used as the url.
     Work is the curse of the drinking classes.
 </pre>
 <p>
-Inserts a blockquote element, optionally followed by a caption.
+Inserts a <code>&lt;blockquote&gt;</code> element. If a caption argument is provided it will follow the blockquote element wrapped in a div with the class <code>.blockquote-caption</code>.
 </p>
 <h3 id="span">
 • &nbsp; <code>span</code>
@@ -268,10 +280,7 @@ Cells in the left column above receive the class <code>left</code>, cells in the
 <p>
 Attributes specified in the block header will be applied to the <code>&lt;table&gt;</code> element.
 </p>
-
-    </article>
-
-    
-
-  </body>
+        </article>
+        
+    </body>
 </html>

@@ -1,0 +1,1 @@
+::: !image http://example.com/foo.jpg

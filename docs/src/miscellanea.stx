@@ -81,6 +81,20 @@ Each footnote index is backlinked to its reference in the document.
 
 
 
+### Alternate Footnote Styles
+
+Syntext supports two alternate styles for footnote references: superscripted[^1] and inline [fn:2].
+
+Superscripted references look like this `[^1]` while inline references look like this `[fn:2]`. The only difference in markup is that superscripted references are wrapped in a `<sup>` tag while inline references are wrapped in a `<span>`.
+
+::: footnote 1
+    This is a sample footnote. Footnotes can contain any kind of block-level markup including multiple paragraphs.
+
+::: footnote 2
+    And this is another sample footnote.
+
+
+
 ### Tab Translation Size
 
 Tab characters in input text are translated into spaces --- by default, 4 spaces per tab. This value can be customized via the `tabsize` argument:
@@ -93,3 +107,8 @@ This argument is also available on the command line:
 
     $ syntext --tabsize 8 < input.txt > output.html
 
+
+
+### Notes
+
+::: insert footnotes

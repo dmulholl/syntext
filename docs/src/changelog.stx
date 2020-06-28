@@ -2,6 +2,13 @@
 title: Changelog
 ---
 
+### 2.6.0
+
+* Add support for linked images, image alt text, and image captions.
+
+* Add documentation for inline footnote references.
+
+
 
 ### 2.5.0
 
