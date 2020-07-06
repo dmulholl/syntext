@@ -45,10 +45,10 @@ re_img = re.compile(r"!\[([^\]]*)\]\(([^\)]+)\)")
 re_ref_img = re.compile(r"!\[([^\]]*)\]\[([^\]]*)\]")
 
 # [^ref] or [^]
-re_footnote_super = re.compile(r"\[\^([^\]]*)\]")
+re_footnote_super = re.compile(r"\[\^([^\]]*?)\]")
 
 # [fn:ref] or [fn]
-re_footnote_span = re.compile(r"\[fn:?([^\]]*)\]")
+re_footnote_span = re.compile(r"\[fn:?([^\]]*?)\]")
 
 # &amp; &#x27;
 re_entity = re.compile(r"&[#a-zA-Z0-9]+;")
@@ -104,11 +104,11 @@ def render(text, meta):
     text = render_bolditalic(text)
     text = render_bold(text)
     text = render_italic(text)
+    text = render_footnotes(text, meta)
     text = render_images(text)
     text = render_ref_images(text, meta)
     text = render_links(text)
     text = render_ref_links(text, meta)
-    text = render_footnotes(text, meta)
     text = render_superscripts(text)
     text = render_subscripts(text)
 
