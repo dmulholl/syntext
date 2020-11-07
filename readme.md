@@ -6,4 +6,4 @@ Syntext is a lightweight, Markdownish markup language for generating HTML. It sh
         :div .inner
             This is a paragraph.
 
-See the [documentation](http://www.dmulholl.com/docs/syntext/) for details.
+See the [documentation](http://www.dmulholl.com/docs/syntext/master/) for details.
