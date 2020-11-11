@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 """
-Syntext
-=======
-
 Syntext is a lightweight, markdownish markup language for generating HTML from
 plain text. This package can be used as both a command line tool and an importable library.
 
@@ -24,8 +21,7 @@ further details.
 import os
 import re
 import io
-
-from setuptools import setup, find_packages
+import setuptools
 
 
 filepath = os.path.join(os.path.dirname(__file__), 'syntext', '__init__.py')
@@ -34,10 +30,10 @@ with io.open(filepath, encoding='utf-8') as metafile:
     meta = dict(re.findall(regex, metafile.read(), flags=re.MULTILINE))
 
 
-setup(
+setuptools.setup(
     name = 'syntext',
     version = meta['version'],
-    packages =  find_packages(),
+    packages = setuptools.find_packages(),
     entry_points = {
         'console_scripts': [
             'syntext = syntext:main',
@@ -47,7 +43,7 @@ setup(
         'pygments',
     ],
     author = 'Darren Mulholland',
-    url = 'http://www.dmulholl.com/docs/syntext/',
+    url = 'http://www.dmulholl.com/docs/syntext/master/',
     license = 'Public Domain',
     description = ('A markdownish markup language.'),
     long_description = __doc__,
