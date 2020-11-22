@@ -2,6 +2,12 @@
 title: Changelog
 ---
 
+### 2.7.0
+
+* Inline bold, italic, code, and verbatim markup can now be split over multiple lines.
+
+
+
 ### 2.6.0
 
 * Add support for linked images, image alt text, and image captions.
