@@ -15,22 +15,22 @@ import re
 re_italic_sc = re.compile(r"\*(\S)\*")
 
 # *foo bar*
-re_italic_mc = re.compile(r"\*(\S.*?\S)\*")
+re_italic_mc = re.compile(r"\*(\S.*?\S)\*", re.DOTALL)
 
 # **x**
 re_bold_sc = re.compile(r"\*{2}(\S)\*{2}")
 
 # **foo bar**
-re_bold_mc = re.compile(r"\*{2}(\S.*?\S)\*{2}")
+re_bold_mc = re.compile(r"\*{2}(\S.*?\S)\*{2}", re.DOTALL)
 
 # ***x***
 re_bolditalic_sc = re.compile(r"\*{3}(\S)\*{3}")
 
 # ***foo bar***
-re_bolditalic_mc = re.compile(r"\*{3}(\S.*?\S)\*{3}")
+re_bolditalic_mc = re.compile(r"\*{3}(\S.*?\S)\*{3}", re.DOTALL)
 
 # `foo bar`
-re_backticks = re.compile(r"`(.+?)`")
+re_backticks = re.compile(r"`(.+?)`", re.DOTALL)
 
 # [link text](http://example.com)
 re_link = re.compile(r"\[([^\]]+)\]\(([^\)]+)\)")
@@ -80,7 +80,7 @@ re_superscript = re.compile(r"\^\{(.+?)\}")
 re_subscript = re.compile(r"_\{(.+?)\}")
 
 # ``foo bar``
-re_verbatim = re.compile(r"``(.+?)``")
+re_verbatim = re.compile(r"``(.+?)``", re.DOTALL)
 
 
 # ------------------------------------------------------------------------------
