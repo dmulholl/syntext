@@ -6,22 +6,6 @@ title: Raw HTML
 
 Syntext can recognise and ignore block-level HTML in its input so you can freely mix and match Syntext markup and raw HTML.
 
-Syntext uses two simple rules for identifying block-level HTML:
-
-(*) A single line beginning with an opening block-level tag and ending with
-  its corresponding closing tag, e.g.
-
-      <div><p>This is raw HTML.</p></div>
-
-(*) An opening block-level tag followed *vertically below* by its corresponding closing
-  tag, e.g.
-
-      <div>
-        <p>This is raw HTML.</p>
-      </div>
-
-The opening and closing tags should not be indented *relative to their context* but can be freely mixed with other block-level Syntext elements, e.g.
-
     :div .outer
         This is a paragraph.
 

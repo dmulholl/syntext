@@ -2,6 +2,13 @@
 title: Changelog
 ---
 
+
+### 2.8.0
+
+* The parser for recognising and ignoring block-level HTML in the input has been upgraded.
+
+
+
 ### 2.7.0
 
 * Inline bold, italic, code, and verbatim delimiters can now be split over multiple lines.

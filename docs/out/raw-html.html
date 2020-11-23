@@ -17,7 +17,7 @@
             <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
             
             
-            <p class="version">Version 2.7.0</p>
+            <p class="version">Version 2.8.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -71,34 +71,6 @@ Block HTML
 </h3>
 <p>
 Syntext can recognise and ignore block-level HTML in its input so you can freely mix and match Syntext markup and raw HTML.
-</p>
-<p>
-Syntext uses two simple rules for identifying block-level HTML:
-</p>
-<ul>
-<li>
-<p>
-A single line beginning with an opening block-level tag and ending with
-its corresponding closing tag, e.g.
-</p>
-<pre>
-&lt;div&gt;&lt;p&gt;This is raw HTML.&lt;/p&gt;&lt;/div&gt;
-</pre>
-</li>
-<li>
-<p>
-An opening block-level tag followed <i>vertically below</i> by its corresponding closing
-tag, e.g.
-</p>
-<pre>
-&lt;div&gt;
-  &lt;p&gt;This is raw HTML.&lt;/p&gt;
-&lt;/div&gt;
-</pre>
-</li>
-</ul>
-<p>
-The opening and closing tags should not be indented <i>relative to their context</i> but can be freely mixed with other block-level Syntext elements, e.g.
 </p>
 <pre>
 :div .outer
