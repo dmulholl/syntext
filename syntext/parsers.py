@@ -3,8 +3,9 @@
 # ------------------------------------------------------------------------------
 
 import re
-import html
 import sys
+import html
+import html.parser
 
 from . import nodes
 from . import utils
@@ -416,28 +417,46 @@ class HtmlParser:
         match = re.match(r'<(\w+)[^>]*?>', stream.peek())
         if match and match.group(1) in self.html_block_tags:
             tag = match.group(1)
-            lines = [stream.next()]
         else:
             return False, None
 
-        # Do we have a one-liner?
-        match = re.fullmatch(r'<(\w+)[^>]*?>.*</\1>', lines[0])
-        if match:
-            return True, nodes.Node(text=lines[0])
+        first_line = stream.next()
+        lines = [first_line]
 
-        # Look for the corresponding closing tag.
-        found, endtag = False, '</%s>' % tag
+        html_parser = HtmlBlockTagParser(tag)
+        html_parser.feed(first_line)
+        if html_parser.done:
+            return True, nodes.Node(text=first_line)
+
         while stream.has_next():
-            lines.append(stream.next())
-            if lines[-1] == endtag:
-                found = True
-                break
+            line = stream.next()
+            lines.append(line)
+            html_parser.feed(line)
+            if html_parser.done:
+                return True, nodes.Node(text='\n'.join(lines))
 
-        if found:
-            return True, nodes.Node(text='\n'.join(lines))
-        else:
-            sys.stderr.write("Error: missing closing tag '%s'.\n" % endtag)
-            return True, None
+        sys.stderr.write("Error: missing closing html block tag '</%s>'.\n" % tag)
+        return True, None
+
+
+# Helper class for the HTML parser above.
+class HtmlBlockTagParser(html.parser.HTMLParser):
+
+    def __init__(self, tag):
+        super().__init__()
+        self.tag = tag
+        self.stack = []
+        self.done = False
+
+    def handle_starttag(self, tag, attrs):
+        if tag == self.tag:
+            self.stack.append(tag)
+
+    def handle_endtag(self, tag):
+        if tag == self.tag:
+            self.stack.pop()
+        if len(self.stack) == 0:
+            self.done = True
 
 
 # Consumes a link reference. Title support is deprecated and will be removed in

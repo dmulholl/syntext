@@ -1,6 +1,6 @@
 # ---------------------------------------------------------
-# This module makes the package directly executable. To 
-# run a syntext package located on Python's import search 
+# This module makes the package directly executable. To
+# run a syntext package located on Python's import search
 # path:
 #
 #   $ python -m syntext
