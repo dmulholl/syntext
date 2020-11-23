@@ -4,7 +4,7 @@ title: Changelog
 
 ### 2.7.0
 
-* Inline bold, italic, code, and verbatim markup can now be split over multiple lines.
+* Inline bold, italic, code, and verbatim delimiters can now be split over multiple lines.
 
 
 
