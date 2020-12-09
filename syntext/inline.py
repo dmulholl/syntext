@@ -68,10 +68,10 @@ re_bare_url = re.compile(r"""
     """, re.VERBOSE | re.MULTILINE | re.IGNORECASE)
 
 # n-dash
-re_ndash = re.compile(r"((?<=\s)|\b|^)--(?=[ ]|\b|$)")
+re_ndash = re.compile(r"((?<=\s)|\b|^)--(?=[ ]|\b|$)", re.MULTILINE)
 
 # m-dash
-re_mdash = re.compile(r"((?<=\s)|\b|^)---(?=[ ]|\b|$)")
+re_mdash = re.compile(r"((?<=\s)|\b|^)---(?=[ ]|\b|$)", re.MULTILINE)
 
 # x^{2}
 re_superscript = re.compile(r"\^\{(.+?)\}")
