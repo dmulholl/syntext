@@ -79,6 +79,7 @@ h3, h4, h5, h6 {
 p {
     margin: 25px 0;
     padding: 0;
+    overflow-wrap: break-word;
 }
 
 blockquote {
@@ -140,6 +141,10 @@ pre {
     background-color: #f8f8f8;
     overflow: auto;
     line-height: 1.4;
+}
+
+h1 code {
+    font-size: 28px;
 }
 
 /**
@@ -410,9 +415,11 @@ body {
  */
 
 table {
+    font-size: 16px;
     border-collapse: collapse;
     border-spacing: 0;
-    margin: 40px 0px;
+    margin: 50px 0px;
+    width: 100%;
 }
 
 thead, tfoot {

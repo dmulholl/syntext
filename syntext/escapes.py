@@ -6,7 +6,7 @@ import re
 
 
 # The following characters in input text can be escaped with a backslash.
-escapeables = '`*.:#+\\-•'
+escapeables = '`*.:#+\\-•|'
 
 
 # Placeholders to substitute for escaped characters during preprocessing.

@@ -9,7 +9,7 @@ title: Miscellanea
 
 The following characters can be escaped by a preceding backslash:
 
-    . # * + - : ` •
+    . # * + - : ` • |
 
 Escaped characters lose any special significance they might otherwise have.
 

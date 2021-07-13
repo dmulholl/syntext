@@ -3,7 +3,7 @@
 # ---------------------------------------------------------
 
 # Package version number.
-__version__ = "2.8.1"
+__version__ = "2.8.2"
 
 from .interface import render
 from .interface import main
