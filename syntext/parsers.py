@@ -27,10 +27,13 @@ class HeadingParser:
     def __call__(self, stream, meta):
         match = re.match(r'([#]{1,6})[ ]+', stream.peek())
         if match:
-            line = stream.next()
-            text = nodes.TextNode(line.strip('#').strip())
             tag = 'h' + str(len(match.group(1)))
-            return True, nodes.Node(tag).append_child(text)
+            line = stream.next()
+            text = line.strip('#').strip()
+            if re.fullmatch(r'[-=]+', text):
+                return True, None
+            else:
+                return True, nodes.Node(tag).append_child(nodes.TextNode(text))
         else:
             return False, None
 
@@ -594,14 +597,14 @@ class Parser:
 
             # Give each parser an opportunity to parse the stream.
             for parser in self.parsers:
-                match, result = parser(stream, meta)
-                if match:
+                found_match, result = parser(stream, meta)
+                if found_match:
                     if isinstance(result, nodes.Node):
                         nodelist.append(result)
                     break
 
             # If we have an unparsable line, print an error and skip it.
-            if not match:
+            if not found_match:
                 sys.stderr.write("UNPARSEABLE: %s\n" % stream.next())
 
         # Merge adjacent text nodes.
