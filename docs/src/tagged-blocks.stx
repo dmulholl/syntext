@@ -19,7 +19,7 @@ Although a block's content is determined solely by its indentation an optional e
     ::: tag
         block content
         ...
-    ::$
+    ::: end
 
 Trailing colons in the header line are optional:
 

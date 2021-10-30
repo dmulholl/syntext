@@ -29,11 +29,11 @@ Trailing symbols are optional:
 
     ### H3 Heading ###
 
-Dashed outlines are optional:
+A heading consisting entirely of dashes will be ignored. You can use this feature to create 'boxed' headings:
 
-    ----------------
-    #  H1 Heading  #
-    ----------------
+    # ------------- #
+    # Boxed Heading #
+    # ------------- #
 
 
 
@@ -85,13 +85,13 @@ Block lists use bracketed list-item markers:
 
 Each list-item in a block list is parsed as a new block-level context and can contain any number of block-level elements, including paragraphs, headings, and nested lists.
 
-    (1) This list item contains a paragraph 
+    (1) This list item contains a paragraph
         and a compact list.
 
         1. foo
         2. bar
 
-    (2) This list item contains two paragraphs. 
+    (2) This list item contains two paragraphs.
         This is the first.
 
         And this is the second.
