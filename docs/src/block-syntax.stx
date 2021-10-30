@@ -31,9 +31,9 @@ Trailing symbols are optional:
 
 A heading consisting entirely of dashes will be ignored. You can use this feature to create 'boxed' headings:
 
-    # ------------- #
-    # Boxed Heading #
-    # ------------- #
+    # --------------- #
+    #  Boxed Heading  #
+    # --------------- #
 
 
 

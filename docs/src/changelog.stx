@@ -3,6 +3,12 @@ title: Changelog
 ---
 
 
+### 2.9.0
+
+* Add support for boxed headings.
+
+
+
 ### 2.8.0
 
 * The parser for recognising and ignoring block-level HTML in the input has been upgraded.
