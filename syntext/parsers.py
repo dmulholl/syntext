@@ -30,7 +30,7 @@ class HeadingParser:
             tag = 'h' + str(len(match.group(1)))
             line = stream.next()
             text = line.strip('#').strip()
-            if re.fullmatch(r'[-=]+', text):
+            if re.fullmatch(r'[-=─]+', text):
                 return True, None
             else:
                 return True, nodes.Node(tag).append_child(nodes.TextNode(text))
@@ -38,7 +38,7 @@ class HeadingParser:
             return False, None
 
 
-# Consumes an outlined, arbitrary-level heading of the form:
+# Deprecated: consumes an outlined, arbitrary-level heading of the form:
 #
 #   ------------------
 #   #  Heading Text  #
