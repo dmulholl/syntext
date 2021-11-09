@@ -80,7 +80,7 @@ def quote_tag_handler(tag, pargs, kwargs, content, meta):
     quote = nodes.Node('blockquote', kwargs)
     quote.children = parsers.BlockParser().parse(content, meta)
     if pargs:
-        caption = nodes.Node('div')
+        caption = nodes.Node('p')
         caption.add_class('blockquote-caption')
         caption.append_child(nodes.TextNode(pargs[0]))
         wrapper = nodes.Node()

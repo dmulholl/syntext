@@ -113,7 +113,7 @@ Inserts a link. The first argument is used as the url.
     ::: quote "Oscar Wilde"
         Work is the curse of the drinking classes.
 
-Inserts a `<blockquote>` element. If a caption argument is provided it will follow the blockquote element wrapped in a div with the class `.blockquote-caption`.
+Inserts a `<blockquote>` element. If a caption argument is provided it will follow the blockquote element wrapped in a `<p>` element with the class `.blockquote-caption`.
 
 
 ### • &nbsp; `span`
