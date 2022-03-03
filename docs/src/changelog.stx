@@ -3,6 +3,12 @@ title: Changelog
 ---
 
 
+### 2.10.0
+
+* A missing block-level closing HTML tag now raises a `SyntextError` exception.
+
+
+
 ### 2.9.0
 
 * Add support for boxed headings.
