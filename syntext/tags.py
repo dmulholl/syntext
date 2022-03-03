@@ -41,7 +41,7 @@ def process(tag, pargs, kwargs, content, meta):
     elif tag == 'hr' or re.fullmatch(r'-+', tag):
         node = nodes.Node('hr', kwargs, is_void=True)
     else:
-        raise utils.SyntextError("unrecognized tag '%s'" % tag)
+        raise utils.SyntextError("Unrecognized tag '%s'." % tag)
 
     if 'nl2lb' in pargs or 'nl2br' in pargs:
         node = nodes.LinebreakNode().append_child(node)

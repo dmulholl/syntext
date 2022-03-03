@@ -438,8 +438,7 @@ class HtmlParser:
             if html_parser.done:
                 return True, nodes.Node(text='\n'.join(lines))
 
-        sys.stderr.write("Error: missing closing html block tag '</%s>'.\n" % tag)
-        return True, None
+        raise utils.SyntextError("Missing block-level HTML closing tag '</%s>'." % tag)
 
 
 # Helper class for the HTML parser above.
