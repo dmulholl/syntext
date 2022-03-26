@@ -1,5 +1,6 @@
 ---
 title: Tagged Blocks
+meta_title: Syntext &mdash; Tagged Blocks
 ---
 
 Syntext supports indentation-based tagged-block syntax for custom elements:

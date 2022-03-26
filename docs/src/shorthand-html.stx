@@ -1,5 +1,6 @@
 ---
-title: Shorthand HTML 
+title: Shorthand HTML
+meta_title: Syntext &mdash; Shorthand HTML
 ---
 
 Syntext supports indentation-based shorthand syntax for generating arbitrary HTML:
@@ -23,7 +24,7 @@ generates the following HTML:
         <p>This is a paragraph.</p>
     </div>
 
-A block header can contain a single ID, any number of classes, and any number of named attributes, e.g: 
+A block header can contain a single ID, any number of classes, and any number of named attributes, e.g:
 
     :div .foo .bar #baz
         This is a paragraph.
