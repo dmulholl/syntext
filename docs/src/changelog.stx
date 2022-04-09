@@ -3,12 +3,12 @@ title: Changelog
 meta_title: Syntext &mdash; Changelog
 ---
 
-
 ### 3.0.0
 
 * This release removes support for backslashed character escapes. This feature was overly aggressive and could
-  lead to unexpected and unintuitive changes in content. Use inline or block-level HTML instead --- Syntext ignores all content inside HTML tags.
+  lead to unexpected and unintuitive changes in content. Use inline or block-level HTML instead to stop Syntext parsing characters as formatting instructions --- Syntext will ignore all content inside HTML tags.
 
+* Add support for a `raw` tag that passes its content through without any further processing.
 
 
 ### 2.10.0

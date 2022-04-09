@@ -17,7 +17,7 @@
                 <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
             
             
-                <p class="version">Version 2.10.0</p>
+                <p class="version">Version 3.0.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -227,11 +227,21 @@ Inserts a <code>&lt;blockquote&gt;</code> element. If a caption argument is prov
 <p>
 Inserts a <code>&lt;span&gt;</code> element. Can only contain inline content.
 </p>
+<h3 id="raw">
+• &nbsp; <code>raw</code>
+</h3>
+<pre>
+::: raw
+    This content will be passed through in its raw state.
+</pre>
+<p>
+Content inside a <code>raw</code> tag will be passed through in its raw state without any further processing.
+</p>
 <h3 id="table">
 • &nbsp; <code>table</code>
 </h3>
 <p>
-Indicates that the block contains a simple table literal:
+Indicates that the block contains a table:
 </p>
 <pre>
 ::: table

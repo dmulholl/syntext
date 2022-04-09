@@ -24,6 +24,3 @@ Note that inline Syntext formatting will not be processed inside block-level HTM
 Syntext ignores inline HTML tags so it's fine to mix and match inline HTML and Syntext markup.
 
 The HTML syntax characters `<`, `>`, and `&` are automatically escaped unless they form part of a HTML tag or character entity.
-
-
-

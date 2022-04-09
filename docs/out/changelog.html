@@ -17,7 +17,7 @@
                 <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
             
             
-                <p class="version">Version 2.10.0</p>
+                <p class="version">Version 3.0.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -66,7 +66,19 @@
                 
                 <hr>
             </header>
-            <h3 id="id-2-10-0">
+            <h3 id="id-3-0-0">
+3.0.0
+</h3>
+<ul>
+<li>
+This release removes support for backslashed character escapes. This feature was overly aggressive and could
+lead to unexpected and unintuitive changes in content. Use inline or block-level HTML instead to stop Syntext parsing characters as formatting instructions &mdash; Syntext will ignore all content inside HTML tags.
+</li>
+<li>
+Add support for a <code>raw</code> tag that passes its content through without any further processing.
+</li>
+</ul>
+<h3 id="id-2-10-0">
 2.10.0
 </h3>
 <ul>

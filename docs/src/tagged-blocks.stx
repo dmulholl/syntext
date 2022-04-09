@@ -125,9 +125,17 @@ Inserts a `<blockquote>` element. If a caption argument is provided it will foll
 Inserts a `<span>` element. Can only contain inline content.
 
 
+### • &nbsp; `raw`
+
+    ::: raw
+        This content will be passed through in its raw state.
+
+Content inside a `raw` tag will be passed through in its raw state without any further processing.
+
+
 ### • &nbsp; `table`
 
-Indicates that the block contains a simple table literal:
+Indicates that the block contains a table:
 
     ::: table
 
