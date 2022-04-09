@@ -1,0 +1,7 @@
+Paragraph 1.
+
+::: raw
+    * foo
+    * bar
+
+Paragraph 2.

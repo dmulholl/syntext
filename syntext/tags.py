@@ -138,8 +138,14 @@ def image_tag_handler(tag, pargs, kwargs, content, meta):
 
 # Handler for the 'comment' tag; creates a HTML comment.
 @register('comment')
-def html_comment_handler(tag, pargs, kwargs, content, meta):
+def comment_tag_handler(tag, pargs, kwargs, content, meta):
     return nodes.CommentNode(text=str(content.indent(4)))
+
+
+# Handler for the 'raw' tag.
+@register('raw')
+def raw_tag_handler(tag, pargs, kwargs, content, meta):
+    return nodes.RawNode(text=str(content))
 
 
 # Handler for code samples.

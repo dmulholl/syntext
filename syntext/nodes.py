@@ -114,3 +114,10 @@ class LinebreakNode(Node):
         rendered = ''.join(child.render(meta) for child in self.children)
         context.pop()
         return rendered
+
+
+# Raw nodes represent raw text content that should not be processed any further.
+class RawNode(Node):
+
+    def render(self, meta):
+        return self.text + '\n'
