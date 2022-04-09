@@ -6,8 +6,6 @@ import re
 import unicodedata
 import shutil
 
-from . import escapes
-
 
 # Deprecated error class.
 class Error(Exception):

@@ -46,7 +46,7 @@ class Node:
         if self.tag and not self.is_void:
             output.append(self.closing_tag() + '\n')
         return ''.join(output)
-            
+
     def opening_tag(self):
         attributes = []
         for key, value in sorted(self.attributes.items()):

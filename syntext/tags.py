@@ -56,6 +56,15 @@ def div_tag_handler(tag, pargs, kwargs, content, meta):
     return node
 
 
+# Handler for the 'div' tag - useful as a test for tags with block-level content.
+@register('raw')
+def raw_tag_handler(tag, pargs, kwargs, content, meta):
+    node = nodes.Node('div', kwargs)
+    node.children = parsers.BlockParser().parse(content, meta)
+    return node
+
+
+
 # Handler for the 'span' tag - useful as a test for tags with inline-level content.
 @register('span')
 def span_tag_handler(tag, pargs, kwargs, content, meta):

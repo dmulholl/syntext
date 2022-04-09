@@ -6,16 +6,6 @@ meta_title: Syntext &mdash; Miscellanea
 ::: insert toc :::
 
 
-### Escapes
-
-The following characters can be escaped by a preceding backslash:
-
-    . # * + - : ` • |
-
-Escaped characters lose any special significance they might otherwise have.
-
-
-
 ### Tables of Contents
 
 Syntext can automatically generate a table of contents for a document. This table can be inserted using the `insert` tag:

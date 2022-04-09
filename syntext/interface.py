@@ -12,7 +12,6 @@ from . import utils
 from . import parsers
 from . import nodes
 from . import toc
-from . import escapes
 
 
 # ------------------------------------------------------------------------------
@@ -22,15 +21,13 @@ from . import escapes
 
 def parse(text, meta):
     expanded_text = text.expandtabs(meta.get('tabsize', 4))
-    escaped_text = escapes.escapechars(expanded_text)
-    line_stream = utils.LineStream(escaped_text)
+    line_stream = utils.LineStream(expanded_text)
     root = nodes.Node()
     root.children = parsers.BlockParser().parse(line_stream, meta)
     tocbuilder = toc.TOCBuilder(root)
     meta['toc'] = tocbuilder.toc()
     meta['fulltoc'] = tocbuilder.fulltoc()
     html = root.render(meta)
-    html = escapes.unescapechars(html)
     return html.strip(), root, meta
 
 
