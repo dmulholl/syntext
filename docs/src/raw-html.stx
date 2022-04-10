@@ -16,7 +16,7 @@ Syntext can recognise and ignore block-level HTML in its input so you can freely
 
         This is another paragraph.
 
-Note that inline Syntext formatting will not be processed inside block-level HTML.
+Syntext treats the content of block-level HTML tags as raw text and passes it through without any further processing.
 
 
 ### Inline HTML
