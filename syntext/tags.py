@@ -35,9 +35,9 @@ def register(*tags):
 
 
 # Process a tag.
-def process(tag, pargs, kwargs, content, meta):
+def process(tag, pargs, kwargs, line_stream, meta):
     if tag in tagmap:
-        node = tagmap[tag](tag, pargs, kwargs, content, meta)
+        node = tagmap[tag](tag, pargs, kwargs, line_stream, meta)
     elif tag == 'hr' or re.fullmatch(r'-+', tag):
         node = nodes.Node('hr', kwargs, is_void=True)
     else:
@@ -50,34 +50,25 @@ def process(tag, pargs, kwargs, content, meta):
 
 # Handler for the 'div' tag - useful as a test for tags with block-level content.
 @register('div')
-def div_tag_handler(tag, pargs, kwargs, content, meta):
+def div_tag_handler(tag, pargs, kwargs, line_stream, meta):
     node = nodes.Node('div', kwargs)
-    node.children = parsers.BlockParser().parse(content, meta)
+    node.children = parsers.BlockParser().parse(line_stream, meta)
     return node
-
-
-# Handler for the 'div' tag - useful as a test for tags with block-level content.
-@register('raw')
-def raw_tag_handler(tag, pargs, kwargs, content, meta):
-    node = nodes.Node('div', kwargs)
-    node.children = parsers.BlockParser().parse(content, meta)
-    return node
-
 
 
 # Handler for the 'span' tag - useful as a test for tags with inline-level content.
 @register('span')
-def span_tag_handler(tag, pargs, kwargs, content, meta):
+def span_tag_handler(tag, pargs, kwargs, line_stream, meta):
     node = nodes.Node('span', kwargs)
-    node.children = parsers.InlineParser().parse(content, meta)
+    node.children = parsers.InlineParser().parse(line_stream, meta)
     return node
 
 
 # Handler for the 'link' tag. Uses the first keyword argument as the url.
 @register('link')
-def link_tag_handler(tag, pargs, kwargs, content, meta):
+def link_tag_handler(tag, pargs, kwargs, line_stream, meta):
     node = nodes.Node('a', kwargs)
-    node.children = parsers.InlineParser().parse(content, meta)
+    node.children = parsers.InlineParser().parse(line_stream, meta)
     if not 'href' in kwargs:
         node.attributes['href'] = pargs[0] if pargs else ''
     return node
@@ -85,9 +76,9 @@ def link_tag_handler(tag, pargs, kwargs, content, meta):
 
 # Handler for blockquotes.
 @register('quote')
-def quote_tag_handler(tag, pargs, kwargs, content, meta):
+def quote_tag_handler(tag, pargs, kwargs, line_stream, meta):
     quote = nodes.Node('blockquote', kwargs)
-    quote.children = parsers.BlockParser().parse(content, meta)
+    quote.children = parsers.BlockParser().parse(line_stream, meta)
     if pargs:
         caption = nodes.Node('p')
         caption.add_class('blockquote-caption')
@@ -101,22 +92,22 @@ def quote_tag_handler(tag, pargs, kwargs, content, meta):
 
 # Handler for infobox tags. Supports alertbox as deprecated alias.
 @register('infobox', 'alertbox')
-def infobox_tag_handler(tag, pargs, kwargs, content, meta):
+def infobox_tag_handler(tag, pargs, kwargs, line_stream, meta):
     node = nodes.Node('div', kwargs)
     node.add_class(tag)
-    node.children = parsers.BlockParser().parse(content, meta)
+    node.children = parsers.BlockParser().parse(line_stream, meta)
     return node
 
 
 # Handler for image tags. Uses the first keyword argument as the src.
 @register('image', '!image')
-def image_tag_handler(tag, pargs, kwargs, content, meta):
+def image_tag_handler(tag, pargs, kwargs, line_stream, meta):
     image = nodes.Node('img', is_void=True)
     image.attributes['src'] = pargs[0] if pargs else ''
     outernode = image
 
-    if content.has_next() and content.peek().startswith('[') and content.peek().endswith(']'):
-        image.attributes['alt'] = html.escape(content.next()[1:-1])
+    if line_stream.has_next() and line_stream.peek().startswith('[') and line_stream.peek().endswith(']'):
+        image.attributes['alt'] = html.escape(line_stream.next()[1:-1])
 
     if tag == '!image':
         link = nodes.Node('a')
@@ -124,9 +115,9 @@ def image_tag_handler(tag, pargs, kwargs, content, meta):
         link.append_child(image)
         outernode = link
 
-    if content.has_next():
+    if line_stream.has_next():
         figcaption = nodes.Node('figcaption')
-        figcaption.append_child(nodes.TextNode(str(content).strip()))
+        figcaption.append_child(nodes.TextNode(str(line_stream).strip()))
         figure = nodes.Node('figure')
         figure.append_child(outernode)
         figure.append_child(figcaption)
@@ -138,22 +129,22 @@ def image_tag_handler(tag, pargs, kwargs, content, meta):
 
 # Handler for the 'comment' tag; creates a HTML comment.
 @register('comment')
-def comment_tag_handler(tag, pargs, kwargs, content, meta):
-    return nodes.CommentNode(text=str(content.indent(4)))
+def comment_tag_handler(tag, pargs, kwargs, line_stream, meta):
+    return nodes.CommentNode(text=str(line_stream.indent(4)))
 
 
 # Handler for the 'raw' tag.
 @register('raw')
-def raw_tag_handler(tag, pargs, kwargs, content, meta):
-    return nodes.RawNode(text=str(content))
+def raw_tag_handler(tag, pargs, kwargs, line_stream, meta):
+    return nodes.Node(text=str(line_stream))
 
 
 # Handler for code samples.
 @register('code')
-def code_tag_handler(tag, pargs, kwargs, content, meta):
+def code_tag_handler(tag, pargs, kwargs, line_stream, meta):
     node = nodes.Node('pre', kwargs)
     lang = pargs[0] if pargs else None
-    text = str(content)
+    text = str(line_stream)
 
     if lang:
         node.attributes['data-lang'] = lang
@@ -180,7 +171,7 @@ def code_tag_handler(tag, pargs, kwargs, content, meta):
 # Handler for the 'insert' tag. This tag is used to insert generated elements,
 # e.g. a table of contents or block of footnotes.
 @register('insert')
-def insert_tag_handler(tag, pargs, kwargs, content, meta):
+def insert_tag_handler(tag, pargs, kwargs, line_stream, meta):
     node = nodes.InsertNode()
     node.text = pargs[0] if pargs else ''
     return node
@@ -188,10 +179,10 @@ def insert_tag_handler(tag, pargs, kwargs, content, meta):
 
 # Handler for the 'table' tag.
 @register('table')
-def table_tag_handler(tag, pargs, kwargs, content, meta):
+def table_tag_handler(tag, pargs, kwargs, line_stream, meta):
 
     # Strip any outer pipes and discard any blank lines.
-    lines = [line.strip('|') for line in content.lines if line]
+    lines = [line.strip('|') for line in line_stream.lines if line]
 
     # Check for a line with colons specifying cell alignment.
     alignment = []
@@ -266,7 +257,7 @@ def table_tag_handler(tag, pargs, kwargs, content, meta):
 
 # Handler for the 'footnote' tag.
 @register('footnote')
-def footnote_tag_handler(tag, pargs, kwargs, content, meta):
+def footnote_tag_handler(tag, pargs, kwargs, line_stream, meta):
 
     # Autogenerate a footnote index if the user hasn't specified one.
     ref = pargs[0] if pargs else ''
@@ -288,7 +279,7 @@ def footnote_tag_handler(tag, pargs, kwargs, content, meta):
 
     # Generate a <dd> node containing the parsed footnote body.
     body = nodes.Node('dd')
-    body.children = parsers.BlockParser().parse(content, meta)
+    body.children = parsers.BlockParser().parse(line_stream, meta)
     footnote.append_child(body)
 
     # Generate a footnotes <dl> node if we haven't done so already.

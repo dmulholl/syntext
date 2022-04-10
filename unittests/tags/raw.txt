@@ -5,3 +5,10 @@ Paragraph 1.
     * bar
 
 Paragraph 2.
+
+::: raw
+    Not a paragraph 1.
+
+    Not a paragraph 1.
+
+Paragraph 3.

@@ -1,3 +1,2 @@
-:pre 
-    <escaped text>
-
+:pre raw
+    foobar

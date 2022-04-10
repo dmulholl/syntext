@@ -37,14 +37,18 @@ class Node:
 
     def render(self, meta):
         output = []
+
         if self.tag:
             output.append(self.opening_tag() + '\n')
+
         if self.children:
             output.append(''.join(child.render(meta) for child in self.children))
         elif self.text:
             output.append(self.text.rstrip() + '\n')
+
         if self.tag and not self.is_void:
             output.append(self.closing_tag() + '\n')
+
         return ''.join(output)
 
     def opening_tag(self):
@@ -70,7 +74,8 @@ class Node:
             self.attributes['class'] = ' '.join(sorted(classes))
 
 
-# Text nodes contain only text. They have no children.
+# Text nodes contain only text, they have no children. Their content is
+# processed for inline markup.
 class TextNode(Node):
 
     def __init__(self, text):
@@ -114,10 +119,3 @@ class LinebreakNode(Node):
         rendered = ''.join(child.render(meta) for child in self.children)
         context.pop()
         return rendered
-
-
-# Raw nodes represent raw text content that should not be processed any further.
-class RawNode(Node):
-
-    def render(self, meta):
-        return self.text + '\n'

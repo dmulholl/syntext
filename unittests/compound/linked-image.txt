@@ -1,3 +1,2 @@
-:a http://example.com/link
-    :img http://example.com/image
-        alt text
+:a href=http://example.com/link
+    :img src=http://example.com/image

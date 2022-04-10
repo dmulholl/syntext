@@ -1,2 +1,1 @@
-:img http://example.com
-    <escaped text>
+:img src=http://example.com
