@@ -164,7 +164,7 @@ def code_tag_handler(tag, pargs, kwargs, line_stream, meta):
             node.text = pygments.highlight(text, lexer, formatter).strip('\n')
             return node
 
-    node.text = html.escape(text)
+    node.text = html.escape(text, quote=False)
     return node
 
 
