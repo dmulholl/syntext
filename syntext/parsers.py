@@ -88,7 +88,7 @@ class IndentedCodeParser:
                 else:
                     break
             text = str(lines.dedent().trim())
-            text = html.escape(text)
+            text = html.escape(text, quote=False)
             return True, nodes.Node('pre', text=text)
         return False, None
 
