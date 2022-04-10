@@ -3,7 +3,7 @@ title: Tagged Blocks
 meta_title: Syntext &mdash; Tagged Blocks
 ---
 
-Syntext supports indentation-based tagged-block syntax for custom elements:
+Syntext supports an indentation-based tagged-block syntax for custom elements:
 
     ::: tag [arguments] [.class] [#id] [&attr] [attr="value"]
         block content
@@ -43,14 +43,15 @@ A `nl2lb` / `nl2br` argument can be added to any block to turn on newline-to-lin
         def hello():
             print('hello world')
 
-Wraps a code sample in `<pre>` tags. Accepts an optional argument specifying the language of the code.
+Wraps a code sample in `<pre>` tags. Automatically escapes the HTML syntax characters `<`, `>`, and `&`.
 
-If a language is specified then a `lang-<language>` class and a `data-lang="<language>"` attribute are added to the `<pre>` element.
+This tag accepts an optional argument specifying the language of the code. If a language is specified then a `lang-<language>` class and a `data-lang="<language>"` attribute are added to the `<pre>` element.
 
 If a language is specified and the [Pygments](http://pygments.org) package is installed then syntax highlighting can be applied to the code sample. This feature is turned off by default but can be enabled by supplying a `pygmentize=True` keyword argument to the `render()` function:
 
 ::: code python
     >>> html = syntext.render(text, pygmentize=True)
+
 
 
 ### • &nbsp; `comment`
@@ -61,13 +62,6 @@ If a language is specified and the [Pygments](http://pygments.org) package is in
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
 
 
-### • &nbsp; `div`
-
-    ::: div
-        This is a paragraph inside a div.
-
-Inserts a `<div>` element. Can contain any kind of block-level content.
-
 
 ### • &nbsp; `hr`
 
@@ -76,6 +70,7 @@ Inserts a `<div>` element. Can contain any kind of block-level content.
 Inserts a horizontal rule. Any number of dashes can be used in place of the `hr` tag, e.g.
 
     ::: ------ :::
+
 
 
 ### • &nbsp; `image`, `!image`
@@ -93,12 +88,14 @@ Inserts an `<img>` element. The first argument is used as the source url.
 Classes, attributes, etc. are attached to the outermost element.
 
 
+
 ### • &nbsp; `infobox`
 
     ::: infobox .warning
         Careful now!
 
 Creates an info box --- a `<div>` element with the class `infobox` which can be styled appropriately using CSS.
+
 
 
 ### • &nbsp; `link`
@@ -109,6 +106,7 @@ Creates an info box --- a `<div>` element with the class `infobox` which can be 
 Inserts a link. The first argument is used as the url.
 
 
+
 ### • &nbsp; `quote`
 
     ::: quote "Oscar Wilde"
@@ -117,13 +115,6 @@ Inserts a link. The first argument is used as the url.
 Inserts a `<blockquote>` element. If a caption argument is provided it will follow the blockquote element wrapped in a `<p>` element with the class `.blockquote-caption`.
 
 
-### • &nbsp; `span`
-
-    ::: span
-        Spans can only contain inline content.
-
-Inserts a `<span>` element. Can only contain inline content.
-
 
 ### • &nbsp; `raw`
 
@@ -131,6 +122,7 @@ Inserts a `<span>` element. Can only contain inline content.
         This content will be passed through in its raw state.
 
 Content inside a `raw` tag will be passed through in its raw state without any further processing.
+
 
 
 ### • &nbsp; `table`

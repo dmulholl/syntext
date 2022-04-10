@@ -17,7 +17,7 @@
                 <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
             
             
-                <p class="version">Version 3.0.0</p>
+                <p class="version">Version 3.1.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -67,7 +67,7 @@
                 <hr>
             </header>
             <p>
-Syntext supports indentation-based tagged-block syntax for custom elements:
+Syntext supports an indentation-based tagged-block syntax for custom elements:
 </p>
 <pre>
 ::: tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
@@ -119,10 +119,10 @@ Tag Reference
         print(&#x27;hello world&#x27;)
 </pre>
 <p>
-Wraps a code sample in <code>&lt;pre&gt;</code> tags. Accepts an optional argument specifying the language of the code.
+Wraps a code sample in <code>&lt;pre&gt;</code> tags. Automatically escapes the HTML syntax characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code>.
 </p>
 <p>
-If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang=&quot;&lt;language&gt;&quot;</code> attribute are added to the <code>&lt;pre&gt;</code> element.
+This tag accepts an optional argument specifying the language of the code. If a language is specified then a <code>lang-&lt;language&gt;</code> class and a <code>data-lang=&quot;&lt;language&gt;&quot;</code> attribute are added to the <code>&lt;pre&gt;</code> element.
 </p>
 <p>
 If a language is specified and the <a href="http://pygments.org">Pygments</a> package is installed then syntax highlighting can be applied to the code sample. This feature is turned off by default but can be enabled by supplying a <code>pygmentize=True</code> keyword argument to the <code>render()</code> function:
@@ -139,16 +139,6 @@ If a language is specified and the <a href="http://pygments.org">Pygments</a> pa
 </pre>
 <p>
 Creates a HTML comment. The block's content is not processed any further but is included in the output in its raw state.
-</p>
-<h3 id="div">
-• &nbsp; <code>div</code>
-</h3>
-<pre>
-::: div
-    This is a paragraph inside a div.
-</pre>
-<p>
-Inserts a <code>&lt;div&gt;</code> element. Can contain any kind of block-level content.
 </p>
 <h3 id="hr">
 • &nbsp; <code>hr</code>
@@ -216,16 +206,6 @@ Inserts a link. The first argument is used as the url.
 </pre>
 <p>
 Inserts a <code>&lt;blockquote&gt;</code> element. If a caption argument is provided it will follow the blockquote element wrapped in a <code>&lt;p&gt;</code> element with the class <code>.blockquote-caption</code>.
-</p>
-<h3 id="span">
-• &nbsp; <code>span</code>
-</h3>
-<pre>
-::: span
-    Spans can only contain inline content.
-</pre>
-<p>
-Inserts a <code>&lt;span&gt;</code> element. Can only contain inline content.
 </p>
 <h3 id="raw">
 • &nbsp; <code>raw</code>

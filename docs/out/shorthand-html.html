@@ -17,7 +17,7 @@
                 <p class="tagline">A lightweight, markdownish markup language for generating HTML.</p>
             
             
-                <p class="version">Version 3.0.0</p>
+                <p class="version">Version 3.1.0</p>
             
             <nav class="menu">
                 <input id="menu-check" type="checkbox"/>
@@ -66,8 +66,23 @@
                 
                 <hr>
             </header>
-            <p>
-Syntext supports indentation-based shorthand syntax for generating arbitrary HTML:
+            <ul class="stx-toc">
+<li>
+<a href="#header-meta">Header Meta</a>
+</li>
+<li>
+<a href="#nesting">Nesting</a>
+</li>
+<li>
+<a href="#linebreak-mode">Linebreak Mode</a>
+</li>
+<li>
+<a href="#raw-mode">Raw Mode</a>
+</li>
+</ul>
+<hr>
+<p>
+Syntext supports an indentation-based shorthand syntax for generating arbitrary HTML:
 </p>
 <pre>
 :tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
@@ -95,6 +110,9 @@ generates the following HTML:
     &lt;p&gt;This is a paragraph.&lt;/p&gt;
 &lt;/div&gt;
 </pre>
+<h3 id="header-meta">
+Header Meta
+</h3>
 <p>
 A block header can contain a single ID, any number of classes, and any number of named attributes, e.g:
 </p>
@@ -116,6 +134,9 @@ Boolean attributes can be specified using an <code>&amp;</code> symbol, e.g. <co
 <pre>
 :div attr1=foo attr2=&quot;bar baz&quot;
 </pre>
+<h3 id="nesting">
+Nesting
+</h3>
 <p>
 Blocks can be nested to any depth, e.g:
 </p>
@@ -134,6 +155,9 @@ will generate the following HTML:
     &lt;/div&gt;
 &lt;/div&gt;
 </pre>
+<h3 id="linebreak-mode">
+Linebreak Mode
+</h3>
 <p>
 A <code>nl2lb</code> argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
 </p>
@@ -145,6 +169,16 @@ A <code>nl2lb</code> argument can be added to any block to turn on newline-to-li
 <p>
 This argument has an alias, <code>nl2br</code>, which is exactly equivalent.
 </p>
+<h3 id="raw-mode">
+Raw Mode
+</h3>
+<p>
+You can add a <code>raw</code> argument to any block. This instructs Syntext to preserve the block's content as-is without any further processing.
+</p>
+<pre>
+:div raw
+    This content will be preserved in its raw state.
+</pre>
         </article>
         
     </body>

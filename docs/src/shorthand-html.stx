@@ -3,7 +3,10 @@ title: Shorthand HTML
 meta_title: Syntext &mdash; Shorthand HTML
 ---
 
-Syntext supports indentation-based shorthand syntax for generating arbitrary HTML:
+::: insert toc
+::: hr
+
+Syntext supports an indentation-based shorthand syntax for generating arbitrary HTML:
 
     :tag [arguments] [.class] [#id] [&attr] [attr="value"]
         block content
@@ -24,6 +27,10 @@ generates the following HTML:
         <p>This is a paragraph.</p>
     </div>
 
+
+
+### Header Meta
+
 A block header can contain a single ID, any number of classes, and any number of named attributes, e.g:
 
     :div .foo .bar #baz
@@ -39,6 +46,10 @@ Boolean attributes can be specified using an `&` symbol, e.g. `&checked`. Attrib
 
     :div attr1=foo attr2="bar baz"
 
+
+
+### Nesting
+
 Blocks can be nested to any depth, e.g:
 
     :div .outer
@@ -53,6 +64,10 @@ will generate the following HTML:
         </div>
     </div>
 
+
+
+### Linebreak Mode
+
 A `nl2lb` argument can be added to any block to turn on newline-to-linebreak mode for all nested content:
 
     :div nl2lb
@@ -60,3 +75,12 @@ A `nl2lb` argument can be added to any block to turn on newline-to-linebreak mod
         will be preserved.
 
 This argument has an alias, `nl2br`, which is exactly equivalent.
+
+
+
+### Raw Mode
+
+You can add a `raw` argument to any block. This instructs Syntext to preserve the block's content as-is without any further processing.
+
+    :div raw
+        This content will be preserved in its raw state.
