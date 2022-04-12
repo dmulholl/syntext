@@ -166,3 +166,5 @@ Column alignment can be specified using colons as below:
 Cells in the left column above receive the class `left`, cells in the center column receive the class `center`, and cells in the right column receive the class `right`.
 
 Attributes specified in the block header will be applied to the `<table>` element.
+
+Note that you can't use the `|` symbol inside table literals --- use the HTML escape code `&#124;` instead.

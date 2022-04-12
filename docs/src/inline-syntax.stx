@@ -75,10 +75,14 @@ Text to be super or subscripted should be wrapped in curly braces.
 
 
 
-### Verbatim
+### Verbatim Quotes
 
 Double backticks create a verbatim environment:
 
     ``verbatim``
 
 The content of a verbatim environment is passed through in its raw state without any further processing.
+
+This can be useful for escaping elements that would otherwise be parsed as formatting instructions by Syntext, e.g. inline LaTeX markup:
+
+    ``\( x^{2} + y^{2} = z^{2} \)``

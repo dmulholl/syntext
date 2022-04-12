@@ -85,7 +85,7 @@
 Syntext supports an indentation-based shorthand syntax for generating arbitrary HTML:
 </p>
 <pre>
-:tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
+:tag [arguments] [.class] [#id] [&amp;attr] [attr="value"]
     block content
     ...
 </pre>
@@ -124,7 +124,7 @@ A block header can contain a single ID, any number of classes, and any number of
 generates the following HTML:
 </p>
 <pre>
-&lt;div class=&quot;foo bar&quot; id=&quot;baz&quot;&gt;
+&lt;div class="foo bar" id="baz"&gt;
     &lt;p&gt;This is a paragraph.&lt;/p&gt;
 &lt;/div&gt;
 </pre>
@@ -132,7 +132,7 @@ generates the following HTML:
 Boolean attributes can be specified using an <code>&amp;</code> symbol, e.g. <code>&amp;checked</code>. Attributes with values can be specified without quotes as long as the value does not contain spaces, e.g.
 </p>
 <pre>
-:div attr1=foo attr2=&quot;bar baz&quot;
+:div attr1=foo attr2="bar baz"
 </pre>
 <h3 id="nesting">
 Nesting
@@ -149,8 +149,8 @@ Blocks can be nested to any depth, e.g:
 will generate the following HTML:
 </p>
 <pre>
-&lt;div class=&quot;outer&quot;&gt;
-    &lt;div class=&quot;inner&quot;&gt;
+&lt;div class="outer"&gt;
+    &lt;div class="inner"&gt;
         &lt;p&gt;This is a paragraph.&lt;/p&gt;
     &lt;/div&gt;
 &lt;/div&gt;

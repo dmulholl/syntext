@@ -70,7 +70,7 @@
 Syntext supports an indentation-based tagged-block syntax for custom elements:
 </p>
 <pre>
-::: tag [arguments] [.class] [#id] [&amp;attr] [attr=&quot;value&quot;]
+::: tag [arguments] [.class] [#id] [&amp;attr] [attr="value"]
     block content
     ...
 </pre>
@@ -116,7 +116,7 @@ Tag Reference
 <pre>
 ::: code python
     def hello():
-        print(&#x27;hello world&#x27;)
+        print('hello world')
 </pre>
 <p>
 Wraps a code sample in <code>&lt;pre&gt;</code> tags. Automatically escapes the HTML syntax characters <code>&lt;</code>, <code>&gt;</code>, and <code>&amp;</code>.
@@ -201,7 +201,7 @@ Inserts a link. The first argument is used as the url.
 • &nbsp; <code>quote</code>
 </h3>
 <pre>
-::: quote &quot;Oscar Wilde&quot;
+::: quote "Oscar Wilde"
     Work is the curse of the drinking classes.
 </pre>
 <p>
@@ -269,6 +269,9 @@ Cells in the left column above receive the class <code>left</code>, cells in the
 </p>
 <p>
 Attributes specified in the block header will be applied to the <code>&lt;table&gt;</code> element.
+</p>
+<p>
+Note that you can't use the <code>|</code> symbol inside table literals &mdash; use the HTML escape code <code>&amp;#124;</code> instead.
 </p>
         </article>
         

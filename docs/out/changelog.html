@@ -79,10 +79,10 @@ Add support for a <code>raw</code> argument to all shorthand HTML tags.
 </h3>
 <ul>
 <li>
-This release removes support for backslashed character escapes. This feature was overly aggressive and could lead to unexpected and unintuitive changes in content. Use HTML instead to stop Syntext parsing characters as formatting instructions &mdash; Syntext ignores inline HTML tags and all content inside block-level HTML. Consider using HTML escape codes for particularly problematic characters, e.g. <code>&amp;#124;</code> for <code>|</code> inside tables.
+This release removes support for backslashed character escapes. This feature was overly aggressive and could lead to unexpected and unintuitive changes in content. Use <code>&#96;&#96;verbatim&#96;&#96;</code> quotes or HTML instead to stop Syntext parsing characters as formatting instructions &mdash; Syntext ignores inline HTML tags and all content inside block-level HTML. Consider using HTML escape codes for particularly problematic characters, e.g. <code>&amp;#124;</code> for the <code>|</code> symbol inside tables.
 </li>
 <li>
-Add support for a <code>raw</code> tag that passes its content through without any further processing.
+Add support for a <code>::: raw</code> tag that passes its content through without any further processing.
 </li>
 </ul>
 <h3 id="id-2-10-0">

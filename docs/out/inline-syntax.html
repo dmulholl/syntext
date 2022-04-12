@@ -83,7 +83,7 @@
 <a href="#superscripts-subscripts">Superscripts &amp; Subscripts</a>
 </li>
 <li>
-<a href="#verbatim">Verbatim</a>
+<a href="#verbatim-quotes">Verbatim Quotes</a>
 </li>
 </ul>
 <h3 id="formatting">
@@ -172,8 +172,8 @@ H_{2}O
 <p>
 Text to be super or subscripted should be wrapped in curly braces.
 </p>
-<h3 id="verbatim">
-Verbatim
+<h3 id="verbatim-quotes">
+Verbatim Quotes
 </h3>
 <p>
 Double backticks create a verbatim environment:
@@ -184,6 +184,12 @@ Double backticks create a verbatim environment:
 <p>
 The content of a verbatim environment is passed through in its raw state without any further processing.
 </p>
+<p>
+This can be useful for escaping elements that would otherwise be parsed as formatting instructions by Syntext, e.g. inline LaTeX markup:
+</p>
+<pre>
+``\( x^{2} + y^{2} = z^{2} \)``
+</pre>
         </article>
         
     </body>
