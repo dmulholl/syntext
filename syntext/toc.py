@@ -54,6 +54,16 @@ class TOCBuilder:
         self.ids.append(id)
         return dict(level=level, text=text, id=id, subs=[])
 
+    def _make_li_node(self, node):
+        li = nodes.Node('li')
+        li.append_child(nodes.TextNode('[%s](#%s)' % (node['text'], node['id'])))
+        if node['subs']:
+            ul = nodes.Node('ul')
+            li.append_child(ul)
+            for child in node['subs']:
+                ul.append_child(self._make_li_node(child))
+        return li
+
     # Returns the table of contents as an unordered list. Skips over root-level
     # H1 headings.
     def toc(self):
@@ -73,13 +83,3 @@ class TOCBuilder:
         for node in self.root['subs']:
             ul.append_child(self._make_li_node(node))
         return ul
-
-    def _make_li_node(self, node):
-        li = nodes.Node('li')
-        li.append_child(nodes.TextNode('[%s](#%s)' % (node['text'], node['id'])))
-        if node['subs']:
-            ul = nodes.Node('ul')
-            li.append_child(ul)
-            for child in node['subs']:
-                ul.append_child(self._make_li_node(child))
-        return li
