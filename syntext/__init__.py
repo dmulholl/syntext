@@ -2,7 +2,7 @@
 # Syntext: a lightweight, markdownish markup language.
 # ---------------------------------------------------------
 
-__version__ = "3.1.2"
+__version__ = "3.2.0"
 
 from .interface import render
 from .interface import main

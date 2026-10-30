@@ -9,6 +9,7 @@ import html.parser
 
 from . import nodes
 from . import utils
+from . import tags
 
 
 # ------------------------------------------------------------------------------
@@ -575,8 +576,42 @@ class TagParser:
             if nextline.startswith('::: end') or nextline.startswith('::$'):
                 stream.next()
 
-        from . import tags
         return True, tags.process(tag, pargs, kwargs, content, meta)
+
+
+# Consumes a fenced code block of the form:
+#
+#   ``` python
+#   def hello_world():
+#       print("hello world")
+#   ````
+#
+class FencedCodeBlockParser:
+
+    def __call__(self, stream, meta):
+        if stream.peek().startswith("```"):
+            marker = "```"
+        elif stream.peek().startswith("~~~"):
+            marker = "~~~"
+        else:
+            return False, None
+
+        header = stream.next().removeprefix(marker)
+        elements = header.split(maxsplit=1)
+        lang = "" if len(elements) == 0 else elements[0]
+
+        content = utils.LineStream()
+
+        while stream.has_next():
+            nextline = stream.next()
+
+            if nextline.startswith(marker):
+                content = content.trim().dedent()
+                return True, tags.process("code", [lang], {}, content, meta)
+            else:
+                content.append(nextline)
+
+        raise utils.SyntextError(f"Missing end-marker {marker} for fenced code block.")
 
 
 # ------------------------------------------------------------------------------
@@ -633,6 +668,7 @@ class BlockParser(Parser):
         CompactOListParser(),
         BlockOListParser(),
         DefinitionListParser(),
+        FencedCodeBlockParser(),
         LinkRefParser(),
         HtmlParser(),
         ParagraphParser(),

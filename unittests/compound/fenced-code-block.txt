@@ -1,0 +1,13 @@
+This is a paragraph.
+
+::: div #foo .bar .baz
+    This is a paragraph.
+
+    ``` sample
+    some *code*
+    more **code**
+    ```
+
+    This is a paragraph.
+
+This is a paragraph.
