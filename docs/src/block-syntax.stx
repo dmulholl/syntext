@@ -126,6 +126,3 @@ A block of text indented by one tab or four spaces is treated as a code block an
         <p>Hello world!</p>
 
 HTML in code blocks is automatically escaped. To specify the language, use an explicit [code tag](@root/tagged-blocks//#code).
-
-
-

@@ -3,6 +3,12 @@ title: Changelog
 meta_title: Syntext &mdash; Changelog
 ---
 
+### 3.2.0
+
+* Add support for fenced code blocks for better compatibility with markdown.
+
+
+
 ### 3.1.0
 
 * Add support for a `raw` argument to all shorthand HTML tags.
